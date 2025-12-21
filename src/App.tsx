@@ -12,7 +12,7 @@ function App() {
             Motor de Simulación Financiera
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Calculate and visualize loan amortization tables with precision
+            Calcula y visualiza tablas de amortización de préstamos con precisión
           </p>
         </header>
 

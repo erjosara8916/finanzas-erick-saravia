@@ -48,7 +48,7 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
       return (
         <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
           <p className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
-            Period {payload[0].payload.period}
+            Período {payload[0].payload.period}
           </p>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }} className="text-sm">
@@ -67,11 +67,11 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
         <XAxis
           dataKey="period"
-          label={{ value: 'Period (Months)', position: 'insideBottom', offset: -5 }}
+          label={{ value: 'Período (Meses)', position: 'insideBottom', offset: -5 }}
           stroke="#6b7280"
         />
         <YAxis
-          label={{ value: 'Amount ($)', angle: -90, position: 'insideLeft' }}
+          label={{ value: 'Monto ($)', angle: -90, position: 'insideLeft' }}
           stroke="#6b7280"
           tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
         />
@@ -84,7 +84,7 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
           stroke="#10b981"
           fill="#10b981"
           fillOpacity={0.6}
-          name="Capital Amortized"
+          name="Capital Amortizado"
         />
         <Area
           type="monotone"
@@ -93,7 +93,7 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
           stroke="#f59e0b"
           fill="#f59e0b"
           fillOpacity={0.6}
-          name="Interest Paid"
+          name="Interés Pagado"
         />
         <Line
           type="monotone"
@@ -101,7 +101,7 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
           stroke="#ef4444"
           strokeWidth={2}
           dot={false}
-          name="Remaining Balance"
+          name="Saldo Restante"
         />
       </ComposedChart>
     </ResponsiveContainer>

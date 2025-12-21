@@ -50,29 +50,29 @@ export default function LoanForm() {
     } else {
       setErrors((prev) => ({
         ...prev,
-        [field]: validation.error || 'Invalid value',
+        [field]: validation.error || 'Valor inválido',
       }));
     }
   };
 
   return (
-    <Card title="Loan Details" description="Enter the loan information to calculate the amortization table">
+    <Card title="Detalles del Préstamo" description="Ingresa la información del préstamo para calcular la tabla de amortización">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <Label htmlFor="name" required>
-            Scenario Name
+            Nombre del Escenario
           </Label>
           <Input
             id="name"
             value={loanInput.name}
             onChange={(e) => handleChange('name', e.target.value)}
-            placeholder="e.g., Bank X Offer"
+            placeholder="ej., Oferta Banco X"
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="principal" required>
-            Principal Amount
+            Monto Principal
           </Label>
           <InputCurrency
             id="principal"
@@ -87,7 +87,7 @@ export default function LoanForm() {
 
         <div className="space-y-2">
           <Label htmlFor="annualRate" required>
-            Annual Interest Rate (%)
+            Tasa de Interés Anual (%)
           </Label>
           <Input
             id="annualRate"
@@ -105,7 +105,7 @@ export default function LoanForm() {
 
         <div className="space-y-2">
           <Label htmlFor="termMonths" required>
-            Term (Months)
+            Plazo (Meses)
           </Label>
           <Input
             id="termMonths"
@@ -123,7 +123,7 @@ export default function LoanForm() {
 
         <div className="space-y-2">
           <Label htmlFor="startDate" required>
-            Start Date
+            Fecha de Inicio
           </Label>
           <Input
             id="startDate"
@@ -139,7 +139,7 @@ export default function LoanForm() {
 
         <div className="space-y-2">
           <Label htmlFor="insuranceAmount">
-            Monthly Insurance
+            Seguro Mensual
           </Label>
           <InputCurrency
             id="insuranceAmount"
@@ -154,7 +154,7 @@ export default function LoanForm() {
 
         <div className="space-y-2">
           <Label htmlFor="additionalFees">
-            Additional Monthly Fees
+            Cuotas Mensuales Adicionales
           </Label>
           <InputCurrency
             id="additionalFees"

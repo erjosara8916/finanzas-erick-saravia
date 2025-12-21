@@ -36,19 +36,19 @@ export default function ExtraPaymentsManager() {
     // Validate period
     const period = parseInt(newPeriod);
     if (!period || period < 1 || period > maxPeriod) {
-      setError(`Period must be between 1 and ${maxPeriod}`);
+      setError(`El período debe estar entre 1 y ${maxPeriod}`);
       return;
     }
 
     if (extraPayments[period]) {
-      setError(`Period ${period} already has an extra payment`);
+      setError(`El período ${period} ya tiene un pago extraordinario`);
       return;
     }
 
     // Validate amount
     const amountValidation = validateAmount(newAmount, false);
     if (!amountValidation.isValid) {
-      setError(amountValidation.error || 'Invalid amount');
+      setError(amountValidation.error || 'Monto inválido');
       return;
     }
 
@@ -62,27 +62,27 @@ export default function ExtraPaymentsManager() {
   };
 
   return (
-    <Card title="Extra Payments" description="Add extra payments to reduce principal faster">
+    <Card title="Pagos Extraordinarios" description="Agrega pagos extraordinarios para reducir el principal más rápido">
       <div className="space-y-4">
         <div className="flex gap-4 items-end">
           <div className="flex-1 space-y-2">
-            <Label htmlFor="extra-period">Period (Month)</Label>
+            <Label htmlFor="extra-period">Período (Mes)</Label>
             <select
               id="extra-period"
               className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               value={newPeriod}
               onChange={(e) => setNewPeriod(e.target.value)}
             >
-              <option value="">Select month</option>
+              <option value="">Seleccionar mes</option>
               {periods.map((p) => (
                 <option key={p} value={p}>
-                  Month {p}
+                  Mes {p}
                 </option>
               ))}
             </select>
           </div>
           <div className="flex-1 space-y-2">
-            <Label htmlFor="extra-amount">Amount</Label>
+            <Label htmlFor="extra-amount">Monto</Label>
             <InputCurrency
               id="extra-amount"
               value={newAmount}
@@ -90,7 +90,7 @@ export default function ExtraPaymentsManager() {
             />
           </div>
           <Button onClick={handleAdd} size="md">
-            Add
+            Agregar
           </Button>
         </div>
 
@@ -100,7 +100,7 @@ export default function ExtraPaymentsManager() {
 
         {existingPayments.length > 0 && (
           <div className="space-y-2">
-            <Label>Scheduled Extra Payments</Label>
+            <Label>Pagos Extraordinarios Programados</Label>
             <div className="space-y-2">
               {existingPayments.map(({ period, amount }) => (
                 <div
@@ -120,7 +120,7 @@ export default function ExtraPaymentsManager() {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleRemove(period)}
-                    aria-label={`Remove extra payment for month ${period}`}
+                    aria-label={`Eliminar pago extraordinario del mes ${period}`}
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -132,7 +132,7 @@ export default function ExtraPaymentsManager() {
 
         {existingPayments.length === 0 && (
           <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-            No extra payments scheduled
+            No hay pagos extraordinarios programados
           </p>
         )}
       </div>

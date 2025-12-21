@@ -23,9 +23,9 @@ export default function AmortizationTable() {
 
   if (rows.length === 0) {
     return (
-      <Card title="Amortization Table">
+      <Card title="Tabla de Amortización">
         <p className="text-center text-gray-500 dark:text-gray-400 py-8">
-          Please fill in the loan details to see the amortization table
+          Por favor completa los detalles del préstamo para ver la tabla de amortización
         </p>
       </Card>
     );
@@ -37,20 +37,20 @@ export default function AmortizationTable() {
   );
 
   return (
-    <Card title="Amortization Table">
+    <Card title="Tabla de Amortización">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200 dark:border-gray-700">
-              <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Period</th>
-              <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Date</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Total Payment</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Interest</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Insurance/Fees</th>
+              <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Período</th>
+              <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Fecha</th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Pago Total</th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Interés</th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Seguro/Cuotas</th>
               <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Principal</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Extra Payment</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Balance</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Accumulated Cost</th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Pago Extra</th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Saldo</th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Costo Acumulado</th>
             </tr>
           </thead>
           <tbody>
