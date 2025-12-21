@@ -72,7 +72,7 @@ export default function ExtraPaymentsManager() {
       }
 
       if (extraPayments[period]) {
-        setError(`El período ${period} ya tiene un pago extraordinario`);
+        setError(`El período ${period} ya tiene un abono a capital`);
         return;
       }
 
@@ -108,7 +108,7 @@ export default function ExtraPaymentsManager() {
       }
 
       if (conflictingPeriods.length > 0) {
-        setError(`Los períodos ${conflictingPeriods.join(', ')} ya tienen pagos extraordinarios`);
+        setError(`Los períodos ${conflictingPeriods.join(', ')} ya tienen abonos a capital`);
         return;
       }
 
@@ -127,8 +127,12 @@ export default function ExtraPaymentsManager() {
     removeExtraPayment(period);
   };
 
+  // Calcular resumen de abonos
+  const totalPayments = existingPayments.length;
+  const totalAmount = existingPayments.reduce((sum, { amount }) => sum + parseFloat(amount), 0);
+
   return (
-    <Card title="Pagos Extraordinarios" description="Agrega pagos extraordinarios para reducir el principal más rápido">
+    <Card title="Abonos a Capital" description="Agrega abonos a capital para reducir el principal más rápido">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Columna 1: Formulario */}
         <div className="space-y-4">
@@ -232,12 +236,37 @@ export default function ExtraPaymentsManager() {
           )}
         </div>
 
-        {/* Columna 2: Listado de pagos extraordinarios */}
+        {/* Columna 2: Resumen y Listado de abonos a capital */}
         <div className="space-y-4">
+          {/* Resumen de abonos */}
+          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+              Resumen de Abonos a Capital
+            </h4>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Cantidad de abonos:</span>
+                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  {totalPayments}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Total de abonos:</span>
+                <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  }).format(totalAmount)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Listado de abonos */}
           <div className="space-y-2">
-            <Label>Pagos Extraordinarios Programados</Label>
+            <Label>Abonos a Capital Programados</Label>
             {existingPayments.length > 0 ? (
-              <div className="space-y-2 max-h-[500px] overflow-y-auto">
+              <div className="space-y-2 max-h-[400px] overflow-y-auto">
                 {existingPayments.map(({ period, amount }) => (
                   <div
                     key={period}
@@ -258,7 +287,8 @@ export default function ExtraPaymentsManager() {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleRemove(period)}
-                      aria-label={`Eliminar pago extraordinario del mes ${period}`}
+                      aria-label={`Eliminar abono a capital del mes ${period}`}
+                      className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -267,7 +297,7 @@ export default function ExtraPaymentsManager() {
               </div>
             ) : (
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
-                No hay pagos extraordinarios programados
+                No hay abonos a capital programados
               </p>
             )}
           </div>

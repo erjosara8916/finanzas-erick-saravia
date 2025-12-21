@@ -7,6 +7,8 @@ export interface CollapsibleProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
   description?: string;
   defaultOpen?: boolean;
+  isOpen?: boolean;
+  onToggle?: (isOpen: boolean) => void;
   children: ReactNode;
 }
 
@@ -14,16 +16,28 @@ export default function Collapsible({
   title,
   description,
   defaultOpen = true,
+  isOpen: controlledIsOpen,
+  onToggle,
   children,
   className,
   ...props
 }: CollapsibleProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [internalIsOpen, setInternalIsOpen] = useState(defaultOpen);
+  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+  
+  const handleToggle = () => {
+    const newState = !isOpen;
+    if (onToggle) {
+      onToggle(newState);
+    } else {
+      setInternalIsOpen(newState);
+    }
+  };
 
   return (
     <Card className={cn('overflow-hidden', className)} {...props}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
         className="w-full flex items-center justify-between p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
       >
         <div className="text-left">

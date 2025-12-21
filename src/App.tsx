@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LoanForm from './components/loan/LoanForm';
 import ExtraPaymentsManager from './components/loan/ExtraPaymentsManager';
 import AmortizationTable from './components/loan/AmortizationTable';
@@ -12,10 +12,20 @@ function App() {
   const extraPayments = useLoanStore((state) => state.getActiveExtraPayments());
   
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [isConfigOpen, setIsConfigOpen] = useState<boolean>(true);
   
   // Determinar si los pasos están completados
   const hasLoanData = loanInput && loanInput.principal && loanInput.annualRate && loanInput.termMonths;
   const hasExtraPayments = Object.keys(extraPayments).length > 0;
+  
+  // Cuando se abre la configuración, establecer el paso activo en 2 si hay datos del préstamo
+  useEffect(() => {
+    if (isConfigOpen && hasLoanData) {
+      setActiveStep(1); // Paso 2 (índice 1)
+    } else if (isConfigOpen && !hasLoanData) {
+      setActiveStep(0); // Paso 1 (índice 0)
+    }
+  }, [isConfigOpen, hasLoanData]);
   
   const steps = [
     {
@@ -24,14 +34,24 @@ function App() {
       active: activeStep === 0,
     },
     {
-      label: 'Pagos Extraordinarios',
+      label: 'Abonos a Capital',
       completed: hasExtraPayments,
       active: activeStep === 1,
+    },
+    {
+      label: 'Proyección',
+      completed: false,
+      active: activeStep === 2,
     },
   ];
 
   const handleStepClick = (stepIndex: number) => {
-    setActiveStep(stepIndex);
+    if (stepIndex === 2) {
+      // Paso 3: Colapsar la configuración
+      setIsConfigOpen(false);
+    } else {
+      setActiveStep(stepIndex);
+    }
   };
 
   return (
@@ -48,7 +68,11 @@ function App() {
 
         <div className="space-y-6 animate-fade-in">
           <div className="transition-all duration-300">
-            <Collapsible title="Configuración" defaultOpen={true}>
+            <Collapsible 
+              title="Configuración" 
+              isOpen={isConfigOpen}
+              onToggle={setIsConfigOpen}
+            >
               <div className="space-y-6">
                 <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                   <Stepper steps={steps} onStepClick={handleStepClick} />
@@ -63,6 +87,11 @@ function App() {
                   {activeStep === 1 && (
                     <div className="animate-fade-in">
                       <ExtraPaymentsManager />
+                    </div>
+                  )}
+                  {activeStep === 2 && (
+                    <div className="animate-fade-in">
+                      {/* Paso 3 no tiene contenido */}
                     </div>
                   )}
                 </div>
