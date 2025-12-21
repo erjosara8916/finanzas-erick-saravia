@@ -1,10 +1,39 @@
+import { useState } from 'react';
 import LoanForm from './components/loan/LoanForm';
 import ExtraPaymentsManager from './components/loan/ExtraPaymentsManager';
 import AmortizationTable from './components/loan/AmortizationTable';
 import LoanSummary from './components/loan/LoanSummary';
 import Collapsible from './components/ui/Collapsible';
+import Stepper from './components/ui/Stepper';
+import { useLoanStore } from './store/loanStore';
 
 function App() {
+  const loanInput = useLoanStore((state) => state.getActiveLoanInput());
+  const extraPayments = useLoanStore((state) => state.getActiveExtraPayments());
+  
+  const [activeStep, setActiveStep] = useState<number>(0);
+  
+  // Determinar si los pasos están completados
+  const hasLoanData = loanInput && loanInput.principal && loanInput.annualRate && loanInput.termMonths;
+  const hasExtraPayments = Object.keys(extraPayments).length > 0;
+  
+  const steps = [
+    {
+      label: 'Información del Préstamo',
+      completed: hasLoanData,
+      active: activeStep === 0,
+    },
+    {
+      label: 'Pagos Extraordinarios',
+      completed: hasExtraPayments,
+      active: activeStep === 1,
+    },
+  ];
+
+  const handleStepClick = (stepIndex: number) => {
+    setActiveStep(stepIndex);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -20,12 +49,22 @@ function App() {
         <div className="space-y-6 animate-fade-in">
           <div className="transition-all duration-300">
             <Collapsible title="Configuración" defaultOpen={true}>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div>
-                  <LoanForm />
+              <div className="space-y-6">
+                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                  <Stepper steps={steps} onStepClick={handleStepClick} />
                 </div>
-                <div>
-                  <ExtraPaymentsManager />
+                
+                <div className="transition-all duration-300">
+                  {activeStep === 0 && (
+                    <div className="animate-fade-in">
+                      <LoanForm />
+                    </div>
+                  )}
+                  {activeStep === 1 && (
+                    <div className="animate-fade-in">
+                      <ExtraPaymentsManager />
+                    </div>
+                  )}
                 </div>
               </div>
             </Collapsible>

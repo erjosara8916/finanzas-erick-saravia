@@ -110,143 +110,147 @@ export default function ExtraPaymentsManager() {
 
   return (
     <Card title="Pagos Extraordinarios" description="Agrega pagos extraordinarios para reducir el principal más rápido">
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="payment-type">Tipo de Pago</Label>
-          <Select
-            id="payment-type"
-            value={paymentType}
-            onChange={(e) => {
-              setPaymentType(e.target.value as 'single' | 'periodic');
-              setError('');
-              // Limpiar campos al cambiar el tipo
-              setNewPeriod('');
-              setStartPeriod('');
-              setEndPeriod('');
-              setNewAmount('');
-            }}
-          >
-            <option value="single">Pago único</option>
-            <option value="periodic">Pago periódico</option>
-          </Select>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Columna 1: Formulario */}
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="payment-type">Tipo de Pago</Label>
+            <Select
+              id="payment-type"
+              value={paymentType}
+              onChange={(e) => {
+                setPaymentType(e.target.value as 'single' | 'periodic');
+                setError('');
+                // Limpiar campos al cambiar el tipo
+                setNewPeriod('');
+                setStartPeriod('');
+                setEndPeriod('');
+                setNewAmount('');
+              }}
+            >
+              <option value="single">Pago único</option>
+              <option value="periodic">Pago periódico</option>
+            </Select>
+          </div>
+
+          {paymentType === 'single' ? (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="extra-period">Período (Mes)</Label>
+                <Select
+                  id="extra-period"
+                  value={newPeriod}
+                  onChange={(e) => setNewPeriod(e.target.value)}
+                >
+                  <option value="">Seleccionar mes</option>
+                  {periods.map((p) => (
+                    <option key={p} value={p}>
+                      Mes {p}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="extra-amount">Monto</Label>
+                <InputCurrency
+                  id="extra-amount"
+                  value={newAmount}
+                  onChange={setNewAmount}
+                />
+              </div>
+              <Button onClick={handleAdd} size="md" className="w-full">
+                Agregar
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="start-period">Mes Inicio</Label>
+                <Select
+                  id="start-period"
+                  value={startPeriod}
+                  onChange={(e) => setStartPeriod(e.target.value)}
+                >
+                  <option value="">Seleccionar mes</option>
+                  {periods.map((p) => (
+                    <option key={p} value={p}>
+                      Mes {p}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="end-period">Mes Final</Label>
+                <Select
+                  id="end-period"
+                  value={endPeriod}
+                  onChange={(e) => setEndPeriod(e.target.value)}
+                >
+                  <option value="">Seleccionar mes</option>
+                  {periods.map((p) => (
+                    <option key={p} value={p}>
+                      Mes {p}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="extra-amount">Monto</Label>
+                <InputCurrency
+                  id="extra-amount"
+                  value={newAmount}
+                  onChange={setNewAmount}
+                />
+              </div>
+              <Button onClick={handleAdd} size="md" className="w-full">
+                Agregar
+              </Button>
+            </div>
+          )}
+
+          {error && (
+            <p className="text-sm text-red-500">{error}</p>
+          )}
         </div>
 
-        {paymentType === 'single' ? (
-          <div className="flex gap-4 items-end">
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="extra-period">Período (Mes)</Label>
-              <Select
-                id="extra-period"
-                value={newPeriod}
-                onChange={(e) => setNewPeriod(e.target.value)}
-              >
-                <option value="">Seleccionar mes</option>
-                {periods.map((p) => (
-                  <option key={p} value={p}>
-                    Mes {p}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="extra-amount">Monto</Label>
-              <InputCurrency
-                id="extra-amount"
-                value={newAmount}
-                onChange={setNewAmount}
-              />
-            </div>
-            <Button onClick={handleAdd} size="md">
-              Agregar
-            </Button>
-          </div>
-        ) : (
-          <div className="flex gap-4 items-end">
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="start-period">Mes Inicio</Label>
-              <Select
-                id="start-period"
-                value={startPeriod}
-                onChange={(e) => setStartPeriod(e.target.value)}
-              >
-                <option value="">Seleccionar mes</option>
-                {periods.map((p) => (
-                  <option key={p} value={p}>
-                    Mes {p}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="end-period">Mes Final</Label>
-              <Select
-                id="end-period"
-                value={endPeriod}
-                onChange={(e) => setEndPeriod(e.target.value)}
-              >
-                <option value="">Seleccionar mes</option>
-                {periods.map((p) => (
-                  <option key={p} value={p}>
-                    Mes {p}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="extra-amount">Monto</Label>
-              <InputCurrency
-                id="extra-amount"
-                value={newAmount}
-                onChange={setNewAmount}
-              />
-            </div>
-            <Button onClick={handleAdd} size="md">
-              Agregar
-            </Button>
-          </div>
-        )}
-
-        {error && (
-          <p className="text-sm text-red-500">{error}</p>
-        )}
-
-        {existingPayments.length > 0 && (
+        {/* Columna 2: Listado de pagos extraordinarios */}
+        <div className="space-y-4">
           <div className="space-y-2">
             <Label>Pagos Extraordinarios Programados</Label>
-            <div className="space-y-2">
-              {existingPayments.map(({ period, amount }) => (
-                <div
-                  key={period}
-                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-md"
-                >
-                  <div>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">Mes {period}:</span>
-                    <span className="ml-2 text-gray-600 dark:text-gray-300">
-                      {new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                      }).format(parseFloat(amount))}
-                    </span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRemove(period)}
-                    aria-label={`Eliminar pago extraordinario del mes ${period}`}
+            {existingPayments.length > 0 ? (
+              <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                {existingPayments.map(({ period, amount }) => (
+                  <div
+                    key={period}
+                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-md"
                   >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-            </div>
+                    <div>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">Mes {period}:</span>
+                      <span className="ml-2 text-gray-600 dark:text-gray-300">
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'USD',
+                        }).format(parseFloat(amount))}
+                      </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemove(period)}
+                      aria-label={`Eliminar pago extraordinario del mes ${period}`}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+                No hay pagos extraordinarios programados
+              </p>
+            )}
           </div>
-        )}
-
-        {existingPayments.length === 0 && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-            No hay pagos extraordinarios programados
-          </p>
-        )}
+        </div>
       </div>
     </Card>
   );
