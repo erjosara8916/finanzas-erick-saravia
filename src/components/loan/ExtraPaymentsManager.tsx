@@ -7,6 +7,8 @@ import Card from '../ui/Card';
 import Select from '../ui/Select';
 import { X } from 'lucide-react';
 import { validateAmount } from '../../lib/validation';
+import { addMonths, parseISO } from 'date-fns';
+import { formatDateDisplay } from '../../lib/formatters';
 
 export default function ExtraPaymentsManager() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
@@ -28,6 +30,23 @@ export default function ExtraPaymentsManager() {
   // Calculate max period based on loan term
   const maxPeriod = loanInput.termMonths || 1;
   const periods = Array.from({ length: maxPeriod }, (_, i) => i + 1);
+  
+  // Helper function to get payment date for a specific period
+  const getPaymentDate = (period: number): string => {
+    try {
+      const startDate = parseISO(loanInput.startDate);
+      const paymentDate = addMonths(startDate, period - 1);
+      return formatDateDisplay(paymentDate.toISOString().split('T')[0]);
+    } catch {
+      return '';
+    }
+  };
+  
+  // Helper function to format period with date
+  const formatPeriodWithDate = (period: number): string => {
+    const date = getPaymentDate(period);
+    return date ? `Mes ${period} (${date})` : `Mes ${period}`;
+  };
 
   // Get existing extra payments sorted by period
   const existingPayments = Object.entries(extraPayments)
@@ -137,18 +156,18 @@ export default function ExtraPaymentsManager() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="extra-period">Período (Mes)</Label>
-                <Select
-                  id="extra-period"
-                  value={newPeriod}
-                  onChange={(e) => setNewPeriod(e.target.value)}
-                >
-                  <option value="">Seleccionar mes</option>
-                  {periods.map((p) => (
-                    <option key={p} value={p}>
-                      Mes {p}
-                    </option>
-                  ))}
-                </Select>
+              <Select
+                id="extra-period"
+                value={newPeriod}
+                onChange={(e) => setNewPeriod(e.target.value)}
+              >
+                <option value="">Seleccionar mes</option>
+                {periods.map((p) => (
+                  <option key={p} value={p}>
+                    {formatPeriodWithDate(p)}
+                  </option>
+                ))}
+              </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="extra-amount">Monto</Label>
@@ -166,33 +185,33 @@ export default function ExtraPaymentsManager() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="start-period">Mes Inicio</Label>
-                <Select
-                  id="start-period"
-                  value={startPeriod}
-                  onChange={(e) => setStartPeriod(e.target.value)}
-                >
-                  <option value="">Seleccionar mes</option>
-                  {periods.map((p) => (
-                    <option key={p} value={p}>
-                      Mes {p}
-                    </option>
-                  ))}
-                </Select>
+              <Select
+                id="start-period"
+                value={startPeriod}
+                onChange={(e) => setStartPeriod(e.target.value)}
+              >
+                <option value="">Seleccionar mes</option>
+                {periods.map((p) => (
+                  <option key={p} value={p}>
+                    {formatPeriodWithDate(p)}
+                  </option>
+                ))}
+              </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="end-period">Mes Final</Label>
-                <Select
-                  id="end-period"
-                  value={endPeriod}
-                  onChange={(e) => setEndPeriod(e.target.value)}
-                >
-                  <option value="">Seleccionar mes</option>
-                  {periods.map((p) => (
-                    <option key={p} value={p}>
-                      Mes {p}
-                    </option>
-                  ))}
-                </Select>
+              <Select
+                id="end-period"
+                value={endPeriod}
+                onChange={(e) => setEndPeriod(e.target.value)}
+              >
+                <option value="">Seleccionar mes</option>
+                {periods.map((p) => (
+                  <option key={p} value={p}>
+                    {formatPeriodWithDate(p)}
+                  </option>
+                ))}
+              </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="extra-amount">Monto</Label>
@@ -224,15 +243,17 @@ export default function ExtraPaymentsManager() {
                     key={period}
                     className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-md"
                   >
-                    <div>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">Mes {period}:</span>
-                      <span className="ml-2 text-gray-600 dark:text-gray-300">
-                        {new Intl.NumberFormat('en-US', {
-                          style: 'currency',
-                          currency: 'USD',
-                        }).format(parseFloat(amount))}
-                      </span>
-                    </div>
+                  <div>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                      {formatPeriodWithDate(period)}:
+                    </span>
+                    <span className="ml-2 text-gray-600 dark:text-gray-300">
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                      }).format(parseFloat(amount))}
+                    </span>
+                  </div>
                     <Button
                       variant="ghost"
                       size="sm"

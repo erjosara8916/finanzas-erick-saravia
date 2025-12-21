@@ -34,3 +34,4 @@ export interface AppState {
   extraPayments: Record<string, ExtraPayments>; // Scenario ID -> Payments
 }
 
+
