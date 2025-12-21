@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useLoanStore } from '../../store/loanStore';
 import { calculateAmortizationTable, calculateLoanSummary } from '../../lib/engine';
-import { formatCurrency } from '../../lib/formatters';
+import { formatCurrency, formatMonthsToYearsAndMonths } from '../../lib/formatters';
 import Card from '../ui/Card';
 import AmortizationChart from '../charts/AmortizationChart';
 
@@ -61,11 +61,11 @@ export default function LoanSummary() {
           <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Plazo Real</p>
             <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-              {summary.actualTermMonths} meses
+              {formatMonthsToYearsAndMonths(summary.actualTermMonths)}
             </p>
             {loanInput && summary.actualTermMonths < (loanInput.termMonths || 0) && (
               <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-                {loanInput.termMonths - summary.actualTermMonths} meses antes
+                {formatMonthsToYearsAndMonths(loanInput.termMonths - summary.actualTermMonths)} antes
               </p>
             )}
           </div>

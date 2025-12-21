@@ -43,3 +43,19 @@ export function formatDateISO(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+// Format months as years and months
+export function formatMonthsToYearsAndMonths(months: number): string {
+  const years = Math.floor(months / 12);
+  const remainingMonths = months % 12;
+  
+  if (years === 0) {
+    return `${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'}`;
+  }
+  
+  if (remainingMonths === 0) {
+    return `${years} ${years === 1 ? 'año' : 'años'}`;
+  }
+  
+  return `${years} ${years === 1 ? 'año' : 'años'} ${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'}`;
+}
+
