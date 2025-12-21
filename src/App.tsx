@@ -2,6 +2,7 @@ import LoanForm from './components/loan/LoanForm';
 import ExtraPaymentsManager from './components/loan/ExtraPaymentsManager';
 import AmortizationTable from './components/loan/AmortizationTable';
 import LoanSummary from './components/loan/LoanSummary';
+import Collapsible from './components/ui/Collapsible';
 
 function App() {
   return (
@@ -17,13 +18,17 @@ function App() {
         </header>
 
         <div className="space-y-6 animate-fade-in">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="transition-all duration-300">
-              <LoanForm />
-            </div>
-            <div className="transition-all duration-300">
-              <ExtraPaymentsManager />
-            </div>
+          <div className="transition-all duration-300">
+            <Collapsible title="Configuración" defaultOpen={true}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                  <LoanForm />
+                </div>
+                <div>
+                  <ExtraPaymentsManager />
+                </div>
+              </div>
+            </Collapsible>
           </div>
 
           <div className="transition-all duration-300">
