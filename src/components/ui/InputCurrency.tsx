@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, forwardRef, useState, useEffect } from 'react';
+import { InputHTMLAttributes, forwardRef, useState, useEffect, useRef } from 'react';
 import { cn } from '../../lib/utils';
 import { parseCurrency, formatCurrency } from '../../lib/formatters';
 import { Decimal } from 'decimal.js';
@@ -11,46 +11,89 @@ export interface InputCurrencyProps extends Omit<InputHTMLAttributes<HTMLInputEl
 
 const InputCurrency = forwardRef<HTMLInputElement, InputCurrencyProps>(
   ({ className, value, onChange, error, ...props }, ref) => {
-    const [displayValue, setDisplayValue] = useState('');
-
-    useEffect(() => {
+    // Initialize display value from prop value
+    const getInitialDisplayValue = () => {
       if (value) {
         try {
           const decimal = new Decimal(value);
           if (decimal.gt(0)) {
-            setDisplayValue(formatCurrency(decimal).replace('$', '').trim());
-          } else {
-            setDisplayValue('');
+            return formatCurrency(decimal).replace('$', '').trim();
           }
         } catch {
-          setDisplayValue(value);
+          return value;
         }
-      } else {
-        setDisplayValue('');
+      }
+      return '';
+    };
+
+    const [displayValue, setDisplayValue] = useState(getInitialDisplayValue);
+    const isEditingRef = useRef(false);
+    const lastSentValueRef = useRef<string>(value || '');
+
+    // Initialize display value only when value prop changes externally (not during editing)
+    useEffect(() => {
+      // Only sync if we're not editing and the value changed externally
+      if (!isEditingRef.current && value !== lastSentValueRef.current) {
+        if (value) {
+          try {
+            const decimal = new Decimal(value);
+            if (decimal.gt(0)) {
+              setDisplayValue(formatCurrency(decimal).replace('$', '').trim());
+            } else {
+              setDisplayValue('');
+            }
+          } catch {
+            setDisplayValue(value);
+          }
+        } else {
+          setDisplayValue('');
+        }
+        lastSentValueRef.current = value;
       }
     }, [value]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const inputValue = e.target.value;
+      isEditingRef.current = true;
       setDisplayValue(inputValue);
       
-      // Parse and update parent
+      // Parse and update parent with raw value (no formatting) - but don't trigger re-render
       const parsed = parseCurrency(inputValue);
-      onChange(parsed.toString());
+      const parsedString = parsed.toString();
+      lastSentValueRef.current = parsedString;
+      onChange(parsedString);
     };
 
     const handleBlur = () => {
-      // Format on blur
+      // Format on blur before marking as not editing
       if (displayValue) {
         try {
           const parsed = parseCurrency(displayValue);
           if (parsed.gt(0)) {
-            setDisplayValue(formatCurrency(parsed).replace('$', '').trim());
+            // Round to 2 decimal places
+            const rounded = parsed.toDecimalPlaces(2);
+            // Format with 2 decimal places
+            const formatted = formatCurrency(rounded).replace('$', '').trim();
+            setDisplayValue(formatted);
+            // Update parent with formatted value
+            const roundedString = rounded.toString();
+            lastSentValueRef.current = roundedString;
+            onChange(roundedString);
+          } else {
+            setDisplayValue('');
+            lastSentValueRef.current = '0';
+            onChange('0');
           }
         } catch {
           // Keep current value if parsing fails
         }
+      } else {
+        lastSentValueRef.current = '0';
+        onChange('0');
       }
+      
+      // Mark as not editing after formatting
+      isEditingRef.current = false;
     };
 
     return (
