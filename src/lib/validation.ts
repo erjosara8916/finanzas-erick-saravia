@@ -7,20 +7,20 @@ export interface ValidationResult {
 
 export function validatePrincipal(value: string): ValidationResult {
   if (!value || value.trim() === '') {
-    return { isValid: false, error: 'Principal amount is required' };
+    return { isValid: false, error: 'El monto principal es requerido' };
   }
 
   try {
     const amount = new Decimal(value);
     if (amount.lte(0)) {
-      return { isValid: false, error: 'Principal must be greater than 0' };
+      return { isValid: false, error: 'El monto principal debe ser mayor que 0' };
     }
     if (amount.gt(1000000000)) {
-      return { isValid: false, error: 'Principal amount is too large' };
+      return { isValid: false, error: 'El monto principal es demasiado grande' };
     }
     return { isValid: true };
   } catch {
-    return { isValid: false, error: 'Invalid number format' };
+    return { isValid: false, error: 'Formato de número inválido' };
   }
 }
 
