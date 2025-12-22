@@ -8,6 +8,8 @@ export interface LoanInput {
   startDate: string;          // ISO YYYY-MM-DD
   insuranceAmount: string;    // Fixed monthly insurance (USD)
   additionalFees: string;     // Other fixed monthly charges (USD)
+  useFixedPayment?: boolean;  // Use fixed monthly payment instead of calculated
+  fixedMonthlyPayment?: string; // Fixed monthly payment amount (USD)
 }
 
 // Extra payments (Map: Month -> Amount)

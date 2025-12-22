@@ -16,6 +16,7 @@ interface LoanStore extends AppState {
   updateLoanInput: (input: Partial<LoanInput>) => void;
   addExtraPayment: (period: number, amount: string) => void;
   removeExtraPayment: (period: number) => void;
+  removeAllExtraPayments: () => void;
   setActiveScenario: (id: string) => void;
   resetScenario: () => void;
   getActiveLoanInput: () => LoanInput | null;
@@ -31,6 +32,8 @@ const createDefaultLoanInput = (): LoanInput => ({
   startDate: new Date().toISOString().split('T')[0],
   insuranceAmount: '0',
   additionalFees: '0',
+  useFixedPayment: false,
+  fixedMonthlyPayment: '',
 });
 
 const defaultState: AppState = {
@@ -83,12 +86,25 @@ export const useLoanStore = create<LoanStore>()(
         const state = get();
         const activeId = state.activeScenarioId;
         const currentExtras = state.extraPayments[activeId] || {};
-        const { [period]: removed, ...rest } = currentExtras;
+        const rest = { ...currentExtras };
+        delete rest[period];
         
         set((state) => ({
           extraPayments: {
             ...state.extraPayments,
             [activeId]: rest,
+          },
+        }));
+      },
+
+      removeAllExtraPayments: () => {
+        const state = get();
+        const activeId = state.activeScenarioId;
+        
+        set((state) => ({
+          extraPayments: {
+            ...state.extraPayments,
+            [activeId]: {},
           },
         }));
       },

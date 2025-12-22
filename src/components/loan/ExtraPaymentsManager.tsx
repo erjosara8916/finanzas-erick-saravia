@@ -6,6 +6,7 @@ import Label from '../ui/Label';
 import Card from '../ui/Card';
 import Select from '../ui/Select';
 import Dialog from '../ui/Dialog';
+import Tooltip from '../ui/Tooltip';
 import { X } from 'lucide-react';
 import { validateAmount } from '../../lib/validation';
 import { addMonths, parseISO } from 'date-fns';
@@ -17,6 +18,7 @@ export default function ExtraPaymentsManager() {
   const extraPayments = useLoanStore((state) => state.getActiveExtraPayments());
   const addExtraPayment = useLoanStore((state) => state.addExtraPayment);
   const removeExtraPayment = useLoanStore((state) => state.removeExtraPayment);
+  const removeAllExtraPayments = useLoanStore((state) => state.removeAllExtraPayments);
 
   const [paymentType, setPaymentType] = useState<'single' | 'periodic'>('single');
   const [newPeriod, setNewPeriod] = useState('');
@@ -25,6 +27,56 @@ export default function ExtraPaymentsManager() {
   const [newAmount, setNewAmount] = useState('');
   const [error, setError] = useState('');
   const [isPaymentsDialogOpen, setIsPaymentsDialogOpen] = useState(false);
+
+  // Get existing extra payments sorted by period (before early return)
+  const existingPayments = Object.entries(extraPayments)
+    .map(([period, amount]) => ({ period: parseInt(period), amount }))
+    .sort((a, b) => a.period - b.period);
+
+  // Calcular métricas de ahorro y plazo (before early return)
+  const { monthsSaved, savings, costWithoutExtras, costWithExtras, finalizationDate } = useMemo(() => {
+    if (!loanInput || !loanInput.principal || !loanInput.annualRate || !loanInput.termMonths) {
+      return { monthsSaved: 0, savings: 0, costWithoutExtras: 0, costWithExtras: 0, finalizationDate: null };
+    }
+
+    try {
+      // Calcular sin abonos
+      const rowsWithoutExtras = calculateAmortizationTable(loanInput, {});
+      const summaryWithoutExtras = calculateLoanSummary(rowsWithoutExtras);
+      const originalTermMonths = loanInput.termMonths || 0;
+
+      // Calcular con abonos
+      const rowsWithExtras = calculateAmortizationTable(loanInput, extraPayments);
+      const summaryWithExtras = calculateLoanSummary(rowsWithExtras);
+
+      // Calcular meses ahorrados
+      const monthsSaved = Math.max(0, originalTermMonths - summaryWithExtras.actualTermMonths);
+
+      // Calcular ahorro (diferencia en costo hundido)
+      const savings = Math.max(0, summaryWithoutExtras.totalSunkCost - summaryWithExtras.totalSunkCost);
+
+      // Calcular fecha de finalización
+      let finalizationDate: string | null = null;
+      try {
+        const startDate = parseISO(loanInput.startDate);
+        const finalDate = addMonths(startDate, summaryWithExtras.actualTermMonths);
+        finalizationDate = formatDateDisplay(finalDate.toISOString().split('T')[0]);
+      } catch {
+        finalizationDate = null;
+      }
+
+      return { 
+        monthsSaved, 
+        savings, 
+        costWithoutExtras: summaryWithoutExtras.totalSunkCost,
+        costWithExtras: summaryWithExtras.totalSunkCost,
+        finalizationDate
+      };
+    } catch (error) {
+      console.error('Error calculating savings:', error);
+      return { monthsSaved: 0, savings: 0, costWithoutExtras: 0, costWithExtras: 0, finalizationDate: null };
+    }
+  }, [loanInput, extraPayments]);
 
   if (!loanInput) {
     return null;
@@ -50,11 +102,6 @@ export default function ExtraPaymentsManager() {
     const date = getPaymentDate(period);
     return date ? `Mes ${period} (${date})` : `Mes ${period}`;
   };
-
-  // Get existing extra payments sorted by period
-  const existingPayments = Object.entries(extraPayments)
-    .map(([period, amount]) => ({ period: parseInt(period), amount }))
-    .sort((a, b) => a.period - b.period);
 
   const handleAdd = () => {
     setError('');
@@ -130,43 +177,13 @@ export default function ExtraPaymentsManager() {
     removeExtraPayment(period);
   };
 
+  const handleRemoveAll = () => {
+    removeAllExtraPayments();
+  };
+
   // Calcular resumen de abonos
   const totalPayments = existingPayments.length;
   const totalAmount = existingPayments.reduce((sum, { amount }) => sum + parseFloat(amount), 0);
-
-  // Calcular métricas de ahorro y plazo
-  const { monthsSaved, savings, costWithoutExtras, costWithExtras } = useMemo(() => {
-    if (!loanInput || !loanInput.principal || !loanInput.annualRate || !loanInput.termMonths) {
-      return { monthsSaved: 0, savings: 0, costWithoutExtras: 0, costWithExtras: 0 };
-    }
-
-    try {
-      // Calcular sin abonos
-      const rowsWithoutExtras = calculateAmortizationTable(loanInput, {});
-      const summaryWithoutExtras = calculateLoanSummary(rowsWithoutExtras);
-      const originalTermMonths = loanInput.termMonths || 0;
-
-      // Calcular con abonos
-      const rowsWithExtras = calculateAmortizationTable(loanInput, extraPayments);
-      const summaryWithExtras = calculateLoanSummary(rowsWithExtras);
-
-      // Calcular meses ahorrados
-      const monthsSaved = Math.max(0, originalTermMonths - summaryWithExtras.actualTermMonths);
-
-      // Calcular ahorro (diferencia en costo hundido)
-      const savings = Math.max(0, summaryWithoutExtras.totalSunkCost - summaryWithExtras.totalSunkCost);
-
-      return { 
-        monthsSaved, 
-        savings, 
-        costWithoutExtras: summaryWithoutExtras.totalSunkCost,
-        costWithExtras: summaryWithExtras.totalSunkCost
-      };
-    } catch (error) {
-      console.error('Error calculating savings:', error);
-      return { monthsSaved: 0, savings: 0, costWithoutExtras: 0, costWithExtras: 0 };
-    }
-  }, [loanInput, extraPayments]);
 
   return (
     <Card title="Abonos a Capital" description="Agrega abonos a capital para reducir el principal más rápido">
@@ -174,7 +191,10 @@ export default function ExtraPaymentsManager() {
         {/* Columna 1: Formulario */}
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="payment-type">Tipo de Pago</Label>
+            <div className="flex items-center gap-1">
+              <Label htmlFor="payment-type">Tipo de Pago</Label>
+              <Tooltip message="Selecciona si deseas hacer un pago extra único en un mes específico, o pagos periódicos durante un rango de meses" />
+            </div>
             <Select
               id="payment-type"
               value={paymentType}
@@ -196,7 +216,10 @@ export default function ExtraPaymentsManager() {
           {paymentType === 'single' ? (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="extra-period">Período (Mes)</Label>
+                <div className="flex items-center gap-1">
+                  <Label htmlFor="extra-period">Período (Mes)</Label>
+                  <Tooltip message="Selecciona el mes en el que deseas realizar el pago extra a capital" />
+                </div>
               <Select
                 id="extra-period"
                 value={newPeriod}
@@ -211,7 +234,10 @@ export default function ExtraPaymentsManager() {
               </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="extra-amount">Monto</Label>
+                <div className="flex items-center gap-1">
+                  <Label htmlFor="extra-amount">Monto</Label>
+                  <Tooltip message="Cantidad adicional que pagarás en este período para reducir el capital del préstamo más rápido" />
+                </div>
                 <InputCurrency
                   id="extra-amount"
                   value={newAmount}
@@ -225,7 +251,10 @@ export default function ExtraPaymentsManager() {
           ) : (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="start-period">Mes Inicio</Label>
+                <div className="flex items-center gap-1">
+                  <Label htmlFor="start-period">Mes Inicio</Label>
+                  <Tooltip message="Primer mes del rango en el que comenzarás a realizar pagos extra periódicos" />
+                </div>
               <Select
                 id="start-period"
                 value={startPeriod}
@@ -240,7 +269,10 @@ export default function ExtraPaymentsManager() {
               </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="end-period">Mes Final</Label>
+                <div className="flex items-center gap-1">
+                  <Label htmlFor="end-period">Mes Final</Label>
+                  <Tooltip message="Último mes del rango en el que realizarás pagos extra periódicos" />
+                </div>
               <Select
                 id="end-period"
                 value={endPeriod}
@@ -255,7 +287,10 @@ export default function ExtraPaymentsManager() {
               </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="extra-amount">Monto</Label>
+                <div className="flex items-center gap-1">
+                  <Label htmlFor="extra-amount">Monto</Label>
+                  <Tooltip message="Cantidad que pagarás adicionalmente en cada mes del rango seleccionado para reducir el capital más rápido" />
+                </div>
                 <InputCurrency
                   id="extra-amount"
                   value={newAmount}
@@ -305,6 +340,14 @@ export default function ExtraPaymentsManager() {
                   {formatCurrency(costWithExtras)}
                 </span>
               </div>
+              {finalizationDate && (
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Fecha de finalización:</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    {finalizationDate}
+                  </span>
+                </div>
+              )}
               {monthsSaved > 0 && (
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">Finaliza antes:</span>
@@ -343,34 +386,46 @@ export default function ExtraPaymentsManager() {
         title="Abonos a Capital Programados"
       >
         {existingPayments.length > 0 ? (
-          <div className="space-y-2">
-            {existingPayments.map(({ period, amount }) => (
-              <div
-                key={period}
-                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-md"
+          <div className="space-y-4">
+            <div className="flex justify-end">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRemoveAll}
+                className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
               >
-                <div>
-                  <span className="font-medium text-gray-900 dark:text-gray-100">
-                    {formatPeriodWithDate(period)}:
-                  </span>
-                  <span className="ml-2 text-gray-600 dark:text-gray-300">
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'USD',
-                    }).format(parseFloat(amount))}
-                  </span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleRemove(period)}
-                  aria-label={`Eliminar abono a capital del mes ${period}`}
-                  className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400"
+                Eliminar todos
+              </Button>
+            </div>
+            <div className="space-y-2">
+              {existingPayments.map(({ period, amount }) => (
+                <div
+                  key={period}
+                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-md"
                 >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
+                  <div>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                      {formatPeriodWithDate(period)}:
+                    </span>
+                    <span className="ml-2 text-gray-600 dark:text-gray-300">
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                      }).format(parseFloat(amount))}
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRemove(period)}
+                    aria-label={`Eliminar abono a capital del mes ${period}`}
+                    className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">

@@ -10,7 +10,7 @@ import type { LoanInput, ExtraPayments, AmortizationRow } from '../types/schema'
  * r = Monthly interest rate (annual rate / 12)
  * n = Number of payments
  */
-function calculateMonthlyPayment(
+export function calculateMonthlyPayment(
   principal: Decimal,
   annualRate: Decimal,
   termMonths: number
@@ -48,6 +48,8 @@ export function calculateAmortizationTable(
   const insurance = new Decimal(input.insuranceAmount || 0);
   const fees = new Decimal(input.additionalFees || 0);
   const startDate = parseISO(input.startDate);
+  const useFixedPayment = input.useFixedPayment || false;
+  const fixedMonthlyPayment = input.fixedMonthlyPayment ? new Decimal(input.fixedMonthlyPayment) : null;
 
   // Validation
   if (principal.lte(0) || annualRate.lt(0) || termMonths <= 0) {
@@ -57,7 +59,7 @@ export function calculateAmortizationTable(
   const rows: AmortizationRow[] = [];
   let balance = principal;
   let sunkCostAccumulated = new Decimal(0);
-  const monthlyPayment = calculateMonthlyPayment(principal, annualRate, termMonths);
+  const calculatedMonthlyPayment = calculateMonthlyPayment(principal, annualRate, termMonths);
   const monthlyRate = annualRate.div(100).div(12);
   let currentDate = startDate;
   let period = 1;
@@ -67,49 +69,97 @@ export function calculateAmortizationTable(
     const interestForPeriod = balance.times(monthlyRate);
     const extraPayment = new Decimal(extras[period] || 0);
     
-    // Check if this is the last payment (balance is small or we've reached the term)
-    const remainingAfterInterest = balance.minus(interestForPeriod);
-    const isLastPayment = remainingAfterInterest.lte(0.01) || (period === termMonths && balance.lte(monthlyPayment.plus(0.01)));
-    
     let actualPrincipalReduction: Decimal;
     let actualExtraPayment: Decimal;
     let finalRegularPayment: Decimal;
-    
-    if (isLastPayment) {
-      // Last payment: pay remaining balance + interest
-      actualPrincipalReduction = balance;
-      actualExtraPayment = new Decimal(0); // No extra payment on last payment
-      finalRegularPayment = balance.plus(interestForPeriod);
-      balance = new Decimal(0);
-    } else {
-      // Regular payment: calculate principal from payment
-      let principalFromPayment = monthlyPayment.minus(interestForPeriod);
-      
-      // If principal from payment is negative, adjust
-      if (principalFromPayment.lt(0)) {
-        principalFromPayment = new Decimal(0);
-      }
+    let totalMonthlyPayment: Decimal;
 
-      // Total principal reduction (from payment + extra)
-      const totalPrincipalReduction = principalFromPayment.plus(extraPayment);
+    if (useFixedPayment && fixedMonthlyPayment && fixedMonthlyPayment.gt(0)) {
+      // Modo de cuota fija: usar el valor fijo ingresado
+      // Cuota mensual total = valor fijo (sin incluir pagos extra)
+      const baseMonthlyPayment = fixedMonthlyPayment;
       
-      // Adjust if it would make balance negative
+      // Abono a capital = cuota mensual total - (seguro + intereses + cargos adicionales)
+      const principalFromPayment = baseMonthlyPayment.minus(insurance).minus(interestForPeriod).minus(fees);
+      
+      // Si el abono a capital es negativo, ajustar a cero
+      const adjustedPrincipalFromPayment = principalFromPayment.lt(0) ? new Decimal(0) : principalFromPayment;
+      
+      // Agregar pago extra si existe
+      const totalPrincipalReduction = adjustedPrincipalFromPayment.plus(extraPayment);
+      
+      // Ajustar si excede el saldo
       actualPrincipalReduction = totalPrincipalReduction.gt(balance) 
         ? balance 
         : totalPrincipalReduction;
 
-      // Calculate actual extra payment applied
-      actualExtraPayment = actualPrincipalReduction.gt(principalFromPayment)
-        ? actualPrincipalReduction.minus(principalFromPayment)
+      // Calcular pago extra aplicado
+      actualExtraPayment = actualPrincipalReduction.gt(adjustedPrincipalFromPayment)
+        ? actualPrincipalReduction.minus(adjustedPrincipalFromPayment)
         : new Decimal(0);
 
-      // Update balance
+      // El pago regular base es: cuota base - seguro - fees
+      finalRegularPayment = baseMonthlyPayment.minus(insurance).minus(fees);
+      
+      // Cuota mensual total incluye el pago extra si existe
+      totalMonthlyPayment = baseMonthlyPayment.plus(actualExtraPayment);
+      
+      // Actualizar saldo
+      const previousBalance = balance;
       balance = balance.minus(actualPrincipalReduction);
-      finalRegularPayment = monthlyPayment;
-    }
+      
+      // Si el saldo es muy pequeño después del pago, es el último pago
+      if (balance.lte(0.01) && balance.gte(0)) {
+        // Ajustar el abono a capital para pagar el saldo completo
+        actualPrincipalReduction = previousBalance;
+        balance = new Decimal(0);
+        // En el último pago, ajustar la cuota total al saldo restante + intereses + seguro + fees
+        totalMonthlyPayment = previousBalance.plus(interestForPeriod).plus(insurance).plus(fees);
+      }
+    } else {
+      // Modo normal: usar cuota calculada
+      const monthlyPayment = calculatedMonthlyPayment;
+      
+      // Check if this is the last payment (balance is small or we've reached the term)
+      const remainingAfterInterest = balance.minus(interestForPeriod);
+      const isLastPayment = remainingAfterInterest.lte(0.01) || (period === termMonths && balance.lte(monthlyPayment.plus(0.01)));
+      
+      if (isLastPayment) {
+        // Last payment: pay remaining balance + interest
+        actualPrincipalReduction = balance;
+        actualExtraPayment = new Decimal(0); // No extra payment on last payment
+        finalRegularPayment = balance.plus(interestForPeriod);
+        balance = new Decimal(0);
+      } else {
+        // Regular payment: calculate principal from payment
+        let principalFromPayment = monthlyPayment.minus(interestForPeriod);
+        
+        // If principal from payment is negative, adjust
+        if (principalFromPayment.lt(0)) {
+          principalFromPayment = new Decimal(0);
+        }
 
-    // Calculate total monthly payment (payment + insurance + fees + extra)
-    const totalMonthlyPayment = finalRegularPayment.plus(insurance).plus(fees).plus(actualExtraPayment);
+        // Total principal reduction (from payment + extra)
+        const totalPrincipalReduction = principalFromPayment.plus(extraPayment);
+        
+        // Adjust if it would make balance negative
+        actualPrincipalReduction = totalPrincipalReduction.gt(balance) 
+          ? balance 
+          : totalPrincipalReduction;
+
+        // Calculate actual extra payment applied
+        actualExtraPayment = actualPrincipalReduction.gt(principalFromPayment)
+          ? actualPrincipalReduction.minus(principalFromPayment)
+          : new Decimal(0);
+
+        // Update balance
+        balance = balance.minus(actualPrincipalReduction);
+        finalRegularPayment = monthlyPayment;
+      }
+
+      // Calculate total monthly payment (payment + insurance + fees + extra)
+      totalMonthlyPayment = finalRegularPayment.plus(insurance).plus(fees).plus(actualExtraPayment);
+    }
 
     // Update sunk cost (interest + insurance + fees)
     sunkCostAccumulated = sunkCostAccumulated.plus(interestForPeriod).plus(insurance).plus(fees);

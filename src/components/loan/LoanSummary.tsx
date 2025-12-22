@@ -4,6 +4,7 @@ import { calculateAmortizationTable, calculateLoanSummary } from '../../lib/engi
 import { formatCurrency, formatMonthsToYearsAndMonths } from '../../lib/formatters';
 import Card from '../ui/Card';
 import AmortizationChart from '../charts/AmortizationChart';
+import Tooltip from '../ui/Tooltip';
 
 export default function LoanSummary() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
@@ -41,19 +42,28 @@ export default function LoanSummary() {
       <Card title="Métricas Clave">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total a Pagar</p>
+            <div className="flex items-center gap-1 mb-1">
+              <p className="text-sm text-gray-600 dark:text-gray-400">Total a Pagar</p>
+              <Tooltip message="Suma total de todos los pagos realizados durante la vida del préstamo, incluyendo capital, intereses, seguros y cuotas adicionales" />
+            </div>
             <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
               {formatCurrency(summary.totalPaid)}
             </p>
           </div>
           <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Costo total</p>
+            <div className="flex items-center gap-1 mb-1">
+              <p className="text-sm text-gray-600 dark:text-gray-400">Costo total</p>
+              <Tooltip message="Costo total del préstamo que incluye todos los intereses pagados más los seguros y cuotas adicionales. Este es el dinero que pagas además del capital principal" />
+            </div>
             <p className="text-2xl font-bold text-red-600 dark:text-red-400">
               {formatCurrency(summary.totalSunkCost)}
             </p>
           </div>
           <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Plazo Real</p>
+            <div className="flex items-center gap-1 mb-1">
+              <p className="text-sm text-gray-600 dark:text-gray-400">Plazo Real</p>
+              <Tooltip message="Tiempo real que tomará pagar el préstamo considerando los pagos extra a capital. Si realizas pagos adicionales, el plazo puede ser menor al plazo original" />
+            </div>
             <p className="text-2xl font-bold text-green-600 dark:text-green-400">
               {formatMonthsToYearsAndMonths(summary.actualTermMonths)}
             </p>

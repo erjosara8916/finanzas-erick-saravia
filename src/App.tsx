@@ -13,19 +13,26 @@ function App() {
   
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isConfigOpen, setIsConfigOpen] = useState<boolean>(true);
+  const [hasInitialized, setHasInitialized] = useState<boolean>(false);
   
   // Determinar si los pasos están completados
-  const hasLoanData = loanInput && loanInput.principal && loanInput.annualRate && loanInput.termMonths;
+  const hasLoanData = !!(loanInput && loanInput.principal && loanInput.annualRate && loanInput.termMonths);
   const hasExtraPayments = Object.keys(extraPayments).length > 0;
   
-  // Cuando se abre la configuración, establecer el paso activo en 2 si hay datos del préstamo
+  // Cuando se abre la configuración por primera vez, establecer el paso activo según los datos
   useEffect(() => {
-    if (isConfigOpen && hasLoanData) {
-      setActiveStep(1); // Paso 2 (índice 1)
-    } else if (isConfigOpen && !hasLoanData) {
-      setActiveStep(0); // Paso 1 (índice 0)
+    if (isConfigOpen && !hasInitialized) {
+      if (hasLoanData) {
+        setActiveStep(1); // Paso 2 (índice 1)
+      } else {
+        setActiveStep(0); // Paso 1 (índice 0)
+      }
+      setHasInitialized(true);
+    } else if (!isConfigOpen) {
+      // Reset cuando se cierra la configuración
+      setHasInitialized(false);
     }
-  }, [isConfigOpen, hasLoanData]);
+  }, [isConfigOpen, hasLoanData, hasInitialized]);
   
   const steps = [
     {

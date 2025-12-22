@@ -3,6 +3,7 @@ import { calculateAmortizationTable } from '../../lib/engine';
 import { formatCurrency, formatDateDisplay } from '../../lib/formatters';
 import Card from '../ui/Card';
 import InputCurrency from '../ui/InputCurrency';
+import Tooltip from '../ui/Tooltip';
 import { useMemo, useState, useEffect } from 'react';
 import { Decimal } from 'decimal.js';
 
@@ -46,15 +47,60 @@ export default function AmortizationTable() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200 dark:border-gray-700">
-              <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Período</th>
-              <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">Fecha</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Pago Total</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Interés</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Seguro/Cuotas</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Principal</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Pago Extra</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Saldo</th>
-              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">Costo Acumulado</th>
+              <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">
+                <div className="flex items-center gap-1">
+                  Período
+                  <Tooltip message="Número del período de pago. Cada período representa un mes del préstamo" />
+                </div>
+              </th>
+              <th className="text-left p-3 font-semibold text-gray-700 dark:text-gray-300">
+                <div className="flex items-center gap-1">
+                  Fecha
+                  <Tooltip message="Fecha en la que se realizará el pago de este período" />
+                </div>
+              </th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">
+                <div className="flex items-center justify-end gap-1">
+                  Pago Total
+                  <Tooltip message="Monto total que se paga en este período, incluyendo cuota base, seguro, cuotas adicionales y pagos extra" />
+                </div>
+              </th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">
+                <div className="flex items-center justify-end gap-1">
+                  Interés
+                  <Tooltip message="Porción del pago que corresponde a intereses calculados sobre el saldo pendiente" />
+                </div>
+              </th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">
+                <div className="flex items-center justify-end gap-1">
+                  Seguro/Cuotas
+                  <Tooltip message="Suma del seguro mensual y las cuotas adicionales que se pagan en cada período" />
+                </div>
+              </th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">
+                <div className="flex items-center justify-end gap-1">
+                  Principal
+                  <Tooltip message="Porción del pago que se aplica directamente a reducir el capital del préstamo" />
+                </div>
+              </th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">
+                <div className="flex items-center justify-end gap-1">
+                  Pago Extra
+                  <Tooltip message="Pago adicional a capital que puedes realizar en este período para reducir el saldo más rápido" />
+                </div>
+              </th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">
+                <div className="flex items-center justify-end gap-1">
+                  Saldo
+                  <Tooltip message="Saldo pendiente del préstamo después de realizar el pago de este período" />
+                </div>
+              </th>
+              <th className="text-right p-3 font-semibold text-gray-700 dark:text-gray-300">
+                <div className="flex items-center justify-end gap-1">
+                  Costo Acumulado
+                  <Tooltip message="Suma acumulada de todos los costos (intereses, seguros y cuotas adicionales) pagados hasta este período" />
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>
