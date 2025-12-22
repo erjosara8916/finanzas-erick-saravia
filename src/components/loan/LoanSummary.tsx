@@ -39,21 +39,15 @@ export default function LoanSummary() {
   return (
     <div className="space-y-6">
       <Card title="Métricas Clave">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total a Pagar</p>
             <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
               {formatCurrency(summary.totalPaid)}
             </p>
           </div>
-          <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Interés Total</p>
-            <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-              {formatCurrency(summary.totalInterest)}
-            </p>
-          </div>
           <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Costo Hundido</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Costo total</p>
             <p className="text-2xl font-bold text-red-600 dark:text-red-400">
               {formatCurrency(summary.totalSunkCost)}
             </p>
@@ -82,12 +76,6 @@ export default function LoanSummary() {
             <span className="text-gray-600 dark:text-gray-400">Principal</span>
             <span className="font-semibold text-gray-900 dark:text-gray-100">
               {formatCurrency(principal)}
-            </span>
-          </div>
-          <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-            <span className="text-gray-600 dark:text-gray-400">Interés Total</span>
-            <span className="font-semibold text-gray-900 dark:text-gray-100">
-              {formatCurrency(summary.totalInterest)}
             </span>
           </div>
           <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">

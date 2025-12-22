@@ -20,16 +20,14 @@ interface AmortizationChartProps {
 export default function AmortizationChart({ rows }: AmortizationChartProps) {
   const chartData = useMemo(() => {
     let accumulatedPrincipal = 0;
-    let accumulatedInterest = 0;
 
     return rows.map((row) => {
       accumulatedPrincipal += row.principalComponent;
-      accumulatedInterest += row.interestComponent;
 
       return {
         period: row.period,
         principal: accumulatedPrincipal,
-        interest: accumulatedInterest,
+        sunkCost: row.sunkCostAccumulated,
         balance: row.balance,
       };
     });
@@ -88,12 +86,12 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
         />
         <Area
           type="monotone"
-          dataKey="interest"
+          dataKey="sunkCost"
           stackId="1"
           stroke="#f59e0b"
           fill="#f59e0b"
           fillOpacity={0.6}
-          name="Interés Pagado"
+          name="Costo total"
         />
         <Line
           type="monotone"
