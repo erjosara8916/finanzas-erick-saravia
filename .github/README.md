@@ -6,12 +6,28 @@ Este proyecto utiliza GitHub Actions para construir y desplegar la aplicación. 
 
 ### Configurar el secreto VITE_GA_MEASUREMENT_ID
 
+Tienes dos opciones para configurar el secreto. **Recomendamos usar el Environment Secret** para mayor seguridad:
+
+#### Opción 1: Environment Secret (Recomendado)
+
+1. Ve a tu repositorio en GitHub
+2. Navega a **Settings** → **Environments**
+3. Haz clic en **github-pages** (o créalo si no existe)
+4. En la sección **Environment secrets**, haz clic en **Add secret**
+5. Nombre: `VITE_GA_MEASUREMENT_ID`
+6. Valor: Tu ID de Google Analytics 4 (formato: `G-XXXXXXXXXX`)
+7. Haz clic en **Add secret**
+
+#### Opción 2: Repository Secret (Alternativa)
+
 1. Ve a tu repositorio en GitHub
 2. Navega a **Settings** → **Secrets and variables** → **Actions**
 3. Haz clic en **New repository secret**
 4. Nombre: `VITE_GA_MEASUREMENT_ID`
 5. Valor: Tu ID de Google Analytics 4 (formato: `G-XXXXXXXXXX`)
 6. Haz clic en **Add secret**
+
+**Nota:** El workflow está configurado para usar el environment `github-pages`, por lo que si configuras el secreto en el environment, tendrá prioridad sobre el secreto del repositorio.
 
 ### Workflows disponibles
 
