@@ -12,6 +12,7 @@ import { validateAmount } from '../../lib/validation';
 import { addMonths, parseISO } from 'date-fns';
 import { formatDateDisplay, formatCurrency, formatMonthsToYearsAndMonths } from '../../lib/formatters';
 import { calculateAmortizationTable, calculateLoanSummary } from '../../lib/engine';
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 export default function ExtraPaymentsManager() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
@@ -19,6 +20,7 @@ export default function ExtraPaymentsManager() {
   const addExtraPayment = useLoanStore((state) => state.addExtraPayment);
   const removeExtraPayment = useLoanStore((state) => state.removeExtraPayment);
   const removeAllExtraPayments = useLoanStore((state) => state.removeAllExtraPayments);
+  const { trackExtraPaymentAdded, trackExtraPaymentRemoved } = useAnalytics();
 
   const [paymentType, setPaymentType] = useState<'single' | 'periodic'>('single');
   const [newPeriod, setNewPeriod] = useState('');
@@ -127,6 +129,7 @@ export default function ExtraPaymentsManager() {
       }
 
       addExtraPayment(period, newAmount);
+      trackExtraPaymentAdded(period, parseFloat(newAmount), 'single');
       setNewPeriod('');
       setNewAmount('');
     } else {
@@ -163,8 +166,10 @@ export default function ExtraPaymentsManager() {
       }
 
       // Agregar pagos para todos los períodos en el rango
+      const amount = parseFloat(newAmount);
       for (let period = start; period <= end; period++) {
         addExtraPayment(period, newAmount);
+        trackExtraPaymentAdded(period, amount, 'periodic');
       }
 
       setStartPeriod('');
@@ -175,6 +180,7 @@ export default function ExtraPaymentsManager() {
 
   const handleRemove = (period: number) => {
     removeExtraPayment(period);
+    trackExtraPaymentRemoved(period);
   };
 
   const handleRemoveAll = () => {

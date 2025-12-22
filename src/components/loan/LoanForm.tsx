@@ -8,12 +8,14 @@ import Label from '../ui/Label';
 import Card from '../ui/Card';
 import Tooltip from '../ui/Tooltip';
 import Switch from '../ui/Switch';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Decimal } from 'decimal.js';
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 export default function LoanForm() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
   const updateLoanInput = useLoanStore((state) => state.updateLoanInput);
+  const { trackFormFieldChange, trackValidationError, trackCalculation } = useAnalytics();
   
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -56,12 +58,27 @@ export default function LoanForm() {
     ? parseFloat(loanInput.fixedMonthlyPayment) || 0
     : calculatedTotalMonthlyPayment;
 
+  // Trackear cálculo completado cuando hay datos válidos
+  useEffect(() => {
+    if (monthlyPayment !== null && loanInput?.principal && loanInput?.annualRate && loanInput?.termMonths) {
+      trackCalculation('monthly_payment', {
+        principal: parseFloat(loanInput.principal),
+        annual_rate: parseFloat(loanInput.annualRate.toString()),
+        term_months: loanInput.termMonths,
+        monthly_payment: monthlyPayment,
+      });
+    }
+  }, [monthlyPayment, loanInput?.principal, loanInput?.annualRate, loanInput?.termMonths, trackCalculation]);
+
   if (!loanInput) {
     return null;
   }
 
   const handleChange = (field: keyof typeof loanInput, value: string | number) => {
     updateLoanInput({ [field]: value });
+    
+    // Trackear cambio en campo
+    trackFormFieldChange(field, typeof value === 'number' ? value : value);
     
     // Validate on change
     let validation: { isValid: boolean; error?: string } = { isValid: true };
@@ -93,10 +110,13 @@ export default function LoanForm() {
         return newErrors;
       });
     } else {
+      const errorMessage = validation.error || 'Valor inválido';
       setErrors((prev) => ({
         ...prev,
-        [field]: validation.error || 'Valor inválido',
+        [field]: errorMessage,
       }));
+      // Trackear error de validación
+      trackValidationError(field, errorMessage);
     }
   };
 
@@ -211,6 +231,7 @@ export default function LoanForm() {
               onChange={(e) => {
                 const isChecked = e.target.checked;
                 updateLoanInput({ useFixedPayment: isChecked });
+                trackFormFieldChange('useFixedPayment', isChecked ? 'true' : 'false');
                 if (isChecked && !loanInput?.fixedMonthlyPayment && calculatedTotalMonthlyPayment !== null) {
                   // Inicializar con el valor calculado si no hay valor fijo
                   updateLoanInput({ fixedMonthlyPayment: calculatedTotalMonthlyPayment.toString() });

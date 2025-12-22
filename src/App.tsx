@@ -8,10 +8,12 @@ import Stepper from './components/ui/Stepper';
 import OrientationWarning from './components/ui/OrientationWarning';
 import Button from './components/ui/Button';
 import { useLoanStore } from './store/loanStore';
+import { useAnalytics } from './hooks/useAnalytics';
 
 function App() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
   const extraPayments = useLoanStore((state) => state.getActiveExtraPayments());
+  const { trackPage, trackStepperNavigation } = useAnalytics();
   
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isConfigOpen, setIsConfigOpen] = useState<boolean>(true);
@@ -21,6 +23,11 @@ function App() {
   const hasLoanData = !!(loanInput && loanInput.principal && loanInput.annualRate && loanInput.termMonths);
   const hasExtraPayments = Object.keys(extraPayments).length > 0;
   
+  // Trackear page view inicial
+  useEffect(() => {
+    trackPage(window.location.pathname);
+  }, [trackPage]);
+
   // Cuando se abre la configuración por primera vez, establecer el paso activo según los datos
   useEffect(() => {
     if (isConfigOpen && !hasInitialized) {
@@ -57,26 +64,33 @@ function App() {
   const handleStepClick = (stepIndex: number) => {
     if (stepIndex === 2) {
       // Paso 3: Colapsar la configuración
+      trackStepperNavigation(stepIndex, steps[stepIndex].label, 'click');
       setIsConfigOpen(false);
     } else {
+      trackStepperNavigation(stepIndex, steps[stepIndex].label, 'click');
       setActiveStep(stepIndex);
     }
   };
 
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
+      const nextStep = activeStep + 1;
       if (activeStep === steps.length - 2) {
         // Si estamos en el penúltimo paso, al avanzar colapsamos la configuración
+        trackStepperNavigation(nextStep, steps[nextStep].label, 'next');
         setIsConfigOpen(false);
       } else {
-        setActiveStep(activeStep + 1);
+        trackStepperNavigation(nextStep, steps[nextStep].label, 'next');
+        setActiveStep(nextStep);
       }
     }
   };
 
   const handlePrevious = () => {
     if (activeStep > 0) {
-      setActiveStep(activeStep - 1);
+      const prevStep = activeStep - 1;
+      trackStepperNavigation(prevStep, steps[prevStep].label, 'previous');
+      setActiveStep(prevStep);
     }
   };
 

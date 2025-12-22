@@ -1,9 +1,10 @@
-name: Deploy to GitHub Pages
+name: Build and Deploy
 
 on:
   push:
     branches:
       - main
+      - master
   workflow_dispatch:
 
 permissions:
@@ -32,7 +33,15 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          VITE_GA_MEASUREMENT_ID: ${{ secrets.VITE_GA_MEASUREMENT_ID }}
         run: npm run build
+
+      - name: Copy CNAME
+        run: |
+          if [ -f public/CNAME ]; then
+            cp public/CNAME dist/CNAME
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -52,4 +61,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
