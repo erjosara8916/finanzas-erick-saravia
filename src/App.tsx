@@ -6,6 +6,7 @@ import LoanSummary from './components/loan/LoanSummary';
 import Collapsible from './components/ui/Collapsible';
 import Stepper from './components/ui/Stepper';
 import OrientationWarning from './components/ui/OrientationWarning';
+import Button from './components/ui/Button';
 import { useLoanStore } from './store/loanStore';
 
 function App() {
@@ -62,13 +63,30 @@ function App() {
     }
   };
 
+  const handleNext = () => {
+    if (activeStep < steps.length - 1) {
+      if (activeStep === steps.length - 2) {
+        // Si estamos en el penúltimo paso, al avanzar colapsamos la configuración
+        setIsConfigOpen(false);
+      } else {
+        setActiveStep(activeStep + 1);
+      }
+    }
+  };
+
+  const handlePrevious = () => {
+    if (activeStep > 0) {
+      setActiveStep(activeStep - 1);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <OrientationWarning />
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <header className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Motor de Simulación Financiera
+            Proyección de pagos para préstamos bancarios
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             Calcula y visualiza tablas de amortización de préstamos con precisión
@@ -89,18 +107,36 @@ function App() {
                 
                 <div className="transition-all duration-300">
                   {activeStep === 0 && (
-                    <div className="animate-fade-in">
+                    <div className="animate-fade-in space-y-4">
                       <LoanForm />
+                      <div className="flex justify-end gap-3 pt-4">
+                        <Button onClick={handleNext}>
+                          Siguiente
+                        </Button>
+                      </div>
                     </div>
                   )}
                   {activeStep === 1 && (
-                    <div className="animate-fade-in">
+                    <div className="animate-fade-in space-y-4">
                       <ExtraPaymentsManager />
+                      <div className="flex justify-between gap-3 pt-4">
+                        <Button variant="outline" onClick={handlePrevious}>
+                          Anterior
+                        </Button>
+                        <Button onClick={handleNext}>
+                          Siguiente
+                        </Button>
+                      </div>
                     </div>
                   )}
                   {activeStep === 2 && (
-                    <div className="animate-fade-in">
+                    <div className="animate-fade-in space-y-4">
                       {/* Paso 3 no tiene contenido */}
+                      <div className="flex justify-start gap-3 pt-4">
+                        <Button variant="outline" onClick={handlePrevious}>
+                          Anterior
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>
