@@ -2,11 +2,15 @@ import { useLoanStore } from '../../store/loanStore';
 import { calculateAmortizationTable } from '../../lib/engine';
 import { formatCurrency, formatDateDisplay } from '../../lib/formatters';
 import Card from '../ui/Card';
-import { useMemo } from 'react';
+import InputCurrency from '../ui/InputCurrency';
+import { useMemo, useState, useEffect } from 'react';
+import { Decimal } from 'decimal.js';
 
 export default function AmortizationTable() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
   const extraPayments = useLoanStore((state) => state.getActiveExtraPayments());
+  const addExtraPayment = useLoanStore((state) => state.addExtraPayment);
+  const removeExtraPayment = useLoanStore((state) => state.removeExtraPayment);
 
   const rows = useMemo(() => {
     if (!loanInput || !loanInput.principal || !loanInput.annualRate || !loanInput.termMonths) {
@@ -84,10 +88,19 @@ export default function AmortizationTable() {
                   <td className="p-3 text-right text-gray-600 dark:text-gray-400">
                     {formatCurrency(row.principalComponent)}
                   </td>
-                  <td className={`p-3 text-right font-medium ${
-                    row.extraComponent > 0 ? 'text-green-600 dark:text-green-400' : 'text-gray-400'
-                  }`}>
-                    {row.extraComponent > 0 ? formatCurrency(row.extraComponent) : '-'}
+                  <td className="p-3 text-right">
+                    <EditableExtraPayment
+                      period={row.period}
+                      currentValue={row.extraComponent}
+                      extraPayments={extraPayments}
+                      onUpdate={(amount) => {
+                        if (amount && parseFloat(amount) > 0) {
+                          addExtraPayment(row.period, amount);
+                        } else {
+                          removeExtraPayment(row.period);
+                        }
+                      }}
+                    />
                   </td>
                   <td className="p-3 text-right font-medium text-gray-900 dark:text-gray-100">
                     {formatCurrency(row.balance)}
@@ -102,6 +115,76 @@ export default function AmortizationTable() {
         </table>
       </div>
     </Card>
+  );
+}
+
+// Componente para editar el pago extra en la tabla
+function EditableExtraPayment({
+  period,
+  currentValue,
+  extraPayments,
+  onUpdate,
+}: {
+  period: number;
+  currentValue: number;
+  extraPayments: Record<number, string>;
+  onUpdate: (amount: string) => void;
+}) {
+  // Obtener el valor actual del store
+  const storedValue = extraPayments[period] || '0';
+  const [localValue, setLocalValue] = useState(storedValue);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Sincronizar cuando cambia el valor almacenado externamente (solo si no está editando)
+  useEffect(() => {
+    if (!isEditing) {
+      const currentStoredValue = extraPayments[period] || '0';
+      setLocalValue(currentStoredValue);
+    }
+  }, [extraPayments, period, isEditing]);
+
+  const handleChange = (value: string) => {
+    setLocalValue(value);
+    setIsEditing(true);
+  };
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    
+    // El InputCurrency ya formateó el valor, usar localValue actualizado
+    const amount = localValue.trim();
+    
+    // Validar y actualizar
+    try {
+      const decimal = new Decimal(amount || '0');
+      if (decimal.gt(0)) {
+        onUpdate(decimal.toString());
+      } else {
+        // Si es 0 o vacío, eliminar el pago extra
+        onUpdate('0');
+      }
+    } catch {
+      // Si hay error, restaurar el valor almacenado
+      const currentStoredValue = extraPayments[period] || '0';
+      setLocalValue(currentStoredValue);
+    }
+  };
+
+  const hasValue = currentValue > 0;
+
+  return (
+    <div className="flex justify-end">
+      <div className="w-32">
+        <InputCurrency
+          value={localValue}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          className={`text-right text-sm ${
+            hasValue ? 'text-green-600 dark:text-green-400 font-medium' : 'text-gray-400'
+          }`}
+        />
+      </div>
+    </div>
   );
 }
 
