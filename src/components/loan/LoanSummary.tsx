@@ -2,9 +2,12 @@ import { useMemo } from 'react';
 import { useLoanStore } from '../../store/loanStore';
 import { calculateAmortizationTable, calculateLoanSummary } from '../../lib/engine';
 import { formatCurrency, formatMonthsToYearsAndMonths } from '../../lib/formatters';
+import { generatePDFReport } from '../../lib/pdfGenerator';
 import Card from '../ui/Card';
 import AmortizationChart from '../charts/AmortizationChart';
 import Tooltip from '../ui/Tooltip';
+import Button from '../ui/Button';
+import { Download } from 'lucide-react';
 
 export default function LoanSummary() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
@@ -37,9 +40,30 @@ export default function LoanSummary() {
 
   const principal = loanInput ? parseFloat(loanInput.principal || '0') : 0;
 
+  const handleDownloadPDF = () => {
+    if (!loanInput || !summary) return;
+    generatePDFReport({
+      loanInput,
+      rows,
+      summary,
+    });
+  };
+
   return (
     <div className="space-y-6">
-      <Card title="Métricas Clave">
+      <Card 
+        title="Métricas Clave"
+        action={
+          <Button 
+            onClick={handleDownloadPDF}
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Descargar PDF
+          </Button>
+        }
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <div className="flex items-center gap-1 mb-1">
