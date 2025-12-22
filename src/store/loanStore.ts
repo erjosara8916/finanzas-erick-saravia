@@ -25,7 +25,7 @@ interface LoanStore extends AppState {
 
 const createDefaultLoanInput = (): LoanInput => ({
   id: generateUUID(),
-  name: 'Default Scenario',
+  name: 'Oferta Banco X',
   principal: '',
   annualRate: '',
   termMonths: 0,

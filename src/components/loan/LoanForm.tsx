@@ -126,9 +126,9 @@ export default function LoanForm() {
         <div className="space-y-2">
           <div className="flex items-center gap-1">
             <Label htmlFor="name" required>
-              Nombre del Escenario
+              Nombre del prestamo (alias)
             </Label>
-            <Tooltip message="Nombre descriptivo para identificar este escenario de préstamo. Útil para comparar diferentes ofertas o condiciones" />
+            <Tooltip message="Nombre descriptivo para identificar este préstamo. Útil para comparar diferentes ofertas o condiciones" />
           </div>
           <Input
             id="name"
