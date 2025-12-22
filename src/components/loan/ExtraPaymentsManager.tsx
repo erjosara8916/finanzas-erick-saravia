@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useLoanStore } from '../../store/loanStore';
 import Button from '../ui/Button';
 import InputCurrency from '../ui/InputCurrency';
 import Label from '../ui/Label';
 import Card from '../ui/Card';
 import Select from '../ui/Select';
+import Dialog from '../ui/Dialog';
 import { X } from 'lucide-react';
 import { validateAmount } from '../../lib/validation';
 import { addMonths, parseISO } from 'date-fns';
-import { formatDateDisplay } from '../../lib/formatters';
+import { formatDateDisplay, formatCurrency, formatMonthsToYearsAndMonths } from '../../lib/formatters';
+import { calculateAmortizationTable, calculateLoanSummary } from '../../lib/engine';
 
 export default function ExtraPaymentsManager() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
@@ -22,6 +24,7 @@ export default function ExtraPaymentsManager() {
   const [endPeriod, setEndPeriod] = useState('');
   const [newAmount, setNewAmount] = useState('');
   const [error, setError] = useState('');
+  const [isPaymentsDialogOpen, setIsPaymentsDialogOpen] = useState(false);
 
   if (!loanInput) {
     return null;
@@ -130,6 +133,40 @@ export default function ExtraPaymentsManager() {
   // Calcular resumen de abonos
   const totalPayments = existingPayments.length;
   const totalAmount = existingPayments.reduce((sum, { amount }) => sum + parseFloat(amount), 0);
+
+  // Calcular métricas de ahorro y plazo
+  const { monthsSaved, savings, costWithoutExtras, costWithExtras } = useMemo(() => {
+    if (!loanInput || !loanInput.principal || !loanInput.annualRate || !loanInput.termMonths) {
+      return { monthsSaved: 0, savings: 0, costWithoutExtras: 0, costWithExtras: 0 };
+    }
+
+    try {
+      // Calcular sin abonos
+      const rowsWithoutExtras = calculateAmortizationTable(loanInput, {});
+      const summaryWithoutExtras = calculateLoanSummary(rowsWithoutExtras);
+      const originalTermMonths = loanInput.termMonths || 0;
+
+      // Calcular con abonos
+      const rowsWithExtras = calculateAmortizationTable(loanInput, extraPayments);
+      const summaryWithExtras = calculateLoanSummary(rowsWithExtras);
+
+      // Calcular meses ahorrados
+      const monthsSaved = Math.max(0, originalTermMonths - summaryWithExtras.actualTermMonths);
+
+      // Calcular ahorro (diferencia en costo hundido)
+      const savings = Math.max(0, summaryWithoutExtras.totalSunkCost - summaryWithExtras.totalSunkCost);
+
+      return { 
+        monthsSaved, 
+        savings, 
+        costWithoutExtras: summaryWithoutExtras.totalSunkCost,
+        costWithExtras: summaryWithExtras.totalSunkCost
+      };
+    } catch (error) {
+      console.error('Error calculating savings:', error);
+      return { monthsSaved: 0, savings: 0, costWithoutExtras: 0, costWithExtras: 0 };
+    }
+  }, [loanInput, extraPayments]);
 
   return (
     <Card title="Abonos a Capital" description="Agrega abonos a capital para reducir el principal más rápido">
@@ -253,56 +290,94 @@ export default function ExtraPaymentsManager() {
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600 dark:text-gray-400">Total de abonos:</span>
                 <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                  }).format(totalAmount)}
+                  {formatCurrency(totalAmount)}
                 </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Costo total sin abonos:</span>
+                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  {formatCurrency(costWithoutExtras)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Costo total con abonos:</span>
+                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  {formatCurrency(costWithExtras)}
+                </span>
+              </div>
+              {monthsSaved > 0 && (
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Finaliza antes:</span>
+                  <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                    {formatMonthsToYearsAndMonths(monthsSaved)}
+                  </span>
+                </div>
+              )}
+              {savings > 0 && (
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Ahorro:</span>
+                  <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                    {formatCurrency(savings)}
+                  </span>
+                </div>
+              )}
+              <div className="pt-2">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setIsPaymentsDialogOpen(true)}
+                  className="w-full"
+                >
+                  Ver pagos
+                </Button>
               </div>
             </div>
           </div>
-
-          {/* Listado de abonos */}
-          <div className="space-y-2">
-            <Label>Abonos a Capital Programados</Label>
-            {existingPayments.length > 0 ? (
-              <div className="space-y-2 max-h-[400px] overflow-y-auto">
-                {existingPayments.map(({ period, amount }) => (
-                  <div
-                    key={period}
-                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-md"
-                  >
-                  <div>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">
-                      {formatPeriodWithDate(period)}:
-                    </span>
-                    <span className="ml-2 text-gray-600 dark:text-gray-300">
-                      {new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                      }).format(parseFloat(amount))}
-                    </span>
-                  </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemove(period)}
-                      aria-label={`Eliminar abono a capital del mes ${period}`}
-                      className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
-                No hay abonos a capital programados
-              </p>
-            )}
-          </div>
         </div>
       </div>
+
+      {/* Diálogo de listado de pagos */}
+      <Dialog
+        isOpen={isPaymentsDialogOpen}
+        onClose={() => setIsPaymentsDialogOpen(false)}
+        title="Abonos a Capital Programados"
+      >
+        {existingPayments.length > 0 ? (
+          <div className="space-y-2">
+            {existingPayments.map(({ period, amount }) => (
+              <div
+                key={period}
+                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-md"
+              >
+                <div>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
+                    {formatPeriodWithDate(period)}:
+                  </span>
+                  <span className="ml-2 text-gray-600 dark:text-gray-300">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'USD',
+                    }).format(parseFloat(amount))}
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleRemove(period)}
+                  aria-label={`Eliminar abono a capital del mes ${period}`}
+                  className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+            No hay abonos a capital programados
+          </p>
+        )}
+      </Dialog>
     </Card>
   );
 }
