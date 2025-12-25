@@ -21,10 +21,12 @@ export default function LoanProjectionPage() {
   const extraPayments = useLoanStore((state) => state.getActiveExtraPayments());
   const suggestedPaymentCapacity = useFinancialHealthStore((state) => state.suggestedPaymentCapacity());
   const transactions = useFinancialHealthStore((state) => state.transactions);
+  const totalIncome = useFinancialHealthStore((state) => state.totalIncome());
+  const totalExpenses = useFinancialHealthStore((state) => state.totalExpenses());
   const { trackStepperNavigation } = useAnalytics();
   
-  // Verificar si hay datos de salud financiera
-  const hasFinancialHealthData = transactions.length > 0;
+  // Verificar si hay datos completos de salud financiera (ingresos y gastos)
+  const hasFinancialHealthData = transactions.length > 0 && (totalIncome.gt(0) || totalExpenses.gt(0));
   
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isConfigOpen, setIsConfigOpen] = useState<boolean>(true);
@@ -159,20 +161,20 @@ export default function LoanProjectionPage() {
         <div className="space-y-6 animate-fade-in">
           {/* Recommendation Banner */}
           {!hasFinancialHealthData && (
-            <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+            <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
               <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                <Info className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
-                    <strong>Recomendación:</strong> Para obtener resultados más precisos y apegarse a la realidad, 
-                    te sugerimos usar primero la herramienta{' '}
+                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                    <strong>Recomendación:</strong> Para hacer un mejor análisis de tu proyección crediticia, 
+                    te recomendamos completar la información en la herramienta{' '}
                     <Link
                       to="/salud-financiera"
-                      className="underline font-medium hover:text-blue-900 dark:hover:text-blue-100"
+                      className="underline font-medium hover:text-amber-900 dark:hover:text-amber-100"
                     >
-                      Tu Radiografía Financiera
+                      Salud Financiera
                     </Link>
-                    {' '}para calcular tu capacidad de endeudamiento.
+                    . Esto te permitirá obtener resultados más precisos y ajustados a tu realidad financiera.
                   </p>
                 </div>
               </div>
