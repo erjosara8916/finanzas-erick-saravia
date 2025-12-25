@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { Mail, MessageSquare, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Mail, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
@@ -24,13 +24,8 @@ export default function ContactPage() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'El nombre es requerido';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'El email es requerido';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    // Email es opcional, pero si se proporciona debe ser válido
+    if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'El email no es válido';
     }
 
@@ -104,14 +99,11 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 pb-24 max-w-4xl animate-fade-in">
+    <div className="container mx-auto px-4 py-8 pb-24 max-w-7xl animate-fade-in">
       <header className="mb-8 text-center">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
           Contacto
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          ¿Tienes preguntas o sugerencias? Estamos aquí para ayudarte
-        </p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -119,7 +111,7 @@ export default function ContactPage() {
         <div className="lg:col-span-1 space-y-6">
           <Card className="p-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              Información de Contacto
+              Tu opinión impulsa este proyecto
             </h2>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
@@ -134,25 +126,18 @@ export default function ContactPage() {
                   </a>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <MessageSquare className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">Soporte</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Respondemos en menos de 24 horas
-                  </p>
-                </div>
-              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
+                Leemos cada mensaje. Tus reportes y sugerencias tienen prioridad directa en nuestro roadmap de desarrollo.
+              </p>
             </div>
           </Card>
 
           <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              ¿Necesitas ayuda?
+              ¿Encontraste un error o tienes una idea?
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Si tienes preguntas sobre cómo usar la herramienta de proyección crediticia,
-              no dudes en contactarnos. Estamos aquí para ayudarte.
+              Esta plataforma está en constante evolución. Si detectas un bug, un cálculo extraño o se te ocurre una nueva funcionalidad que te gustaría ver, cuéntanoslo. Estamos construyendo esta herramienta para ti.
             </p>
           </Card>
         </div>
@@ -189,7 +174,22 @@ export default function ContactPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <Label htmlFor="name">Nombre *</Label>
+                <Label htmlFor="subject">Asunto *</Label>
+                <Input
+                  id="subject"
+                  type="text"
+                  value={formData.subject}
+                  onChange={(e) => handleChange('subject', e.target.value)}
+                  placeholder="¿Sobre qué quieres contactarnos?"
+                  className={errors.subject ? 'border-red-500' : ''}
+                />
+                {errors.subject && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.subject}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="name">Nombre (Opcional)</Label>
                 <Input
                   id="name"
                   type="text"
@@ -203,49 +203,36 @@ export default function ContactPage() {
                 )}
               </div>
 
-              <div>
-                <Label htmlFor="email">Email *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleChange('email', e.target.value)}
-                  placeholder="tu@email.com"
-                  className={errors.email ? 'border-red-500' : ''}
-                />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
-                )}
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="email">Correo (Opcional)</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder="tu@email.com"
+                    className={errors.email ? 'border-red-500' : ''}
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
+                  )}
+                </div>
 
-              <div>
-                <Label htmlFor="phone">Teléfono (opcional)</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleChange('phone', e.target.value)}
-                  placeholder="+1234567890"
-                  className={errors.phone ? 'border-red-500' : ''}
-                />
-                {errors.phone && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phone}</p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="subject">Asunto *</Label>
-                <Input
-                  id="subject"
-                  type="text"
-                  value={formData.subject}
-                  onChange={(e) => handleChange('subject', e.target.value)}
-                  placeholder="¿Sobre qué quieres contactarnos?"
-                  className={errors.subject ? 'border-red-500' : ''}
-                />
-                {errors.subject && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.subject}</p>
-                )}
+                <div>
+                  <Label htmlFor="phone">Teléfono (Opcional)</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleChange('phone', e.target.value)}
+                    placeholder="+1234567890"
+                    className={errors.phone ? 'border-red-500' : ''}
+                  />
+                  {errors.phone && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phone}</p>
+                  )}
+                </div>
               </div>
 
               <div>
