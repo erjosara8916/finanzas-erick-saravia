@@ -11,6 +11,7 @@ const TO_EMAIL = 'ericksaravia16@gmail.com';
 export interface ContactFormData {
   name: string;
   email: string;
+  phone?: string;
   subject: string;
   message: string;
 }
@@ -34,6 +35,7 @@ export async function sendContactEmail(formData: ContactFormData): Promise<void>
     to_email: TO_EMAIL,
     from_name: formData.name,
     from_email: formData.email,
+    phone: formData.phone || '',
     subject: formData.subject,
     message: formData.message,
     reply_to: formData.email,

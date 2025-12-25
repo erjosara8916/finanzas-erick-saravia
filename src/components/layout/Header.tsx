@@ -1,13 +1,17 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
+import HerramientasDropdown from './HerramientasDropdown';
 
 export default function Header() {
   const location = useLocation();
 
   const navItems = [
     { path: '/', label: 'Inicio' },
-    { path: '/proyeccion-crediticia', label: 'Proyección Crediticia' },
     { path: '/contacto', label: 'Contacto' },
+  ];
+
+  const herramientasItems = [
+    { path: '/proyeccion-crediticia', label: 'Proyección Crediticia' },
   ];
 
   const isActive = (path: string) => {
@@ -43,6 +47,7 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
+            <HerramientasDropdown items={herramientasItems} />
           </nav>
         </div>
       </div>

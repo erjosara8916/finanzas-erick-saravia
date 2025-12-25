@@ -12,6 +12,7 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     subject: '',
     message: '',
   });
@@ -70,6 +71,7 @@ export default function ContactPage() {
       setFormData({
         name: '',
         email: '',
+        phone: '',
         subject: '',
         message: '',
       });
@@ -213,6 +215,21 @@ export default function ContactPage() {
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="phone">Teléfono (opcional)</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => handleChange('phone', e.target.value)}
+                  placeholder="+1234567890"
+                  className={errors.phone ? 'border-red-500' : ''}
+                />
+                {errors.phone && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phone}</p>
                 )}
               </div>
 
