@@ -26,7 +26,7 @@ export default function HerramientasDropdown({ items }: HerramientasDropdownProp
 
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }

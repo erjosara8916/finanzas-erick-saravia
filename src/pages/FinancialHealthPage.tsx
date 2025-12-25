@@ -1,13 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TransactionForm from '../components/financial-health/TransactionForm';
 import TransactionList from '../components/financial-health/TransactionList';
 import TransactionSummary from '../components/financial-health/TransactionSummary';
 import HealthGaugeChart from '../components/financial-health/HealthGaugeChart';
 import Stepper from '../components/ui/Stepper';
 import Button from '../components/ui/Button';
+import Dialog from '../components/ui/Dialog';
+import { useFinancialHealthStore } from '../store/financialHealthStore';
+import { AlertCircle } from 'lucide-react';
 
 export default function FinancialHealthPage() {
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  
+  const totalIncome = useFinancialHealthStore((state) => state.totalIncome());
+  const hasIncome = totalIncome.gt(0);
 
   const steps = [
     {
@@ -23,8 +30,29 @@ export default function FinancialHealthPage() {
   ];
 
   const handleStepClick = (stepIndex: number) => {
+    if (stepIndex === 1 && !hasIncome) {
+      setShowAlert(true);
+      return;
+    }
+    setShowAlert(false);
     setActiveStep(stepIndex);
   };
+
+  const handleNextStep = () => {
+    if (!hasIncome) {
+      setShowAlert(true);
+      return;
+    }
+    setShowAlert(false);
+    setActiveStep(1);
+  };
+
+  // Mostrar diálogo si se accede al paso 2 sin ingresos
+  useEffect(() => {
+    if (activeStep === 1 && !hasIncome) {
+      setShowAlert(true);
+    }
+  }, [activeStep, hasIncome]);
 
   return (
     <>
@@ -58,10 +86,10 @@ export default function FinancialHealthPage() {
                   <TransactionList />
                 </div>
               </div>
-              
+
               {/* Navigation Buttons */}
               <div className="flex justify-end">
-                <Button onClick={() => setActiveStep(1)}>
+                <Button onClick={handleNextStep}>
                   Siguiente
                 </Button>
               </div>
@@ -70,28 +98,78 @@ export default function FinancialHealthPage() {
 
           {activeStep === 1 && (
             <>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                {/* Left Column: Transaction Summary */}
-                <div className="transition-all duration-300">
-                  <TransactionSummary />
-                </div>
+              {!hasIncome ? (
+                <div className="p-6 text-center">
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      No hay datos disponibles. Por favor, regresa al paso anterior.
+                    </p>
+                    <Button variant="outline" onClick={() => setActiveStep(0)}>
+                      Volver al registro
+                    </Button>
+                  </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    {/* Left Column: Transaction Summary */}
+                    <div className="transition-all duration-300">
+                      <TransactionSummary />
+                    </div>
 
-                {/* Right Column: Gauge Chart */}
-                <div className="transition-all duration-300">
-                  <HealthGaugeChart />
-                </div>
-              </div>
-              
-              {/* Navigation Buttons */}
-              <div className="flex justify-between">
-                <Button variant="outline" onClick={() => setActiveStep(0)}>
-                  Anterior
-                </Button>
-              </div>
+                    {/* Right Column: Gauge Chart */}
+                    <div className="transition-all duration-300">
+                      <HealthGaugeChart />
+                    </div>
+                  </div>
+                  
+                  {/* Navigation Buttons */}
+                  <div className="flex justify-between">
+                    <Button variant="outline" onClick={() => setActiveStep(0)}>
+                      Anterior
+                    </Button>
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>
       </div>
+
+      {/* Dialog de alerta */}
+      <Dialog
+        isOpen={showAlert}
+        onClose={() => {
+          setShowAlert(false);
+          if (activeStep === 1 && !hasIncome) {
+            setActiveStep(0);
+          }
+        }}
+        title="Ingresos requeridos"
+        className="max-w-md"
+      >
+        <div className="flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+              {activeStep === 0 
+                ? 'Debes agregar al menos un ingreso antes de poder ver el análisis financiero. Por favor, registra tus ingresos en el formulario de arriba.'
+                : 'Debes agregar al menos un ingreso antes de poder ver el análisis financiero. Por favor, regresa al paso anterior y registra tus ingresos.'}
+            </p>
+            <div className="flex justify-end gap-2">
+              {activeStep === 1 && !hasIncome && (
+                <Button variant="outline" onClick={() => {
+                  setShowAlert(false);
+                  setActiveStep(0);
+                }}>
+                  Volver al registro
+                </Button>
+              )}
+              <Button onClick={() => setShowAlert(false)}>
+                Entendido
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 }
