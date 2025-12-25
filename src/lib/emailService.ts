@@ -43,3 +43,4 @@ export async function sendContactEmail(formData: ContactFormData): Promise<void>
   await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
 }
 
+
