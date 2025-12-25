@@ -11,6 +11,7 @@ export default function Header() {
   ];
 
   const herramientasItems = [
+    { path: '/salud-financiera', label: 'Salud financiera' },
     { path: '/proyeccion-crediticia', label: 'Proyección Crediticia' },
   ];
 

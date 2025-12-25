@@ -36,4 +36,39 @@ export interface AppState {
   extraPayments: Record<string, ExtraPayments>; // Scenario ID -> Payments
 }
 
+// Financial Health Types
+export type TransactionType = 'income' | 'expense';
+
+export type IncomeCategory = 
+  | 'salario_fijo' 
+  | 'bonos_comisiones' 
+  | 'renta_alquileres' 
+  | 'otros';
+
+export type ExpenseCategory = 
+  | 'vivienda' 
+  | 'alimentacion' 
+  | 'transporte' 
+  | 'servicios' 
+  | 'deudas_existentes' 
+  | 'ocio_vicios' 
+  | 'educacion'
+  | 'otros';
+
+export interface FinancialTransaction {
+  id: string;
+  type: TransactionType;
+  amount: string; // String for Decimal.js compatibility
+  description: string;
+  category: IncomeCategory | ExpenseCategory;
+  createdAt: string; // ISO date string
+}
+
+export interface FinancialHealthState {
+  transactions: FinancialTransaction[];
+  lastUpdated: string; // ISO date string
+}
+
+export type HealthStatus = 'excellent' | 'adjusted' | 'critical';
+
 

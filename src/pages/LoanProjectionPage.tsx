@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import LoanForm from '../components/loan/LoanForm';
 import ExtraPaymentsManager from '../components/loan/ExtraPaymentsManager';
 import AmortizationTable from '../components/loan/AmortizationTable';
@@ -7,13 +7,24 @@ import Collapsible from '../components/ui/Collapsible';
 import Stepper from '../components/ui/Stepper';
 import OrientationWarning from '../components/ui/OrientationWarning';
 import Button from '../components/ui/Button';
+import CapacityWarning from '../components/loan/CapacityWarning';
 import { useLoanStore } from '../store/loanStore';
+import { useFinancialHealthStore } from '../store/financialHealthStore';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { calculateAmortizationTable } from '../lib/engine';
+import { Decimal } from 'decimal.js';
+import { Link } from 'react-router-dom';
+import { Info } from 'lucide-react';
 
 export default function LoanProjectionPage() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
   const extraPayments = useLoanStore((state) => state.getActiveExtraPayments());
+  const suggestedPaymentCapacity = useFinancialHealthStore((state) => state.suggestedPaymentCapacity());
+  const transactions = useFinancialHealthStore((state) => state.transactions);
   const { trackStepperNavigation } = useAnalytics();
+  
+  // Verificar si hay datos de salud financiera
+  const hasFinancialHealthData = transactions.length > 0;
   
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isConfigOpen, setIsConfigOpen] = useState<boolean>(true);
@@ -22,6 +33,49 @@ export default function LoanProjectionPage() {
   // Determinar si los pasos están completados
   const hasLoanData = !!(loanInput && loanInput.principal && loanInput.annualRate && loanInput.termMonths);
   const hasExtraPayments = Object.keys(extraPayments).length > 0;
+
+  // Calcular si excede capacidad de pago
+  const capacityCheck = useMemo(() => {
+    if (!loanInput || !hasLoanData) {
+      return { exceeds: false, monthlyPayment: new Decimal(0), averageExtras: new Decimal(0) };
+    }
+
+    try {
+      const rows = calculateAmortizationTable(loanInput, extraPayments);
+      if (rows.length === 0) {
+        return { exceeds: false, monthlyPayment: new Decimal(0), averageExtras: new Decimal(0) };
+      }
+
+      // Obtener la cuota mensual del primer pago (incluye payment + insurance + fees)
+      const firstRow = rows[0];
+      const monthlyPayment = new Decimal(firstRow.monthlyPayment);
+
+      // Calcular promedio de abonos extra mensuales
+      const extraPaymentsArray = Object.values(extraPayments).map((amount) => new Decimal(amount || 0));
+      const totalExtras = extraPaymentsArray.reduce((sum, amount) => sum.plus(amount), new Decimal(0));
+      const averageExtras = extraPaymentsArray.length > 0 
+        ? totalExtras.div(extraPaymentsArray.length)
+        : new Decimal(0);
+
+      // Total mensual estimado (cuota + promedio de abonos)
+      const totalMonthly = monthlyPayment.plus(averageExtras);
+
+      // Verificar si excede capacidad (solo si hay datos de salud financiera)
+      const hasFinancialHealthData = suggestedPaymentCapacity.gt(0);
+      const exceeds = hasFinancialHealthData && totalMonthly.gt(suggestedPaymentCapacity);
+
+      return {
+        exceeds,
+        monthlyPayment,
+        averageExtras,
+        totalMonthly,
+        suggestedPaymentCapacity,
+      };
+    } catch (error) {
+      console.error('Error calculating capacity check:', error);
+      return { exceeds: false, monthlyPayment: new Decimal(0), averageExtras: new Decimal(0) };
+    }
+  }, [loanInput, extraPayments, suggestedPaymentCapacity, hasLoanData]);
 
   // Cuando se abre la configuración por primera vez, establecer el paso activo según los datos
   useEffect(() => {
@@ -103,6 +157,35 @@ export default function LoanProjectionPage() {
         </header>
 
         <div className="space-y-6 animate-fade-in">
+          {/* Recommendation Banner */}
+          {!hasFinancialHealthData && (
+            <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+              <div className="flex items-start gap-3">
+                <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    <strong>Recomendación:</strong> Para obtener resultados más precisos y apegarse a la realidad, 
+                    te sugerimos usar primero la herramienta{' '}
+                    <Link
+                      to="/salud-financiera"
+                      className="underline font-medium hover:text-blue-900 dark:hover:text-blue-100"
+                    >
+                      Tu Radiografía Financiera
+                    </Link>
+                    {' '}para calcular tu capacidad de endeudamiento.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Capacity Warning */}
+          {capacityCheck.exceeds && (
+            <div className="transition-all duration-300">
+              <CapacityWarning />
+            </div>
+          )}
+
           <div className="transition-all duration-300">
             <Collapsible 
               title="Configuración" 
