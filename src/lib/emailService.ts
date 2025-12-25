@@ -45,4 +45,42 @@ export async function sendContactEmail(formData: ContactFormData): Promise<void>
   await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
 }
 
+export interface NewsletterSubscriptionData {
+  email: string;
+  name?: string;
+}
+
+/**
+ * Envía un email de suscripción a notificaciones usando EmailJS
+ */
+export async function sendNewsletterSubscription(data: NewsletterSubscriptionData): Promise<void> {
+  // Validar que las variables de entorno estén configuradas
+  if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+    throw new Error(
+      'EmailJS no está configurado correctamente. Por favor, configura las variables de entorno VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID y VITE_EMAILJS_PUBLIC_KEY'
+    );
+  }
+
+  // Validar email
+  if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    throw new Error('El email proporcionado no es válido');
+  }
+
+  // Inicializar EmailJS con la clave pública
+  emailjs.init(PUBLIC_KEY);
+
+  // Preparar los parámetros del template
+  const templateParams = {
+    to_email: TO_EMAIL,
+    from_name: data.name || 'Usuario',
+    from_email: data.email,
+    subject: 'Nueva suscripción a notificaciones',
+    message: `Nueva suscripción a notificaciones del proyecto:\n\nEmail: ${data.email}${data.name ? `\nNombre: ${data.name}` : ''}`,
+    reply_to: data.email,
+  };
+
+  // Enviar el email
+  await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
+}
+
 
