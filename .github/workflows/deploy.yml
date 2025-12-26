@@ -41,6 +41,9 @@ jobs:
           VITE_GA_MEASUREMENT_ID: ${{ secrets.VITE_GA_MEASUREMENT_ID }}
         run: npm run build
 
+      - name: Copy index.html to 404.html
+        run: cp dist/index.html dist/404.html
+
       - name: Copy CNAME
         run: |
           if [ -f public/CNAME ]; then
