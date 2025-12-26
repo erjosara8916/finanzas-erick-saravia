@@ -16,7 +16,7 @@ export default function Footer({
 
   return (
     <>
-      <footer className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-40">
+      <footer className="relative md:fixed md:bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-40 mt-auto">
         <div className="container mx-auto px-4 py-4 max-w-7xl">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-600 dark:text-gray-400">
             <div className="text-center sm:text-left">
