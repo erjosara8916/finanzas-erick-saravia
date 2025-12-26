@@ -24,7 +24,7 @@ export default function Stepper({ steps, onStepClick, className, ...props }: Ste
               <button
                 onClick={() => onStepClick?.(index)}
                 className={cn(
-                  'flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all cursor-pointer',
+                  'flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 transition-all cursor-pointer',
                   'hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
                   step.active
                     ? 'border-blue-600 bg-blue-600 text-white dark:border-blue-500 dark:bg-blue-500'
@@ -36,9 +36,9 @@ export default function Stepper({ steps, onStepClick, className, ...props }: Ste
                 aria-label={`Ir a paso ${index + 1}: ${step.label}`}
               >
                 {step.completed ? (
-                  <Check className="w-5 h-5" />
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5" />
                 ) : (
-                  <span className="text-sm font-semibold">{index + 1}</span>
+                  <span className="text-xs sm:text-sm font-semibold">{index + 1}</span>
                 )}
               </button>
               
@@ -46,7 +46,7 @@ export default function Stepper({ steps, onStepClick, className, ...props }: Ste
               {index < steps.length - 1 && (
                 <div
                   className={cn(
-                    'flex-1 h-0.5 mx-2 transition-colors',
+                    'flex-1 h-0.5 mx-1 sm:mx-2 transition-colors',
                     step.completed
                       ? 'bg-green-600 dark:bg-green-500'
                       : 'bg-gray-300 dark:bg-gray-600'
@@ -59,7 +59,7 @@ export default function Stepper({ steps, onStepClick, className, ...props }: Ste
             <button
               onClick={() => onStepClick?.(index)}
               className={cn(
-                'mt-2 text-sm font-medium transition-colors cursor-pointer hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded px-2 py-1',
+                'mt-1.5 sm:mt-2 text-xs sm:text-sm font-medium transition-colors cursor-pointer hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded px-1 sm:px-2 py-0.5 sm:py-1',
                 step.active
                   ? 'text-blue-600 dark:text-blue-400'
                   : step.completed

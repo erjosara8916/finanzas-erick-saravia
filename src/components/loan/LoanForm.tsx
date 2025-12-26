@@ -122,8 +122,8 @@ export default function LoanForm() {
 
   return (
     <Card title="Detalles del Préstamo" description="Ingresa la información del préstamo para calcular la tabla de amortización">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="space-y-1.5 sm:space-y-2">
           <div className="flex items-center gap-1">
             <Label htmlFor="name" required>
               Nombre del prestamo (alias)

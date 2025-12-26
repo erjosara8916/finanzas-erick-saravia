@@ -193,10 +193,10 @@ export default function ExtraPaymentsManager() {
 
   return (
     <Card title="Abonos a Capital" description="Agrega abonos a capital para reducir el principal más rápido">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Columna 1: Formulario */}
-        <div className="space-y-4">
-          <div className="space-y-2">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-1.5 sm:space-y-2">
             <div className="flex items-center gap-1">
               <Label htmlFor="payment-type">Tipo de Pago</Label>
               <Tooltip message="Selecciona si deseas hacer un pago extra único en un mes específico, o pagos periódicos durante un rango de meses" />
@@ -220,8 +220,8 @@ export default function ExtraPaymentsManager() {
           </div>
 
           {paymentType === 'single' ? (
-            <div className="space-y-4">
-              <div className="space-y-2">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-1.5 sm:space-y-2">
                 <div className="flex items-center gap-1">
                   <Label htmlFor="extra-period">Período (Mes)</Label>
                   <Tooltip message="Selecciona el mes en el que deseas realizar el pago extra a capital" />
@@ -239,7 +239,7 @@ export default function ExtraPaymentsManager() {
                 ))}
               </Select>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5 sm:space-y-2">
                 <div className="flex items-center gap-1">
                   <Label htmlFor="extra-amount">Monto</Label>
                   <Tooltip message="Cantidad adicional que pagarás en este período para reducir el capital del préstamo más rápido" />
@@ -255,8 +255,8 @@ export default function ExtraPaymentsManager() {
               </Button>
             </div>
           ) : (
-            <div className="space-y-4">
-              <div className="space-y-2">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-1.5 sm:space-y-2">
                 <div className="flex items-center gap-1">
                   <Label htmlFor="start-period">Mes Inicio</Label>
                   <Tooltip message="Primer mes del rango en el que comenzarás a realizar pagos extra periódicos" />
@@ -274,7 +274,7 @@ export default function ExtraPaymentsManager() {
                 ))}
               </Select>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5 sm:space-y-2">
                 <div className="flex items-center gap-1">
                   <Label htmlFor="end-period">Mes Final</Label>
                   <Tooltip message="Último mes del rango en el que realizarás pagos extra periódicos" />
@@ -292,7 +292,7 @@ export default function ExtraPaymentsManager() {
                 ))}
               </Select>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5 sm:space-y-2">
                 <div className="flex items-center gap-1">
                   <Label htmlFor="extra-amount">Monto</Label>
                   <Tooltip message="Cantidad que pagarás adicionalmente en cada mes del rango seleccionado para reducir el capital más rápido" />
@@ -315,57 +315,57 @@ export default function ExtraPaymentsManager() {
         </div>
 
         {/* Columna 2: Resumen y Listado de abonos a capital */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {/* Resumen de abonos */}
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+          <div className="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+            <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
               Resumen de Abonos a Capital
             </h4>
-            <div className="space-y-2">
+            <div className="space-y-1.5 sm:space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Cantidad de abonos:</span>
-                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Cantidad de abonos:</span>
+                <span className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">
                   {totalPayments}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Total de abonos:</span>
-                <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Total de abonos:</span>
+                <span className="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400">
                   {formatCurrency(totalAmount)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Costo total sin abonos:</span>
-                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Costo total sin abonos:</span>
+                <span className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">
                   {formatCurrency(costWithoutExtras)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Costo total con abonos:</span>
-                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Costo total con abonos:</span>
+                <span className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">
                   {formatCurrency(costWithExtras)}
                 </span>
               </div>
               {finalizationDate && (
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Fecha de finalización:</span>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Fecha de finalización:</span>
+                  <span className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">
                     {finalizationDate}
                   </span>
                 </div>
               )}
               {monthsSaved > 0 && (
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Finaliza antes:</span>
-                  <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Finaliza antes:</span>
+                  <span className="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">
                     {formatMonthsToYearsAndMonths(monthsSaved)}
                   </span>
                 </div>
               )}
               {savings > 0 && (
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Ahorro:</span>
-                  <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Ahorro:</span>
+                  <span className="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">
                     {formatCurrency(savings)}
                   </span>
                 </div>

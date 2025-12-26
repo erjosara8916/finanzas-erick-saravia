@@ -19,16 +19,16 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         {...props}
       >
         {(title || description || action) && (
-          <div className="p-6 pb-4">
-            <div className="flex items-start justify-between gap-4">
+          <div className="p-4 sm:p-6 pb-3 sm:pb-4">
+            <div className="flex items-start justify-between gap-3 sm:gap-4">
               <div className="flex-1">
                 {title && (
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                     {title}
                   </h3>
                 )}
                 {description && (
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  <p className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                     {description}
                   </p>
                 )}
@@ -41,7 +41,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
             </div>
           </div>
         )}
-        <div className={title || description || action ? 'px-6 pb-6' : 'p-6'}>
+        <div className={title || description || action ? 'px-4 sm:px-6 pb-4 sm:pb-6' : 'p-4 sm:p-6'}>
           {children}
         </div>
       </div>

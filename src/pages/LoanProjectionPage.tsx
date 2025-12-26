@@ -148,24 +148,24 @@ export default function LoanProjectionPage() {
   return (
     <>
       <OrientationWarning />
-      <div className="container mx-auto px-4 py-8 pb-24 max-w-7xl">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 pb-20 sm:pb-24 max-w-7xl">
+        <header className="mb-4 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
             Proyección de pagos para préstamos bancarios
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Calcula y visualiza tablas de amortización de préstamos con precisión
           </p>
         </header>
 
-        <div className="space-y-6 animate-fade-in">
+        <div className="space-y-4 sm:space-y-6 animate-fade-in">
           {/* Recommendation Banner */}
           {!hasFinancialHealthData && (
-            <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-              <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+            <div className="p-3 sm:p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <Info className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                  <p className="text-xs sm:text-sm text-amber-800 dark:text-amber-200">
                     <strong>Recomendación:</strong> Para hacer un mejor análisis de tu proyección crediticia, 
                     te recomendamos completar la información en la herramienta{' '}
                     <Link
@@ -194,16 +194,16 @@ export default function LoanProjectionPage() {
               isOpen={isConfigOpen}
               onToggle={setIsConfigOpen}
             >
-              <div className="space-y-6">
-                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                   <Stepper steps={steps} onStepClick={handleStepClick} />
                 </div>
                 
                 <div className="transition-all duration-300">
                   {activeStep === 0 && (
-                    <div className="animate-fade-in space-y-4">
+                    <div className="animate-fade-in space-y-3 sm:space-y-4">
                       <LoanForm />
-                      <div className="flex justify-end gap-3 pt-4">
+                      <div className="flex justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
                         <Button onClick={handleNext}>
                           Siguiente
                         </Button>
@@ -211,9 +211,9 @@ export default function LoanProjectionPage() {
                     </div>
                   )}
                   {activeStep === 1 && (
-                    <div className="animate-fade-in space-y-4">
+                    <div className="animate-fade-in space-y-3 sm:space-y-4">
                       <ExtraPaymentsManager />
-                      <div className="flex justify-between gap-3 pt-4">
+                      <div className="flex justify-between gap-2 sm:gap-3 pt-3 sm:pt-4">
                         <Button variant="outline" onClick={handlePrevious}>
                           Anterior
                         </Button>
@@ -224,9 +224,9 @@ export default function LoanProjectionPage() {
                     </div>
                   )}
                   {activeStep === 2 && (
-                    <div className="animate-fade-in space-y-4">
+                    <div className="animate-fade-in space-y-3 sm:space-y-4">
                       {/* Paso 3 no tiene contenido */}
-                      <div className="flex justify-start gap-3 pt-4">
+                      <div className="flex justify-start gap-2 sm:gap-3 pt-3 sm:pt-4">
                         <Button variant="outline" onClick={handlePrevious}>
                           Anterior
                         </Button>
