@@ -14,6 +14,7 @@ export default function OrientationWarning() {
 
     // Función para verificar la orientación
     const checkOrientation = () => {
+    /*  
       const mobile = checkIsMobile();
       setIsMobile(mobile);
       
@@ -26,7 +27,8 @@ export default function OrientationWarning() {
         setIsPortrait(isPortraitMode);
       } else {
         setIsPortrait(false);
-      }
+      } 
+    */
     };
 
     // Verificar al montar el componente
