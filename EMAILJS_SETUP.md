@@ -82,3 +82,4 @@ El template debe incluir estas variables:
 Una vez configurado, puedes probar el formulario de contacto en `/contacto`. Los correos se enviarán a `ericksaravia16@gmail.com`.
 
 
+
