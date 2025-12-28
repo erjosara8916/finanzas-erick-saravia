@@ -5,10 +5,11 @@ import LoanProjectionPage from './pages/LoanProjectionPage';
 import ContactPage from './pages/ContactPage';
 import FinancialHealthPage from './pages/FinancialHealthPage';
 import PageTracker from './components/analytics/PageTracker';
+import ErrorBoundary from './components/analytics/ErrorBoundary';
 
 function App() {
   return (
-    <>
+    <ErrorBoundary>
       <PageTracker />
       <Layout>
         <Routes>
@@ -18,7 +19,7 @@ function App() {
           <Route path="/contacto" element={<ContactPage />} />
         </Routes>
       </Layout>
-    </>
+    </ErrorBoundary>
   );
 }
 

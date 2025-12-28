@@ -98,6 +98,81 @@ export const trackEvent = (
 };
 
 /**
+ * Sanitiza un email para solo obtener el dominio (sin PII)
+ */
+export const sanitizeEmail = (email: string): string => {
+  try {
+    const parts = email.split('@');
+    if (parts.length === 2) {
+      return parts[1]; // Retorna solo el dominio
+    }
+    return 'unknown';
+  } catch {
+    return 'unknown';
+  }
+};
+
+/**
+ * Convierte un monto a un rango para privacidad
+ */
+export const amountToRange = (amount: number): string => {
+  if (amount < 1000) return '0-1k';
+  if (amount < 5000) return '1k-5k';
+  if (amount < 10000) return '5k-10k';
+  if (amount < 25000) return '10k-25k';
+  if (amount < 50000) return '25k-50k';
+  if (amount < 100000) return '50k-100k';
+  if (amount < 250000) return '100k-250k';
+  if (amount < 500000) return '250k-500k';
+  return '500k+';
+};
+
+/**
+ * Sanitiza un mensaje de error removiendo información sensible
+ */
+export const sanitizeErrorMessage = (message: string): string => {
+  // Remover emails
+  let sanitized = message.replace(/[^\s@]+@[^\s@]+\.[^\s@]+/g, '[email]');
+  // Remover números que podrían ser montos
+  sanitized = sanitized.replace(/\$\d+/g, '[amount]');
+  // Limitar longitud
+  return sanitized.substring(0, 200);
+};
+
+/**
+ * Valida y sanitiza parámetros antes de enviar a GA
+ */
+export const sanitizeParams = (
+  params?: Record<string, string | number | boolean>
+): Record<string, string | number | boolean> | undefined => {
+  if (!params) return undefined;
+  
+  const sanitized: Record<string, string | number | boolean> = {};
+  
+  for (const [key, value] of Object.entries(params)) {
+    // Validar que la clave no contenga información sensible
+    if (key.toLowerCase().includes('email') || key.toLowerCase().includes('password')) {
+      continue; // Omitir parámetros sensibles
+    }
+    
+    // Sanitizar valores de string
+    if (typeof value === 'string') {
+      // Si parece un email, sanitizarlo
+      if (value.includes('@')) {
+        sanitized[key] = sanitizeEmail(value);
+      } else {
+        // Limitar longitud de strings
+        sanitized[key] = value.substring(0, 100);
+      }
+    } else {
+      sanitized[key] = value;
+    }
+  }
+  
+  return sanitized;
+};
+
+/**
  * Trackea un evento con parámetros personalizados
  */
 export const trackEventWithParams = (
@@ -107,7 +182,14 @@ export const trackEventWithParams = (
   if (!isInitialized || !hasConsent) return;
   
   try {
-    ReactGA.event(action, params);
+    const sanitizedParams = sanitizeParams(params);
+    
+    // Log en modo desarrollo
+    if (import.meta.env.DEV) {
+      console.log('[GA Event]', action, sanitizedParams);
+    }
+    
+    ReactGA.event(action, sanitizedParams);
   } catch (error) {
     console.error('Error trackeando evento con parámetros:', error);
   }

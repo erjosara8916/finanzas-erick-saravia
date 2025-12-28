@@ -6,6 +6,7 @@ import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Label from '../components/ui/Label';
 import { sendNewsletterSubscription } from '../lib/emailService';
+import { useAnalytics, useEngagementTracking } from '../hooks/useAnalytics';
 
 export default function LandingPage() {
   const [subscriptionEmail, setSubscriptionEmail] = useState('');
@@ -13,6 +14,10 @@ export default function LandingPage() {
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscriptionError, setSubscriptionError] = useState<string | null>(null);
+  const { trackCTAClick, trackNewsletterSubscription, trackError } = useAnalytics();
+  
+  // Tracking de engagement
+  useEngagementTracking('landing');
 
   const features = [
     {
@@ -85,8 +90,12 @@ export default function LandingPage() {
     e.preventDefault();
     setSubscriptionError(null);
 
+    // Trackear intento de suscripción
+    trackNewsletterSubscription('attempt', subscriptionEmail, !!subscriptionName);
+
     if (!subscriptionEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(subscriptionEmail)) {
       setSubscriptionError('Por favor, ingresa un email válido');
+      trackNewsletterSubscription('error', subscriptionEmail, !!subscriptionName, 'validation');
       return;
     }
 
@@ -97,6 +106,10 @@ export default function LandingPage() {
         email: subscriptionEmail,
         name: subscriptionName || undefined,
       });
+      
+      // Trackear éxito
+      trackNewsletterSubscription('success', subscriptionEmail, !!subscriptionName);
+      trackCTAClick('newsletter', 'Quiero aprender más', 'newsletter_subscription');
       
       setIsSubscribed(true);
       setSubscriptionEmail('');
@@ -110,6 +123,9 @@ export default function LandingPage() {
         ? error.message 
         : 'Hubo un error al suscribirte. Por favor, intenta nuevamente.';
       setSubscriptionError(errorMessage);
+      // Trackear error
+      trackNewsletterSubscription('error', subscriptionEmail, !!subscriptionName, 'api');
+      trackError('api', errorMessage, 'LandingPage.handleSubscription', 'newsletter_subscription');
     } finally {
       setIsSubscribing(false);
     }
@@ -118,7 +134,7 @@ export default function LandingPage() {
   return (
     <div className="animate-fade-in pb-24">
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 md:py-24 max-w-7xl">
+      <section data-section-name="hero" className="container mx-auto px-4 py-16 md:py-24 max-w-7xl">
         <div className="text-center max-w-3xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
             ¿Realmente tienes el control de tu crédito?
@@ -127,7 +143,10 @@ export default function LandingPage() {
             Un préstamo es una herramienta poderosa, pero solo si sabes gestionarla. Visualiza tu deuda, planifica tus abonos y optimiza tus finanzas con datos reales.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
-            <Link to="/proyeccion-crediticia">
+            <Link 
+              to="/proyeccion-crediticia"
+              onClick={() => trackCTAClick('hero', 'Optimizar mi Préstamo', '/proyeccion-crediticia')}
+            >
               <Button size="lg" variant="cta" className="w-full sm:w-auto">
                 <Zap className="mr-2 h-5 w-5" />
                 Optimizar mi Préstamo
@@ -146,7 +165,7 @@ export default function LandingPage() {
       </section>
 
       {/* Tools Section */}
-      <section className="bg-white dark:bg-gray-800 py-16">
+      <section data-section-name="tools" className="bg-white dark:bg-gray-800 py-16">
         <div className="container mx-auto px-4 max-w-7xl">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-4">
             Tecnología para decisiones inteligentes
@@ -173,7 +192,10 @@ export default function LandingPage() {
                     <p className="text-gray-600 dark:text-gray-400 mb-6">
                       {tool.description}
                     </p>
-                    <Link to={tool.link}>
+                    <Link 
+                      to={tool.link}
+                      onClick={() => trackCTAClick('tools_card', tool.buttonText, tool.link)}
+                    >
                       <Button size="lg" variant="cta" className="w-full sm:w-auto">
                         <Zap className="mr-2 h-5 w-5" />
                         {tool.buttonText}
@@ -191,7 +213,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-16 max-w-7xl">
+      <section data-section-name="features" className="container mx-auto px-4 py-16 max-w-7xl">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
           Claridad financiera al instante
         </h2>
@@ -218,7 +240,7 @@ export default function LandingPage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="bg-white dark:bg-gray-800 py-16">
+      <section data-section-name="benefits" className="bg-white dark:bg-gray-800 py-16">
         <div className="container mx-auto px-4 max-w-7xl">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
             Tu asistente financiero personal
@@ -235,7 +257,7 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works Section */}
-      <section className="container mx-auto px-4 py-16 max-w-7xl">
+      <section data-section-name="how-it-works" className="container mx-auto px-4 py-16 max-w-7xl">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
           Toma el mando en 3 pasos
         </h2>
@@ -257,7 +279,7 @@ export default function LandingPage() {
       </section>
 
       {/* Newsletter Subscription Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 py-16">
+      <section data-section-name="newsletter" className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 py-16">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-8">
             <Mail className="h-12 w-12 text-white mx-auto mb-4" />
@@ -325,6 +347,7 @@ export default function LandingPage() {
                 className="w-full"
                 size="lg"
                 variant="cta"
+                onClick={() => trackCTAClick('newsletter', 'Quiero aprender más', 'newsletter_subscription')}
               >
                 {isSubscribing ? (
                   <>
@@ -346,7 +369,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gray-900 dark:bg-gray-950 py-16">
+      <section data-section-name="cta" className="bg-gray-900 dark:bg-gray-950 py-16">
         <div className="container mx-auto px-4 max-w-4xl text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             ¿Listo para comenzar?
@@ -355,12 +378,18 @@ export default function LandingPage() {
             Explora nuestras herramientas financieras y toma el control de tus finanzas
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/salud-financiera">
+            <Link 
+              to="/salud-financiera"
+              onClick={() => trackCTAClick('footer', 'Salud Financiera', '/salud-financiera')}
+            >
               <Button size="lg" variant="secondary" className="w-full sm:w-auto">
                 Salud Financiera
               </Button>
             </Link>
-            <Link to="/proyeccion-crediticia">
+            <Link 
+              to="/proyeccion-crediticia"
+              onClick={() => trackCTAClick('footer', 'Proyección Crediticia', '/proyeccion-crediticia')}
+            >
               <Button size="lg" variant="secondary" className="w-full sm:w-auto">
                 Proyección Crediticia
               </Button>

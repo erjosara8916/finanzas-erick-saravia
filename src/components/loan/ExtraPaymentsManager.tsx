@@ -13,6 +13,7 @@ import { addMonths, parseISO } from 'date-fns';
 import { formatDateDisplay, formatCurrency, formatMonthsToYearsAndMonths } from '../../lib/formatters';
 import { calculateAmortizationTable, calculateLoanSummary } from '../../lib/engine';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { trackEventWithParams, hasUserConsent } from '../../lib/analytics';
 
 export default function ExtraPaymentsManager() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
@@ -129,7 +130,21 @@ export default function ExtraPaymentsManager() {
       }
 
       addExtraPayment(period, newAmount);
-      trackExtraPaymentAdded(period, parseFloat(newAmount), 'single');
+      
+      // Calcular métricas adicionales para tracking
+      const updatedPayments = { ...extraPayments, [period]: newAmount };
+      const totalExtraPayments = Object.keys(updatedPayments).length;
+      const totalExtraAmount = Object.values(updatedPayments).reduce(
+        (sum, amt) => sum + parseFloat(amt || '0'),
+        0
+      );
+      const loanPrincipal = parseFloat(loanInput.principal || '0');
+      
+      trackExtraPaymentAdded(period, parseFloat(newAmount), 'single', {
+        totalExtraPayments,
+        totalExtraAmount,
+        loanPrincipal,
+      });
       setNewPeriod('');
       setNewAmount('');
     } else {
@@ -167,10 +182,26 @@ export default function ExtraPaymentsManager() {
 
       // Agregar pagos para todos los períodos en el rango
       const amount = parseFloat(newAmount);
+      const updatedPayments = { ...extraPayments };
       for (let period = start; period <= end; period++) {
         addExtraPayment(period, newAmount);
-        trackExtraPaymentAdded(period, amount, 'periodic');
+        updatedPayments[period] = newAmount;
       }
+      
+      // Calcular métricas adicionales para tracking (solo trackear una vez para el rango)
+      const totalExtraPayments = Object.keys(updatedPayments).length;
+      const totalExtraAmount = Object.values(updatedPayments).reduce(
+        (sum, amt) => sum + parseFloat(amt || '0'),
+        0
+      );
+      const loanPrincipal = parseFloat(loanInput.principal || '0');
+      
+      // Trackear solo el primer período del rango con información agregada
+      trackExtraPaymentAdded(start, amount, 'periodic', {
+        totalExtraPayments,
+        totalExtraAmount,
+        loanPrincipal,
+      });
 
       setStartPeriod('');
       setEndPeriod('');
@@ -184,7 +215,14 @@ export default function ExtraPaymentsManager() {
   };
 
   const handleRemoveAll = () => {
+    const removedCount = Object.keys(extraPayments).length;
     removeAllExtraPayments();
+    // Trackear eliminación de todos los abonos
+    if (removedCount > 0 && hasUserConsent()) {
+      trackEventWithParams('extra_payments_removed_all', {
+        removed_count: removedCount,
+      });
+    }
   };
 
   // Calcular resumen de abonos

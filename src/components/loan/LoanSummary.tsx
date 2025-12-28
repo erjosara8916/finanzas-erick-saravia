@@ -8,10 +8,12 @@ import AmortizationChart from '../charts/AmortizationChart';
 import Tooltip from '../ui/Tooltip';
 import Button from '../ui/Button';
 import { Download } from 'lucide-react';
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 export default function LoanSummary() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
   const extraPayments = useLoanStore((state) => state.getActiveExtraPayments());
+  const { trackPDFExport, trackError } = useAnalytics();
 
   const { rows, summary } = useMemo(() => {
     if (!loanInput || !loanInput.principal || !loanInput.annualRate || !loanInput.termMonths) {
@@ -24,6 +26,8 @@ export default function LoanSummary() {
       return { rows: calculatedRows, summary: calculatedSummary };
     } catch (error) {
       console.error('Error calculating summary:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      trackError('calculation', errorMessage, 'LoanSummary.calculateAmortizationTable', 'calculation');
       return { rows: [], summary: null };
     }
   }, [loanInput, extraPayments]);
@@ -42,6 +46,15 @@ export default function LoanSummary() {
 
   const handleDownloadPDF = () => {
     if (!loanInput || !summary) return;
+    
+    // Trackear exportación de PDF
+    const hasExtraPayments = Object.keys(extraPayments).length > 0;
+    const totalPeriods = rows.length;
+    // Estimar tamaño del archivo (aproximado: ~1KB por período + overhead)
+    const fileSizeEstimate = Math.round(totalPeriods * 1.2 + 50);
+    
+    trackPDFExport('loan_report', hasExtraPayments, totalPeriods, fileSizeEstimate);
+    
     generatePDFReport({
       loanInput,
       rows,

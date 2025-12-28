@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import LoanForm from '../components/loan/LoanForm';
 import ExtraPaymentsManager from '../components/loan/ExtraPaymentsManager';
 import AmortizationTable from '../components/loan/AmortizationTable';
@@ -10,11 +10,12 @@ import Button from '../components/ui/Button';
 import CapacityWarning from '../components/loan/CapacityWarning';
 import { useLoanStore } from '../store/loanStore';
 import { useFinancialHealthStore } from '../store/financialHealthStore';
-import { useAnalytics } from '../hooks/useAnalytics';
+import { useAnalytics, useEngagementTracking } from '../hooks/useAnalytics';
 import { calculateAmortizationTable } from '../lib/engine';
 import { Decimal } from 'decimal.js';
 import { Link } from 'react-router-dom';
 import { Info } from 'lucide-react';
+import { amountToRange } from '../lib/analytics';
 
 export default function LoanProjectionPage() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
@@ -23,7 +24,11 @@ export default function LoanProjectionPage() {
   const transactions = useFinancialHealthStore((state) => state.transactions);
   const totalIncome = useFinancialHealthStore((state) => state.totalIncome());
   const totalExpenses = useFinancialHealthStore((state) => state.totalExpenses());
-  const { trackStepperNavigation } = useAnalytics();
+  const { trackStepperNavigation, trackCalculation, trackError } = useAnalytics();
+  const calculationTrackedRef = useRef<string>('');
+  
+  // Tracking de engagement
+  useEngagementTracking('loan_projection');
   
   // Verificar si hay datos completos de salud financiera (ingresos y gastos)
   const hasFinancialHealthData = transactions.length > 0 && (totalIncome.gt(0) || totalExpenses.gt(0));
@@ -75,6 +80,8 @@ export default function LoanProjectionPage() {
       };
     } catch (error) {
       console.error('Error calculating capacity check:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      trackError('calculation', errorMessage, 'LoanProjectionPage.capacityCheck', 'capacity_calculation');
       return { exceeds: false, monthlyPayment: new Decimal(0), averageExtras: new Decimal(0) };
     }
   }, [loanInput, extraPayments, suggestedPaymentCapacity, hasLoanData]);
@@ -93,6 +100,41 @@ export default function LoanProjectionPage() {
       setHasInitialized(false);
     }
   }, [isConfigOpen, hasLoanData, hasInitialized]);
+
+  // Trackear cuando se completa un cálculo
+  useEffect(() => {
+    if (!hasLoanData || !loanInput) return;
+    
+    try {
+      const rows = calculateAmortizationTable(loanInput, extraPayments);
+      if (rows.length === 0) return;
+      
+      // Crear una clave única para este cálculo
+      const calculationKey = `${loanInput.principal}-${loanInput.annualRate}-${loanInput.termMonths}-${Object.keys(extraPayments).length}`;
+      
+      // Solo trackear si es un cálculo nuevo
+      if (calculationTrackedRef.current !== calculationKey) {
+        const principal = parseFloat(loanInput.principal || '0');
+        const annualRate = parseFloat(loanInput.annualRate || '0');
+        const termMonths = loanInput.termMonths || 0;
+        const hasExtraPayments = Object.keys(extraPayments).length > 0;
+        
+        trackCalculation('loan_projection', {
+          has_extra_payments: hasExtraPayments,
+          loan_amount_range: amountToRange(principal),
+          loan_term: termMonths,
+          interest_rate: annualRate,
+          total_periods: rows.length,
+        });
+        
+        calculationTrackedRef.current = calculationKey;
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      trackError('calculation', errorMessage, 'LoanProjectionPage.trackCalculation', 'calculation_tracking');
+      console.error('Error calculating for tracking:', error);
+    }
+  }, [loanInput, extraPayments, hasLoanData, trackCalculation]);
   
   const steps = [
     {
