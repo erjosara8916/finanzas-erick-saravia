@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import TransactionForm from '../components/financial-health/TransactionForm';
 import TransactionList from '../components/financial-health/TransactionList';
 import TransactionSummary from '../components/financial-health/TransactionSummary';
@@ -126,6 +127,11 @@ export default function FinancialHealthPage() {
                     <Button variant="outline" onClick={() => setActiveStep(0)}>
                       Anterior
                     </Button>
+                    <Link to="/proyeccion-crediticia">
+                      <Button variant="primary">
+                        Planifica tu crédito
+                      </Button>
+                    </Link>
                   </div>
                 </>
               )}
