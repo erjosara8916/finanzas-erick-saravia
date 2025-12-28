@@ -134,7 +134,7 @@ export default function LoanSummary() {
           </div>
           <div className="flex justify-between items-center py-1.5 sm:py-2 pt-3 sm:pt-4">
             <span className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Costo Total (Interés + Cuotas)
+              Costo Total (Total pagos - Capital recibido)
             </span>
             <span className="text-base sm:text-lg font-bold text-red-600 dark:text-red-400">
               {formatCurrency(summary.totalSunkCost)}

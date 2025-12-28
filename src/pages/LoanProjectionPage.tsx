@@ -7,6 +7,7 @@ import Collapsible from '../components/ui/Collapsible';
 import Stepper from '../components/ui/Stepper';
 import OrientationWarning from '../components/ui/OrientationWarning';
 import Button from '../components/ui/Button';
+import Dialog from '../components/ui/Dialog';
 import CapacityWarning from '../components/loan/CapacityWarning';
 import { useLoanStore } from '../store/loanStore';
 import { useFinancialHealthStore } from '../store/financialHealthStore';
@@ -14,7 +15,7 @@ import { useAnalytics, useEngagementTracking } from '../hooks/useAnalytics';
 import { calculateAmortizationTable } from '../lib/engine';
 import { Decimal } from 'decimal.js';
 import { Link } from 'react-router-dom';
-import { Info } from 'lucide-react';
+import { Info, AlertTriangle } from 'lucide-react';
 import { amountToRange } from '../lib/analytics';
 
 export default function LoanProjectionPage() {
@@ -36,6 +37,10 @@ export default function LoanProjectionPage() {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isConfigOpen, setIsConfigOpen] = useState<boolean>(true);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
+  const [showHealthModal, setShowHealthModal] = useState<boolean>(false);
+  const modalShownRef = useRef<boolean>(false);
+  const [showCapacityModal, setShowCapacityModal] = useState<boolean>(false);
+  const capacityModalShownRef = useRef<boolean>(false);
   
   // Determinar si los pasos están completados
   const hasLoanData = !!(loanInput && loanInput.principal && loanInput.annualRate && loanInput.termMonths);
@@ -100,6 +105,22 @@ export default function LoanProjectionPage() {
       setHasInitialized(false);
     }
   }, [isConfigOpen, hasLoanData, hasInitialized]);
+
+  // Abrir modal cuando se carga la página y no hay datos de salud financiera
+  useEffect(() => {
+    if (!hasFinancialHealthData && !modalShownRef.current) {
+      setShowHealthModal(true);
+      modalShownRef.current = true;
+    }
+  }, [hasFinancialHealthData]);
+
+  // Abrir modal cuando se detecta que excede la capacidad de pago
+  useEffect(() => {
+    if (capacityCheck.exceeds && !capacityModalShownRef.current) {
+      setShowCapacityModal(true);
+      capacityModalShownRef.current = true;
+    }
+  }, [capacityCheck.exceeds]);
 
   // Trackear cuando se completa un cálculo
   useEffect(() => {
@@ -223,13 +244,6 @@ export default function LoanProjectionPage() {
             </div>
           )}
 
-          {/* Capacity Warning */}
-          {capacityCheck.exceeds && (
-            <div className="transition-all duration-300">
-              <CapacityWarning />
-            </div>
-          )}
-
           <div className="transition-all duration-300">
             <Collapsible 
               title="Configuración" 
@@ -244,6 +258,12 @@ export default function LoanProjectionPage() {
                 <div className="transition-all duration-300">
                   {activeStep === 0 && (
                     <div className="animate-fade-in space-y-3 sm:space-y-4">
+                      {/* Capacity Warning */}
+                      {capacityCheck.exceeds && (
+                        <div className="transition-all duration-300">
+                          <CapacityWarning />
+                        </div>
+                      )}
                       <LoanForm />
                       <div className="flex justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
                         <Button onClick={handleNext}>
@@ -254,6 +274,12 @@ export default function LoanProjectionPage() {
                   )}
                   {activeStep === 1 && (
                     <div className="animate-fade-in space-y-3 sm:space-y-4">
+                      {/* Capacity Warning */}
+                      {capacityCheck.exceeds && (
+                        <div className="transition-all duration-300">
+                          <CapacityWarning />
+                        </div>
+                      )}
                       <ExtraPaymentsManager />
                       <div className="flex justify-between gap-2 sm:gap-3 pt-3 sm:pt-4">
                         <Button variant="outline" onClick={handlePrevious}>
@@ -289,6 +315,74 @@ export default function LoanProjectionPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de recomendación de Salud Financiera */}
+      <Dialog
+        isOpen={showHealthModal}
+        onClose={() => setShowHealthModal(false)}
+        title="Recomendación"
+        className="max-w-md"
+      >
+        <div className="flex items-start gap-3">
+          <Info className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-6">
+              <strong>Recomendación:</strong> Para hacer un mejor análisis de tu proyección crediticia, 
+              te recomendamos completar la información en la herramienta{' '}
+              <strong>Salud Financiera</strong>.
+              Esto te permitirá obtener resultados más precisos y ajustados a tu realidad financiera.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
+              <Button variant="outline" onClick={() => setShowHealthModal(false)} className="w-full sm:w-auto">
+                Continuar
+              </Button>
+              <Link to="/salud-financiera" onClick={() => setShowHealthModal(false)} className="w-full sm:w-auto">
+                <Button variant="cta" className="w-full sm:w-auto">
+                  Salud Financiera
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </Dialog>
+
+      {/* Modal de Alerta de Capacidad de Pago */}
+      <Dialog
+        isOpen={showCapacityModal}
+        onClose={() => setShowCapacityModal(false)}
+        title="Alerta de Capacidad de Pago"
+        className="max-w-md"
+      >
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+              La cuota propuesta más los abonos a capital superan tu capacidad de pago sugerida. 
+              Te recomendamos ajustar los valores o revisar tu{' '}
+              <Link
+                to="/salud-financiera"
+                className="underline font-medium hover:text-orange-900 dark:hover:text-orange-100 text-orange-700 dark:text-orange-300"
+              >
+                salud financiera
+              </Link>
+              .
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-6">
+              Recuerda que es importante mantener un margen de seguridad en tus finanzas personales.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
+              <Button variant="outline" onClick={() => setShowCapacityModal(false)} className="w-full sm:w-auto">
+                Entendido
+              </Button>
+              <Link to="/salud-financiera" onClick={() => setShowCapacityModal(false)} className="w-full sm:w-auto">
+                <Button variant="cta" className="w-full sm:w-auto">
+                  Revisar Salud Financiera
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 }

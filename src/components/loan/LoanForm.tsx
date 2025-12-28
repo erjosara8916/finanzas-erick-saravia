@@ -1,4 +1,5 @@
 import { useLoanStore } from '../../store/loanStore';
+import { useFinancialHealthStore } from '../../store/financialHealthStore';
 import { validatePrincipal, validateRate, validateTermMonths, validateDate, validateAmount } from '../../lib/validation';
 import { calculateMonthlyPayment } from '../../lib/engine';
 import { formatCurrency } from '../../lib/formatters';
@@ -15,6 +16,7 @@ import { useAnalytics } from '../../hooks/useAnalytics';
 export default function LoanForm() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
   const updateLoanInput = useLoanStore((state) => state.updateLoanInput);
+  const suggestedPaymentCapacity = useFinancialHealthStore((state) => state.suggestedPaymentCapacity());
   const { trackFormFieldChange, trackValidationError, trackCalculation } = useAnalytics();
   
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -122,6 +124,19 @@ export default function LoanForm() {
 
   return (
     <Card title="Detalles del Préstamo" description="Ingresa la información del préstamo para calcular la tabla de amortización">
+      {suggestedPaymentCapacity.gt(0) && (
+        <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+          <div className="flex items-center gap-2">
+            <Label className="text-sm font-medium text-green-800 dark:text-green-200">
+              Capacidad de Endeudamiento Sugerida:
+            </Label>
+            <span className="text-sm font-semibold text-green-900 dark:text-green-100">
+              {formatCurrency(suggestedPaymentCapacity.toNumber())}
+            </span>
+            <Tooltip message="Capacidad de pago mensual sugerida basada en tu información de salud financiera. Esta es una referencia para evaluar si el préstamo se ajusta a tu capacidad de pago" />
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div className="space-y-1.5 sm:space-y-2">
           <div className="flex items-center gap-1">

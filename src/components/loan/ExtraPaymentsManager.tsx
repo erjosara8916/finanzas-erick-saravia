@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useLoanStore } from '../../store/loanStore';
+import { useFinancialHealthStore } from '../../store/financialHealthStore';
 import Button from '../ui/Button';
 import InputCurrency from '../ui/InputCurrency';
 import Label from '../ui/Label';
@@ -11,9 +12,10 @@ import { X } from 'lucide-react';
 import { validateAmount } from '../../lib/validation';
 import { addMonths, parseISO } from 'date-fns';
 import { formatDateDisplay, formatCurrency, formatMonthsToYearsAndMonths } from '../../lib/formatters';
-import { calculateAmortizationTable, calculateLoanSummary } from '../../lib/engine';
+import { calculateAmortizationTable, calculateLoanSummary, calculateMonthlyPayment } from '../../lib/engine';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { trackEventWithParams, hasUserConsent } from '../../lib/analytics';
+import { Decimal } from 'decimal.js';
 
 export default function ExtraPaymentsManager() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
@@ -21,6 +23,7 @@ export default function ExtraPaymentsManager() {
   const addExtraPayment = useLoanStore((state) => state.addExtraPayment);
   const removeExtraPayment = useLoanStore((state) => state.removeExtraPayment);
   const removeAllExtraPayments = useLoanStore((state) => state.removeAllExtraPayments);
+  const suggestedPaymentCapacity = useFinancialHealthStore((state) => state.suggestedPaymentCapacity());
   const { trackExtraPaymentAdded, trackExtraPaymentRemoved } = useAnalytics();
 
   const [paymentType, setPaymentType] = useState<'single' | 'periodic'>('single');
@@ -35,6 +38,41 @@ export default function ExtraPaymentsManager() {
   const existingPayments = Object.entries(extraPayments)
     .map(([period, amount]) => ({ period: parseInt(period), amount }))
     .sort((a, b) => a.period - b.period);
+
+  // Calcular cuota mensual total
+  const totalMonthlyPayment = useMemo(() => {
+    if (!loanInput || !loanInput.principal || !loanInput.annualRate || !loanInput.termMonths) {
+      return null;
+    }
+
+    try {
+      const principal = new Decimal(parseFloat(loanInput.principal));
+      const annualRate = new Decimal(parseFloat(loanInput.annualRate.toString()));
+      const monthlyPayment = calculateMonthlyPayment(principal, annualRate, loanInput.termMonths);
+      
+      const insurance = loanInput.insuranceAmount ? parseFloat(loanInput.insuranceAmount) : 0;
+      const fees = loanInput.additionalFees ? parseFloat(loanInput.additionalFees) : 0;
+      
+      const useFixedPayment = loanInput.useFixedPayment || false;
+      if (useFixedPayment && loanInput.fixedMonthlyPayment) {
+        return parseFloat(loanInput.fixedMonthlyPayment);
+      }
+      
+      return monthlyPayment.toNumber() + insurance + fees;
+    } catch (error) {
+      console.error('Error calculating total monthly payment:', error);
+      return null;
+    }
+  }, [loanInput]);
+
+  // Calcular máximo abono sugerido
+  const maxSuggestedPayment = useMemo(() => {
+    if (!suggestedPaymentCapacity.gt(0) || totalMonthlyPayment === null) {
+      return null;
+    }
+    const max = suggestedPaymentCapacity.minus(new Decimal(totalMonthlyPayment));
+    return max.gt(0) ? max.toNumber() : 0;
+  }, [suggestedPaymentCapacity, totalMonthlyPayment]);
 
   // Calcular métricas de ahorro y plazo (before early return)
   const { monthsSaved, savings, costWithoutExtras, costWithExtras, finalizationDate } = useMemo(() => {
@@ -231,7 +269,20 @@ export default function ExtraPaymentsManager() {
 
   return (
     <Card title="Abonos a Capital" description="Agrega abonos a capital para reducir el principal más rápido">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      {maxSuggestedPayment !== null && maxSuggestedPayment > 0 && (
+        <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+          <div className="flex items-center gap-2">
+            <Label className="text-sm font-medium text-green-800 dark:text-green-200">
+              Máximo Abono Sugerido:
+            </Label>
+            <span className="text-sm font-semibold text-green-900 dark:text-green-100">
+              {formatCurrency(maxSuggestedPayment)}
+            </span>
+            <Tooltip message="Monto máximo recomendado para abonos a capital basado en tu capacidad de endeudamiento menos la cuota mensual del préstamo" />
+          </div>
+        </div>
+      )}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-start">
         {/* Columna 1: Formulario */}
         <div className="space-y-3 sm:space-y-4">
           <div className="space-y-1.5 sm:space-y-2">
@@ -353,7 +404,7 @@ export default function ExtraPaymentsManager() {
         </div>
 
         {/* Columna 2: Resumen y Listado de abonos a capital */}
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-3 sm:space-y-4 flex flex-col">
           {/* Resumen de abonos */}
           <div className="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
             <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">

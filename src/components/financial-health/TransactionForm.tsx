@@ -32,6 +32,7 @@ export default function TransactionForm() {
   const [amount, setAmount] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [category, setCategory] = useState<string>('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
   
   const addTransaction = useFinancialHealthStore((state) => state.addTransaction);
 
@@ -40,17 +41,26 @@ export default function TransactionForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!amount || new Decimal(amount).lte(0)) {
-      return;
-    }
+    const newErrors: Record<string, string> = {};
     
     if (!description.trim()) {
-      return;
+      newErrors.description = 'La descripción es requerida';
+    }
+    
+    if (!amount || new Decimal(amount).lte(0)) {
+      newErrors.amount = 'El monto es requerido y debe ser mayor a cero';
     }
     
     if (!category) {
+      newErrors.category = 'La categoría es requerida';
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
+    
+    setErrors({});
 
     addTransaction({
       type,
@@ -68,6 +78,7 @@ export default function TransactionForm() {
   const handleTypeChange = (newType: TransactionType) => {
     setType(newType);
     setCategory(''); // Reset category when type changes
+    setErrors({}); // Clear errors when type changes
   };
 
   return (
@@ -110,10 +121,22 @@ export default function TransactionForm() {
             id="description"
             type="text"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              if (errors.description) {
+                setErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.description;
+                  return newErrors;
+                });
+              }
+            }}
             placeholder="Ej: Nómina, Alquiler, Netflix..."
-            required
+            error={!!errors.description}
           />
+          {errors.description && (
+            <p className="text-sm text-red-500 mt-1">{errors.description}</p>
+          )}
         </div>
 
         {/* Amount and Category in same row */}
@@ -124,10 +147,22 @@ export default function TransactionForm() {
             <InputCurrency
               id="amount"
               value={amount}
-              onChange={setAmount}
+              onChange={(value) => {
+                setAmount(value);
+                if (errors.amount) {
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.amount;
+                    return newErrors;
+                  });
+                }
+              }}
               placeholder="0.00"
-              required
+              error={!!errors.amount}
             />
+            {errors.amount && (
+              <p className="text-sm text-red-500 mt-1">{errors.amount}</p>
+            )}
           </div>
 
           {/* Category */}
@@ -136,8 +171,17 @@ export default function TransactionForm() {
             <Select
               id="category"
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
+              onChange={(e) => {
+                setCategory(e.target.value);
+                if (errors.category) {
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.category;
+                    return newErrors;
+                  });
+                }
+              }}
+              error={!!errors.category}
             >
               <option value="">Selecciona una categoría</option>
               {currentCategories.map((cat) => (
@@ -146,6 +190,9 @@ export default function TransactionForm() {
                 </option>
               ))}
             </Select>
+            {errors.category && (
+              <p className="text-sm text-red-500 mt-1">{errors.category}</p>
+            )}
           </div>
         </div>
 

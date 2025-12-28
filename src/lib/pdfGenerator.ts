@@ -95,7 +95,7 @@ export function generatePDFReport(data: PDFData): void {
   
   const metrics: Array<[string, string, [number, number, number]]> = [
     ['Total a Pagar:', formatCurrency(summary.totalPaid), primaryColor],
-    ['Costo Total (Interés + Cuotas):', formatCurrency(summary.totalSunkCost), accentColor],
+    ['Costo Total (Total pagos - capital recibido):', formatCurrency(summary.totalSunkCost), accentColor],
     ['Plazo Real:', formatMonthsToYearsAndMonths(summary.actualTermMonths), [46, 204, 113]], // Verde
     ['Total de Intereses:', formatCurrency(summary.totalInterest), secondaryColor],
   ];
