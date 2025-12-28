@@ -355,14 +355,14 @@ export default function LandingPage() {
             Explora nuestras herramientas financieras y toma el control de tus finanzas
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/proyeccion-crediticia">
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto">
-                Proyección Crediticia
-              </Button>
-            </Link>
             <Link to="/salud-financiera">
               <Button size="lg" variant="secondary" className="w-full sm:w-auto">
                 Salud Financiera
+              </Button>
+            </Link>
+            <Link to="/proyeccion-crediticia">
+              <Button size="lg" variant="secondary" className="w-full sm:w-auto">
+                Proyección Crediticia
               </Button>
             </Link>
           </div>

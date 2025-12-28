@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import HerramientasDropdown from './HerramientasDropdown';
-import { Menu, X, ChevronRight } from 'lucide-react';
+import { X, ChevronRight } from 'lucide-react';
 
 export default function Header() {
   const location = useLocation();
@@ -80,14 +80,14 @@ export default function Header() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors"
+              className="md:hidden px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors font-medium"
               aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? (
                 <X className="h-6 w-6" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <span>MENU</span>
               )}
             </button>
           </div>
@@ -116,7 +116,7 @@ export default function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
               className="text-xl font-bold text-gray-900 dark:text-white"
             >
-              Finanzas
+              METIS | Finanzas
             </Link>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
