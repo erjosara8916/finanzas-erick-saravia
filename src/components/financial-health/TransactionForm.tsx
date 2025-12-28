@@ -13,6 +13,7 @@ const incomeCategories: { value: IncomeCategory; label: string }[] = [
   { value: 'salario_fijo', label: 'Salario Fijo' },
   { value: 'bonos_comisiones', label: 'Bonos/Comisiones' },
   { value: 'renta_alquileres', label: 'Renta/Alquileres' },
+  { value: 'inversiones', label: 'Inversiones' },
   { value: 'otros', label: 'Otros' },
 ];
 
@@ -22,8 +23,11 @@ const expenseCategories: { value: ExpenseCategory; label: string }[] = [
   { value: 'transporte', label: 'Transporte' },
   { value: 'servicios', label: 'Servicios' },
   { value: 'deudas_existentes', label: 'Deudas Existentes' },
-  { value: 'ocio_vicios', label: 'Ocio/Vicios' },
+  { value: 'ocio_vicios', label: 'Ocio' },
   { value: 'educacion', label: 'Educación' },
+  { value: 'salud', label: 'Salud' },
+  { value: 'caridad_regalos', label: 'Caridad/Regalos' },
+  { value: 'familia', label: 'Familia' },
   { value: 'otros', label: 'Otros' },
 ];
 

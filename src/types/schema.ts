@@ -43,6 +43,7 @@ export type IncomeCategory =
   | 'salario_fijo' 
   | 'bonos_comisiones' 
   | 'renta_alquileres' 
+  | 'inversiones'
   | 'otros';
 
 export type ExpenseCategory = 
@@ -53,6 +54,9 @@ export type ExpenseCategory =
   | 'deudas_existentes' 
   | 'ocio_vicios' 
   | 'educacion'
+  | 'salud'
+  | 'caridad_regalos'
+  | 'familia'
   | 'otros';
 
 export interface FinancialTransaction {
