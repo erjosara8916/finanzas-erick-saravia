@@ -267,9 +267,36 @@ export default function ExtraPaymentsManager({ onFieldBlur }: ExtraPaymentsManag
     }
   };
 
-  // Calcular resumen de abonos
-  const totalPayments = existingPayments.length;
-  const totalAmount = existingPayments.reduce((sum, { amount }) => sum + parseFloat(amount), 0);
+  // Calcular resumen de abonos usando los valores reales aplicados de la tabla de amortización
+  const actualExtraPaymentsSummary = useMemo(() => {
+    if (!loanInput || !loanInput.principal || !loanInput.annualRate || !loanInput.termMonths) {
+      return { totalPayments: 0, totalAmount: 0 };
+    }
+
+    try {
+      const rows = calculateAmortizationTable(loanInput, extraPayments);
+      // Sumar todos los pagos extra realmente aplicados (pueden diferir de los ingresados)
+      const totalExtraAmount = rows.reduce((sum, row) => sum + row.extraComponent, 0);
+      // Contar solo los períodos donde realmente se aplicó un pago extra
+      const periodsWithExtras = rows.filter(row => row.extraComponent > 0).length;
+      
+      return {
+        totalPayments: periodsWithExtras,
+        totalAmount: totalExtraAmount,
+      };
+    } catch (error) {
+      console.error('Error calculating actual extra payments summary:', error);
+      // Fallback a valores ingresados si hay error
+      const existingPaymentsArray = Object.entries(extraPayments)
+        .map(([period, amount]) => ({ period: parseInt(period), amount }));
+      const totalPayments = existingPaymentsArray.length;
+      const totalAmount = existingPaymentsArray.reduce((sum, { amount }) => sum + parseFloat(amount), 0);
+      return { totalPayments, totalAmount };
+    }
+  }, [loanInput, extraPayments]);
+
+  const totalPayments = actualExtraPaymentsSummary.totalPayments;
+  const totalAmount = actualExtraPaymentsSummary.totalAmount;
 
   return (
     <Card title="Abonos a Capital" description="Agrega abonos a capital para reducir el principal más rápido">

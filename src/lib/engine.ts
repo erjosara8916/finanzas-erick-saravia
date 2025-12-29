@@ -71,7 +71,7 @@ export function calculateAmortizationTable(
     
     let actualPrincipalReduction: Decimal;
     let actualExtraPayment: Decimal;
-    let finalRegularPayment: Decimal;
+    let principalComponent: Decimal;
     let totalMonthlyPayment: Decimal;
 
     if (useFixedPayment && fixedMonthlyPayment && fixedMonthlyPayment.gt(0)) {
@@ -93,16 +93,20 @@ export function calculateAmortizationTable(
         ? balance 
         : totalPrincipalReduction;
 
-      // Calcular pago extra aplicado
+      // Calcular pago extra aplicado (separate from regular principal)
       actualExtraPayment = actualPrincipalReduction.gt(adjustedPrincipalFromPayment)
         ? actualPrincipalReduction.minus(adjustedPrincipalFromPayment)
         : new Decimal(0);
-
-      // El pago regular base es: cuota base - seguro - fees
-      finalRegularPayment = baseMonthlyPayment.minus(insurance).minus(fees);
       
-      // Cuota mensual total incluye el pago extra si existe
-      totalMonthlyPayment = baseMonthlyPayment.plus(actualExtraPayment);
+      // Calcular componente de capital regular (sin extra)
+      principalComponent = actualPrincipalReduction.minus(actualExtraPayment);
+      
+      // Calcular total mensual: interest + insurance + principal (sin extra) + extra + fees
+      totalMonthlyPayment = interestForPeriod
+        .plus(insurance)
+        .plus(principalComponent)
+        .plus(actualExtraPayment)
+        .plus(fees);
       
       // Actualizar saldo
       const previousBalance = balance;
@@ -113,8 +117,15 @@ export function calculateAmortizationTable(
         // Ajustar el abono a capital para pagar el saldo completo
         actualPrincipalReduction = previousBalance;
         balance = new Decimal(0);
-        // En el último pago, ajustar la cuota total al saldo restante + intereses + seguro + fees
-        totalMonthlyPayment = previousBalance.plus(interestForPeriod).plus(insurance).plus(fees);
+        // En el último pago, el principal component es el balance completo (no hay extra en último pago)
+        principalComponent = actualPrincipalReduction;
+        actualExtraPayment = new Decimal(0);
+        // Calcular total: interest + insurance + principal + extra + fees
+        totalMonthlyPayment = interestForPeriod
+          .plus(insurance)
+          .plus(principalComponent)
+          .plus(actualExtraPayment)
+          .plus(fees);
       }
     } else {
       // Modo normal: usar cuota calculada
@@ -128,8 +139,17 @@ export function calculateAmortizationTable(
         // Last payment: pay remaining balance + interest
         actualPrincipalReduction = balance;
         actualExtraPayment = new Decimal(0); // No extra payment on last payment
-        finalRegularPayment = balance.plus(interestForPeriod);
         balance = new Decimal(0);
+        
+        // Calculate principal component (only regular payment, without extra)
+        principalComponent = actualPrincipalReduction;
+        
+        // Calculate total monthly payment: interest + insurance + principal (sin extra) + extra + fees
+        totalMonthlyPayment = interestForPeriod
+          .plus(insurance)
+          .plus(principalComponent)
+          .plus(actualExtraPayment)
+          .plus(fees);
       } else {
         // Regular payment: calculate principal from payment
         let principalFromPayment = monthlyPayment.minus(interestForPeriod);
@@ -147,32 +167,35 @@ export function calculateAmortizationTable(
           ? balance 
           : totalPrincipalReduction;
 
-        // Calculate actual extra payment applied
+        // Calculate actual extra payment applied (separate from regular principal)
         actualExtraPayment = actualPrincipalReduction.gt(principalFromPayment)
           ? actualPrincipalReduction.minus(principalFromPayment)
           : new Decimal(0);
 
+        // Calculate principal component (only regular payment, without extra)
+        principalComponent = actualPrincipalReduction.minus(actualExtraPayment);
+
         // Update balance
         balance = balance.minus(actualPrincipalReduction);
-        finalRegularPayment = monthlyPayment;
+        
+        // Calculate total monthly payment: interest + insurance + principal (sin extra) + extra + fees
+        totalMonthlyPayment = interestForPeriod
+          .plus(insurance)
+          .plus(principalComponent)
+          .plus(actualExtraPayment)
+          .plus(fees);
       }
-
-      // Calculate total monthly payment (payment + insurance + fees + extra)
-      totalMonthlyPayment = finalRegularPayment.plus(insurance).plus(fees).plus(actualExtraPayment);
     }
 
     // Update sunk cost (interest + insurance + fees)
     sunkCostAccumulated = sunkCostAccumulated.plus(interestForPeriod).plus(insurance).plus(fees);
-
-    // Calculate actual principal component (may differ from calculated if it's the last payment)
-    const actualPrincipalComponent = actualPrincipalReduction;
 
     rows.push({
       period,
       paymentDate: currentDate.toISOString().split('T')[0],
       monthlyPayment: totalMonthlyPayment.toNumber(),
       interestComponent: interestForPeriod.toNumber(),
-      principalComponent: actualPrincipalComponent.toNumber(),
+      principalComponent: principalComponent.toNumber(),
       extraComponent: actualExtraPayment.toNumber(),
       balance: balance.toNumber(),
       sunkCostAccumulated: sunkCostAccumulated.toNumber(),
