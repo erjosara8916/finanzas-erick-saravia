@@ -13,7 +13,11 @@ import { useState, useMemo, useEffect } from 'react';
 import { Decimal } from 'decimal.js';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
-export default function LoanForm() {
+interface LoanFormProps {
+  onFieldBlur?: () => void;
+}
+
+export default function LoanForm({ onFieldBlur }: LoanFormProps = {}) {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
   const updateLoanInput = useLoanStore((state) => state.updateLoanInput);
   const suggestedPaymentCapacity = useFinancialHealthStore((state) => state.suggestedPaymentCapacity());
@@ -149,6 +153,7 @@ export default function LoanForm() {
             id="name"
             value={loanInput.name}
             onChange={(e) => handleChange('name', e.target.value)}
+            onBlur={onFieldBlur}
             placeholder="ej., Oferta Banco X"
           />
         </div>
@@ -164,6 +169,7 @@ export default function LoanForm() {
             id="principal"
             value={loanInput.principal}
             onChange={(value) => handleChange('principal', value)}
+            onBlur={onFieldBlur}
             error={!!errors.principal}
           />
           {errors.principal && (
@@ -184,6 +190,7 @@ export default function LoanForm() {
             step="0.01"
             value={loanInput.annualRate}
             onChange={(e) => handleChange('annualRate', e.target.value)}
+            onBlur={onFieldBlur}
             placeholder="12.5"
             error={!!errors.annualRate}
           />
@@ -205,6 +212,7 @@ export default function LoanForm() {
             min="1"
             value={loanInput.termMonths || ''}
             onChange={(e) => handleChange('termMonths', parseInt(e.target.value) || 0)}
+            onBlur={onFieldBlur}
             placeholder="60"
             error={!!errors.termMonths}
           />
@@ -260,6 +268,7 @@ export default function LoanForm() {
               id="totalMonthlyPayment"
               value={loanInput.fixedMonthlyPayment || ''}
               onChange={(value) => handleChange('fixedMonthlyPayment', value)}
+              onBlur={onFieldBlur}
               error={!!errors.fixedMonthlyPayment}
               className="bg-blue-50 dark:bg-blue-900/20 font-semibold"
             />
@@ -291,6 +300,7 @@ export default function LoanForm() {
             type="date"
             value={loanInput.startDate}
             onChange={(e) => handleChange('startDate', e.target.value)}
+            onBlur={onFieldBlur}
             error={!!errors.startDate}
           />
           {errors.startDate && (
@@ -309,6 +319,7 @@ export default function LoanForm() {
             id="insuranceAmount"
             value={loanInput.insuranceAmount}
             onChange={(value) => handleChange('insuranceAmount', value)}
+            onBlur={onFieldBlur}
             error={!!errors.insuranceAmount}
           />
           {errors.insuranceAmount && (
@@ -327,6 +338,7 @@ export default function LoanForm() {
             id="additionalFees"
             value={loanInput.additionalFees}
             onChange={(value) => handleChange('additionalFees', value)}
+            onBlur={onFieldBlur}
             error={!!errors.additionalFees}
           />
           {errors.additionalFees && (

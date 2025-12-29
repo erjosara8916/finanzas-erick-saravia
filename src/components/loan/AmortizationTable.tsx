@@ -7,7 +7,11 @@ import Tooltip from '../ui/Tooltip';
 import { useMemo, useState, useEffect } from 'react';
 import { Decimal } from 'decimal.js';
 
-export default function AmortizationTable() {
+interface AmortizationTableProps {
+  onFieldBlur?: () => void;
+}
+
+export default function AmortizationTable({ onFieldBlur }: AmortizationTableProps = {}) {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
   const extraPayments = useLoanStore((state) => state.getActiveExtraPayments());
   const addExtraPayment = useLoanStore((state) => state.addExtraPayment);
@@ -146,6 +150,7 @@ export default function AmortizationTable() {
                           removeExtraPayment(row.period);
                         }
                       }}
+                      onFieldBlur={onFieldBlur}
                     />
                   </td>
                   <td className="p-2 sm:p-3 text-right font-medium text-gray-900 dark:text-gray-100">
@@ -170,11 +175,13 @@ function EditableExtraPayment({
   currentValue,
   extraPayments,
   onUpdate,
+  onFieldBlur,
 }: {
   period: number;
   currentValue: number;
   extraPayments: Record<number, string>;
   onUpdate: (amount: string) => void;
+  onFieldBlur?: () => void;
 }) {
   // Obtener el valor actual del store
   const storedValue = extraPayments[period] || '0';
@@ -213,6 +220,11 @@ function EditableExtraPayment({
       // Si hay error, restaurar el valor almacenado
       const currentStoredValue = extraPayments[period] || '0';
       setLocalValue(currentStoredValue);
+    }
+    
+    // Llamar al callback si está presente
+    if (onFieldBlur) {
+      onFieldBlur();
     }
   };
 

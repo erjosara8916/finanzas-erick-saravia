@@ -10,7 +10,7 @@ export interface InputCurrencyProps extends Omit<InputHTMLAttributes<HTMLInputEl
 }
 
 const InputCurrency = forwardRef<HTMLInputElement, InputCurrencyProps>(
-  ({ className, value, onChange, error, ...props }, ref) => {
+  ({ className, value, onChange, error, onBlur, ...props }, ref) => {
     // Initialize display value from prop value
     const getInitialDisplayValue = () => {
       if (value) {
@@ -64,7 +64,7 @@ const InputCurrency = forwardRef<HTMLInputElement, InputCurrencyProps>(
       onChange(parsedString);
     };
 
-    const handleBlur = () => {
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       // Format on blur before marking as not editing
       if (displayValue) {
         try {
@@ -94,6 +94,11 @@ const InputCurrency = forwardRef<HTMLInputElement, InputCurrencyProps>(
       
       // Mark as not editing after formatting
       isEditingRef.current = false;
+      
+      // Call the onBlur prop if provided
+      if (onBlur) {
+        onBlur(e);
+      }
     };
 
     return (

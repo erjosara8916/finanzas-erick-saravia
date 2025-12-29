@@ -86,7 +86,10 @@ export default function TransactionForm() {
   };
 
   return (
-    <Card title="Agregar Transacción">
+    <Card 
+      title="Agregar Transacción"
+      description="💡 Recuerda ingresar tus gastos e ingresos en montos mensuales. Esto nos ayudará a calcular con precisión tu capacidad de pago."
+    >
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Toggle Type */}
         <div className="flex gap-2">

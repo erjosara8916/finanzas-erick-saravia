@@ -17,7 +17,11 @@ import { useAnalytics } from '../../hooks/useAnalytics';
 import { trackEventWithParams, hasUserConsent } from '../../lib/analytics';
 import { Decimal } from 'decimal.js';
 
-export default function ExtraPaymentsManager() {
+interface ExtraPaymentsManagerProps {
+  onFieldBlur?: () => void;
+}
+
+export default function ExtraPaymentsManager({ onFieldBlur }: ExtraPaymentsManagerProps = {}) {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
   const extraPayments = useLoanStore((state) => state.getActiveExtraPayments());
   const addExtraPayment = useLoanStore((state) => state.addExtraPayment);
@@ -337,6 +341,7 @@ export default function ExtraPaymentsManager() {
                   id="extra-amount"
                   value={newAmount}
                   onChange={setNewAmount}
+                  onBlur={onFieldBlur}
                 />
               </div>
               <Button onClick={handleAdd} size="md" className="w-full">
@@ -390,6 +395,7 @@ export default function ExtraPaymentsManager() {
                   id="extra-amount"
                   value={newAmount}
                   onChange={setNewAmount}
+                  onBlur={onFieldBlur}
                 />
               </div>
               <Button onClick={handleAdd} size="md" className="w-full">

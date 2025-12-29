@@ -41,6 +41,7 @@ export default function LoanProjectionPage() {
   const modalShownRef = useRef<boolean>(false);
   const [showCapacityModal, setShowCapacityModal] = useState<boolean>(false);
   const capacityModalShownRef = useRef<boolean>(false);
+  const [shouldCheckCapacity, setShouldCheckCapacity] = useState<boolean>(false);
   
   // Determinar si los pasos están completados
   const hasLoanData = !!(loanInput && loanInput.principal && loanInput.annualRate && loanInput.termMonths);
@@ -114,13 +115,14 @@ export default function LoanProjectionPage() {
     }
   }, [hasFinancialHealthData]);
 
-  // Abrir modal cuando se detecta que excede la capacidad de pago
+  // Abrir modal cuando se detecta que excede la capacidad de pago (solo después de terminar de editar)
   useEffect(() => {
-    if (capacityCheck.exceeds && !capacityModalShownRef.current) {
+    if (shouldCheckCapacity && capacityCheck.exceeds && !capacityModalShownRef.current) {
       setShowCapacityModal(true);
       capacityModalShownRef.current = true;
+      setShouldCheckCapacity(false); // Reset después de mostrar el modal
     }
-  }, [capacityCheck.exceeds]);
+  }, [capacityCheck.exceeds, shouldCheckCapacity]);
 
   // Trackear cuando se completa un cálculo
   useEffect(() => {
@@ -208,6 +210,11 @@ export default function LoanProjectionPage() {
     }
   };
 
+  // Función para activar la verificación de capacidad cuando el usuario termine de editar
+  const handleFieldBlur = () => {
+    setShouldCheckCapacity(true);
+  };
+
   return (
     <>
       <OrientationWarning />
@@ -264,7 +271,7 @@ export default function LoanProjectionPage() {
                           <CapacityWarning />
                         </div>
                       )}
-                      <LoanForm />
+                      <LoanForm onFieldBlur={handleFieldBlur} />
                       <div className="flex justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
                         <Button onClick={handleNext}>
                           Siguiente
@@ -280,7 +287,7 @@ export default function LoanProjectionPage() {
                           <CapacityWarning />
                         </div>
                       )}
-                      <ExtraPaymentsManager />
+                      <ExtraPaymentsManager onFieldBlur={handleFieldBlur} />
                       <div className="flex justify-between gap-2 sm:gap-3 pt-3 sm:pt-4">
                         <Button variant="outline" onClick={handlePrevious}>
                           Anterior
@@ -311,7 +318,7 @@ export default function LoanProjectionPage() {
           </div>
 
           <div className="transition-all duration-300">
-            <AmortizationTable />
+            <AmortizationTable onFieldBlur={handleFieldBlur} />
           </div>
         </div>
       </div>
@@ -349,7 +356,10 @@ export default function LoanProjectionPage() {
       {/* Modal de Alerta de Capacidad de Pago */}
       <Dialog
         isOpen={showCapacityModal}
-        onClose={() => setShowCapacityModal(false)}
+        onClose={() => {
+          setShowCapacityModal(false);
+          capacityModalShownRef.current = false; // Reset para permitir que se muestre de nuevo
+        }}
         title="Alerta de Capacidad de Pago"
         className="max-w-md"
       >
