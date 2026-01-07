@@ -9,10 +9,12 @@ import Button from '../components/ui/Button';
 import Dialog from '../components/ui/Dialog';
 import { useFinancialHealthStore } from '../store/financialHealthStore';
 import { AlertCircle } from 'lucide-react';
+import type { FinancialTransaction } from '../types/schema';
 
 export default function FinancialHealthPage() {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [transactionToEdit, setTransactionToEdit] = useState<FinancialTransaction | null>(null);
   
   const totalIncome = useFinancialHealthStore((state) => state.totalIncome());
   const hasIncome = totalIncome.gt(0);
@@ -79,12 +81,17 @@ export default function FinancialHealthPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 {/* Left Column: Transaction Form */}
                 <div className="transition-all duration-300">
-                  <TransactionForm />
+                  <TransactionForm 
+                    transactionToEdit={transactionToEdit}
+                    onEditComplete={() => setTransactionToEdit(null)}
+                  />
                 </div>
 
                 {/* Right Column: Transaction List */}
                 <div className="transition-all duration-300">
-                  <TransactionList />
+                  <TransactionList 
+                    onEditTransaction={(transaction) => setTransactionToEdit(transaction)}
+                  />
                 </div>
               </div>
 

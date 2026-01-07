@@ -38,25 +38,23 @@ body {
   animation: fade-in 0.3s ease-out;
 }
 
-/* Mejorar contraste de opciones en selects en modo oscuro */
+/* Mejorar contraste de opciones en selects */
 select option {
   background-color: white;
   color: #111827;
 }
 
-@media (prefers-color-scheme: dark) {
-  select option {
-    background-color: #1f2937;
-    color: #f3f4f6;
-  }
-  
-  select:not(:disabled) {
-    color: #f3f4f6;
-  }
-  
-  select:not(:disabled) option:first-child {
-    color: #9ca3af;
-  }
+.dark select option {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
+
+.dark select:not(:disabled) {
+  color: #f3f4f6;
+}
+
+.dark select:not(:disabled) option:first-child {
+  color: #9ca3af;
 }
 
 /* Custom Scrollbar Styles */
@@ -80,18 +78,16 @@ select option {
 }
 
 /* Dark mode scrollbar */
-@media (prefers-color-scheme: dark) {
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: #1e293b;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #475569;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
-  }
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 /* Firefox scrollbar */
@@ -100,9 +96,7 @@ select option {
   scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
-@media (prefers-color-scheme: dark) {
-  .custom-scrollbar {
-    scrollbar-color: #475569 #1e293b;
-  }
+.dark .custom-scrollbar {
+  scrollbar-color: #475569 #1e293b;
 }
 

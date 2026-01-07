@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFinancialHealthStore } from '../../store/financialHealthStore';
 import Input from '../ui/Input';
 import InputCurrency from '../ui/InputCurrency';
@@ -6,7 +6,7 @@ import Label from '../ui/Label';
 import Select from '../ui/Select';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
-import type { TransactionType, IncomeCategory, ExpenseCategory } from '../../types/schema';
+import type { TransactionType, IncomeCategory, ExpenseCategory, FinancialTransaction } from '../../types/schema';
 import { Decimal } from 'decimal.js';
 
 const incomeCategories: { value: IncomeCategory; label: string }[] = [
@@ -31,7 +31,12 @@ const expenseCategories: { value: ExpenseCategory; label: string }[] = [
   { value: 'otros', label: 'Otros' },
 ];
 
-export default function TransactionForm() {
+interface TransactionFormProps {
+  transactionToEdit?: FinancialTransaction | null;
+  onEditComplete?: () => void;
+}
+
+export default function TransactionForm({ transactionToEdit, onEditComplete }: TransactionFormProps) {
   const [type, setType] = useState<TransactionType>('income');
   const [amount, setAmount] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -39,6 +44,24 @@ export default function TransactionForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const addTransaction = useFinancialHealthStore((state) => state.addTransaction);
+  const updateTransaction = useFinancialHealthStore((state) => state.updateTransaction);
+
+  // Cargar datos de la transacción a editar
+  useEffect(() => {
+    if (transactionToEdit) {
+      setType(transactionToEdit.type);
+      setAmount(transactionToEdit.amount);
+      setDescription(transactionToEdit.description);
+      setCategory(transactionToEdit.category);
+    } else {
+      // Reset form cuando no hay transacción a editar
+      setType('income');
+      setAmount('');
+      setDescription('');
+      setCategory('');
+    }
+    setErrors({});
+  }, [transactionToEdit]);
 
   const currentCategories = type === 'income' ? incomeCategories : expenseCategories;
 
@@ -66,17 +89,35 @@ export default function TransactionForm() {
     
     setErrors({});
 
-    addTransaction({
-      type,
-      amount,
-      description: description.trim(),
-      category: category as IncomeCategory | ExpenseCategory,
-    });
+    if (transactionToEdit) {
+      // Modo edición
+      updateTransaction(transactionToEdit.id, {
+        type,
+        amount,
+        description: description.trim(),
+        category: category as IncomeCategory | ExpenseCategory,
+      });
+      
+      // Notificar que la edición está completa
+      if (onEditComplete) {
+        onEditComplete();
+      }
+    } else {
+      // Modo creación
+      addTransaction({
+        type,
+        amount,
+        description: description.trim(),
+        category: category as IncomeCategory | ExpenseCategory,
+      });
+    }
 
-    // Reset form
-    setAmount('');
-    setDescription('');
-    setCategory('');
+    // Reset form solo si no estamos en modo edición
+    if (!transactionToEdit) {
+      setAmount('');
+      setDescription('');
+      setCategory('');
+    }
   };
 
   const handleTypeChange = (newType: TransactionType) => {
@@ -87,7 +128,7 @@ export default function TransactionForm() {
 
   return (
     <Card 
-      title="Agregar Transacción"
+      title={transactionToEdit ? "Editar Transacción" : "Agregar Transacción"}
       description="💡 Recuerda ingresar tus gastos e ingresos en montos mensuales. Esto nos ayudará a calcular con precisión tu capacidad de pago."
     >
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -204,9 +245,30 @@ export default function TransactionForm() {
         </div>
 
         {/* Submit Button */}
-        <Button type="submit" className="w-full">
-          Agregar a la lista
-        </Button>
+        <div className="flex gap-2">
+          {transactionToEdit && onEditComplete && (
+            <Button 
+              type="button" 
+              variant="outline" 
+              className="flex-1"
+              onClick={() => {
+                if (onEditComplete) {
+                  onEditComplete();
+                }
+                // Reset form
+                setAmount('');
+                setDescription('');
+                setCategory('');
+                setType('income');
+              }}
+            >
+              Cancelar
+            </Button>
+          )}
+          <Button type="submit" className={transactionToEdit ? "flex-1" : "w-full"}>
+            {transactionToEdit ? "Guardar cambios" : "Agregar a la lista"}
+          </Button>
+        </div>
       </form>
     </Card>
   );

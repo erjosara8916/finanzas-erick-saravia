@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import HerramientasDropdown from './HerramientasDropdown';
-import { X, ChevronRight } from 'lucide-react';
+import { useTheme } from '../../hooks/useTheme';
+import { X, ChevronRight, Sun, Moon } from 'lucide-react';
 
 export default function Header() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { toggleTheme, isDark } = useTheme();
 
   const navItems = [
     { path: '/', label: 'Inicio' },
@@ -75,21 +77,49 @@ export default function Header() {
                 </Link>
               ))}
               <HerramientasDropdown items={herramientasItems} />
+              
+              {/* Theme Toggle Button */}
+              <button
+                onClick={toggleTheme}
+                className="ml-2 p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors"
+                aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+                title={isDark ? 'Modo claro' : 'Modo oscuro'}
+              >
+                {isDark ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </button>
             </nav>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors font-medium"
-              aria-label="Toggle menu"
-              aria-expanded={isMobileMenuOpen}
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <span>MENU</span>
-              )}
-            </button>
+            {/* Mobile Menu Buttons */}
+            <div className="md:hidden flex items-center gap-2">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors"
+                aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+                title={isDark ? 'Modo claro' : 'Modo oscuro'}
+              >
+                {isDark ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </button>
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors font-medium"
+                aria-label="Toggle menu"
+                aria-expanded={isMobileMenuOpen}
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <span>MENU</span>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -108,7 +138,7 @@ export default function Header() {
         />
 
         {/* Sidebar */}
-        <div className="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-white dark:bg-gray-900 shadow-xl flex flex-col">
+        <div className="absolute left-0 top-0 h-full w-full bg-white dark:bg-gray-900 shadow-xl flex flex-col">
           {/* Sidebar Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
             <Link
@@ -184,6 +214,23 @@ export default function Header() {
                     );
                   })}
                 </div>
+              </div>
+
+              {/* Theme Toggle in Mobile Menu */}
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-800 mt-4">
+                <button
+                  onClick={() => {
+                    toggleTheme();
+                  }}
+                  className="flex items-center justify-between w-full px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors"
+                >
+                  <span>{isDark ? 'Modo Claro' : 'Modo Oscuro'}</span>
+                  {isDark ? (
+                    <Sun className="h-5 w-5" />
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
+                </button>
               </div>
             </div>
           </nav>

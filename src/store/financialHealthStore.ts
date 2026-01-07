@@ -20,6 +20,7 @@ function generateUUID(): string {
 interface FinancialHealthStore extends FinancialHealthState {
   // Actions
   addTransaction: (transaction: Omit<FinancialTransaction, 'id' | 'createdAt'>) => void;
+  updateTransaction: (id: string, transaction: Omit<FinancialTransaction, 'id' | 'createdAt'>) => void;
   removeTransaction: (id: string) => void;
   getTransactionsByType: (type: TransactionType) => FinancialTransaction[];
   
@@ -51,6 +52,22 @@ export const useFinancialHealthStore = create<FinancialHealthStore>()(
         
         set((state) => ({
           transactions: [...state.transactions, newTransaction],
+          lastUpdated: new Date().toISOString(),
+        }));
+      },
+
+      updateTransaction: (id, transaction) => {
+        set((state) => ({
+          transactions: state.transactions.map((t) =>
+            t.id === id
+              ? {
+                  ...t,
+                  ...transaction,
+                  id: t.id, // Mantener el ID original
+                  createdAt: t.createdAt, // Mantener la fecha de creación original
+                }
+              : t
+          ),
           lastUpdated: new Date().toISOString(),
         }));
       },
