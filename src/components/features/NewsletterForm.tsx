@@ -123,7 +123,7 @@ export default function NewsletterForm() {
           )}
         </Button>
         <p className="text-xs text-gray-500 dark:text-gray-400 italic text-center mt-2">
-          Tus datos se procesan localmente en tu dispositivo
+          Nunca compartimos tu correo. Cero spam, prometido.
         </p>
       </form>
     </Card>
