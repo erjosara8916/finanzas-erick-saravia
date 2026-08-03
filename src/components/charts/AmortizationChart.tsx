@@ -23,6 +23,7 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
 
     return rows.map((row) => {
       accumulatedPrincipal += row.principalComponent;
+      accumulatedPrincipal += row.extraComponent; // Include extra payments in the accumulated principal
 
       return {
         period: row.period,
