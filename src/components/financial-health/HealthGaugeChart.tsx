@@ -1,6 +1,13 @@
 import { useFinancialHealthStore } from '../../store/financialHealthStore';
-import GaugeChart from 'react-gauge-chart';
+import GaugeChartImport from 'react-gauge-chart';
 import { cn } from '../../lib/utils';
+
+// react-gauge-chart's CJS build double-wraps its default export (`export default
+// { default: GaugeChart }` under some bundlers' CJS/ESM interop) — unwrap defensively.
+const GaugeChart =
+  typeof GaugeChartImport === 'function'
+    ? GaugeChartImport
+    : (GaugeChartImport as unknown as { default: typeof GaugeChartImport }).default;
 
 interface GaugeChartProps {
   className?: string;

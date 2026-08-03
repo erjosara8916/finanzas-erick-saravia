@@ -54,9 +54,9 @@ Puedes responder directamente a este correo para contactar a {{from_name}}.
 Crea un archivo `.env` en la raíz del proyecto con:
 
 ```env
-VITE_EMAILJS_SERVICE_ID=tu_service_id
-VITE_EMAILJS_TEMPLATE_ID=tu_template_id
-VITE_EMAILJS_PUBLIC_KEY=tu_public_key
+PUBLIC_EMAILJS_SERVICE_ID=tu_service_id
+PUBLIC_EMAILJS_TEMPLATE_ID=tu_template_id
+PUBLIC_EMAILJS_PUBLIC_KEY=tu_public_key
 ```
 
 **Importante:** No subas el archivo `.env` al repositorio. Está en `.gitignore`.

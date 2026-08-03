@@ -1,0 +1,95 @@
+---
+import { ChevronDown } from 'lucide-react';
+
+interface HerramientaItem {
+  path: string;
+  label: string;
+}
+
+interface Props {
+  items: HerramientaItem[];
+}
+
+const { items } = Astro.props;
+const isAnyItemActive = items.some((item) => Astro.url.pathname.startsWith(item.path));
+---
+
+<div
+  class="herramientas-dropdown relative"
+  data-herramientas-dropdown
+>
+  <button
+    type="button"
+    data-herramientas-toggle
+    class:list={[
+      'px-3 sm:px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-1 whitespace-nowrap',
+      isAnyItemActive
+        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100',
+    ]}
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    <span>Herramientas</span>
+    <span data-herramientas-chevron class="h-4 w-4 transition-transform flex-shrink-0">
+      <ChevronDown className="h-4 w-4" />
+    </span>
+  </button>
+
+  <div
+    data-herramientas-menu
+    class="hidden absolute top-full right-0 sm:right-auto sm:left-0 pt-1 z-50 min-w-[200px] sm:w-56 max-w-[calc(100vw-2rem)]"
+  >
+    <div class="bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 py-1">
+      {
+        items.map((item) => {
+          const isActive = Astro.url.pathname.startsWith(item.path);
+          return (
+            <a
+              href={item.path}
+              class:list={[
+                'block px-4 py-2 text-sm transition-colors whitespace-nowrap',
+                isActive
+                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                  : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-100',
+              ]}
+            >
+              {item.label}
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-herramientas-dropdown]').forEach((dropdown) => {
+    const toggle = dropdown.querySelector<HTMLButtonElement>('[data-herramientas-toggle]');
+    const menu = dropdown.querySelector<HTMLElement>('[data-herramientas-menu]');
+    const chevron = dropdown.querySelector<HTMLElement>('[data-herramientas-chevron]');
+    if (!toggle || !menu) return;
+
+    const setOpen = (open: boolean) => {
+      menu.classList.toggle('hidden', !open);
+      toggle.setAttribute('aria-expanded', String(open));
+      chevron?.classList.toggle('rotate-180', open);
+    };
+
+    toggle.addEventListener('click', () => {
+      setOpen(menu.classList.contains('hidden'));
+    });
+
+    const hoverQuery = window.matchMedia('(hover: hover)');
+    dropdown.addEventListener('mouseenter', () => {
+      if (hoverQuery.matches) setOpen(true);
+    });
+    dropdown.addEventListener('mouseleave', () => {
+      if (hoverQuery.matches) setOpen(false);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!dropdown.contains(event.target as Node)) setOpen(false);
+    });
+  });
+</script>

@@ -1,0 +1,284 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NewsletterForm from '../components/features/NewsletterForm';
+import { Calculator, TrendingUp, BarChart3, Shield, Zap, CheckCircle2, Heart, Mail } from 'lucide-react';
+
+const features = [
+  {
+    icon: Calculator,
+    title: 'Precisión Financiera',
+    description:
+      'Evita errores de cálculo manual. Nuestros algoritmos replican las condiciones bancarias estándar para darte proyecciones fidedignas.',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Perspectiva Clara',
+    description: 'Entiende la curva de tu amortización de un vistazo. Transformamos tablas complejas en gráficos intuitivos.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Control Mes a Mes',
+    description: 'Desglosamos cada cuota para que entiendas la proporción exacta entre capital e intereses en cada pago.',
+  },
+  {
+    icon: Shield,
+    title: 'Planificación a Futuro',
+    description: 'Proyecta cómo quedarían tus finanzas al liquidar anticipadamente y toma decisiones basadas en números.',
+  },
+];
+
+const benefits = [
+  'Proyecciones exactas sin el margen de error humano.',
+  'Planificación flexible: Ajusta pagos extra según tu realidad económica.',
+  'Privacidad total: Tus datos financieros se procesan en tu dispositivo, garantizando confidencialidad.',
+  'Interfaz amigable diseñada para usuarios, no para contadores.',
+];
+
+const steps = [
+  {
+    number: '1',
+    title: 'Digitaliza tu préstamo',
+    description: 'Ingresa los datos actuales de tu crédito (tasa, plazo y monto).',
+  },
+  {
+    number: '2',
+    title: 'Diseña tu estrategia',
+    description: 'Prueba diferentes escenarios de abonos a capital y pagos extra.',
+  },
+  {
+    number: '3',
+    title: 'Visualiza el impacto',
+    description: 'Conoce cuánto tiempo y dinero ahorras siendo disciplinado con tu plan.',
+  },
+];
+
+const tools = [
+  {
+    title: 'Simulador Estratégico',
+    description:
+      'Analiza el impacto matemático de tus pagos. Descubre cómo pequeños aportes adicionales transforman el costo final de tu financiamiento.',
+    icon: Calculator,
+    link: '/proyeccion-crediticia',
+    color: 'blue',
+    buttonText: 'Simular mi Préstamo',
+  },
+  {
+    title: 'Chequeo de Solvencia',
+    description: 'Conoce tu capacidad real de pago antes de solicitar nuevo capital. Mantén un perfil financiero saludable.',
+    icon: Heart,
+    link: '/salud-financiera',
+    color: 'green',
+    buttonText: 'Evaluar mi Salud Financiera',
+  },
+];
+
+const colorClasses: Record<string, string> = {
+  blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+  green: 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
+};
+
+const ctaButton =
+  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none bg-[#E65100] text-white hover:bg-[#D84315] focus-visible:ring-[#E65100] dark:bg-[#E65100] dark:hover:bg-[#D84315] h-12 px-6 text-lg';
+
+const secondaryButton =
+  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none bg-gray-200 text-gray-900 hover:bg-gray-300 focus-visible:ring-gray-500 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 h-12 px-6 text-lg';
+---
+
+<BaseLayout
+  title="METIS | Finanzas"
+  description="Simulador de préstamos y chequeo de salud financiera. Visualiza tu deuda, planifica tus abonos y optimiza tus finanzas con datos reales — 100% privado, procesado en tu dispositivo."
+>
+  <div class="animate-fade-in pb-24">
+    <!-- Hero Section -->
+    <section data-section-name="hero" class="container mx-auto px-4 py-16 md:py-24 max-w-7xl">
+      <div class="text-center max-w-3xl mx-auto">
+        <h1 class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+          ¿Realmente tienes el control de tu crédito?
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8">
+          Un préstamo es una herramienta poderosa, pero solo si sabes gestionarla. Visualiza tu deuda, planifica tus
+          abonos y optimiza tus finanzas con datos reales.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+          <a
+            href="/proyeccion-crediticia"
+            data-cta-location="hero"
+            data-cta-text="Simular mi Préstamo"
+            data-cta-destination="/proyeccion-crediticia"
+            class={`${ctaButton} w-full sm:w-auto`}
+          >
+            <Zap className="mr-2 h-5 w-5" />
+            Simular mi Préstamo
+          </a>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 italic">Tus datos se procesan localmente en tu dispositivo</p>
+      </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section data-section-name="tools" class="bg-white dark:bg-gray-800 py-16">
+      <div class="container mx-auto px-4 max-w-7xl">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-4">
+          Tecnología para decisiones inteligentes
+        </h2>
+        <p class="text-center text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
+          Explora nuestras herramientas diseñadas para darte claridad financiera.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {
+            tools.map((tool) => (
+              <div class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 p-8 hover:shadow-lg transition-shadow">
+                <div class="flex flex-col items-center text-center">
+                  <div class={`mb-6 p-4 ${colorClasses[tool.color]} rounded-lg`}>
+                    <tool.icon className="h-12 w-12" />
+                  </div>
+                  <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-3">{tool.title}</h3>
+                  <p class="text-gray-600 dark:text-gray-400 mb-6">{tool.description}</p>
+                  <a
+                    href={tool.link}
+                    data-cta-location="tools_card"
+                    data-cta-text={tool.buttonText}
+                    data-cta-destination={tool.link}
+                    class={`${ctaButton} w-full sm:w-auto`}
+                  >
+                    <Zap className="mr-2 h-5 w-5" />
+                    {tool.buttonText}
+                  </a>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 italic mt-2">
+                    Tus datos se procesan localmente en tu dispositivo
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section data-section-name="features" class="container mx-auto px-4 py-16 max-w-7xl">
+      <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
+        Claridad financiera al instante
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {
+          features.map((feature) => (
+            <div class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 p-6">
+              <div class="flex flex-col items-center text-center">
+                <div class="mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <feature.icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
+                <p class="text-gray-600 dark:text-gray-400">{feature.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section data-section-name="benefits" class="bg-white dark:bg-gray-800 py-16">
+      <div class="container mx-auto px-4 max-w-7xl">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
+          Tu asistente financiero personal
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+          {
+            benefits.map((benefit) => (
+              <div class="flex items-start gap-3">
+                <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <p class="text-gray-700 dark:text-gray-300">{benefit}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section data-section-name="how-it-works" class="container mx-auto px-4 py-16 max-w-7xl">
+      <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
+        Toma el mando en 3 pasos
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        {
+          steps.map((step) => (
+            <div class="text-center">
+              <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 text-white text-2xl font-bold">
+                {step.number}
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{step.title}</h3>
+              <p class="text-gray-600 dark:text-gray-400">{step.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Newsletter Subscription Section -->
+    <section
+      data-section-name="newsletter"
+      class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 py-16"
+    >
+      <div class="container mx-auto px-4 max-w-4xl">
+        <div class="text-center mb-8">
+          <Mail className="h-12 w-12 text-white mx-auto mb-4" />
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Mejora tu IQ Financiero</h2>
+          <p class="text-xl text-blue-100">
+            Recibe consejos sobre cómo utilizar los productos bancarios a tu favor, estrategias de ahorro y
+            actualizaciones de nuestras herramientas.
+          </p>
+        </div>
+
+        <NewsletterForm client:visible />
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section data-section-name="cta" class="bg-gray-900 dark:bg-gray-950 py-16">
+      <div class="container mx-auto px-4 max-w-4xl text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">¿Listo para comenzar?</h2>
+        <p class="text-xl text-gray-300 mb-8">Explora nuestras herramientas financieras y toma el control de tus finanzas</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/salud-financiera"
+            data-cta-location="footer"
+            data-cta-text="Salud Financiera"
+            data-cta-destination="/salud-financiera"
+            class={`${secondaryButton} w-full sm:w-auto`}
+          >
+            Salud Financiera
+          </a>
+          <a
+            href="/proyeccion-crediticia"
+            data-cta-location="footer"
+            data-cta-text="Proyección Crediticia"
+            data-cta-destination="/proyeccion-crediticia"
+            class={`${secondaryButton} w-full sm:w-auto`}
+          >
+            Proyección Crediticia
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { trackEventWithParams, hasUserConsent } from '../lib/analytics';
+  import { initEngagementTracking } from '../lib/engagementTracking';
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-cta-location]').forEach((el) => {
+    el.addEventListener('click', () => {
+      if (!hasUserConsent()) return;
+      trackEventWithParams('cta_click', {
+        ctaLocation: el.dataset.ctaLocation!,
+        ctaText: el.dataset.ctaText!,
+        destination: el.dataset.ctaDestination!,
+      });
+    });
+  });
+
+  initEngagementTracking('landing');
+</script>

@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { AlertTriangle } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -23,12 +22,12 @@ export default function CapacityWarning({ className }: CapacityWarningProps) {
           <p className="text-xs sm:text-sm text-orange-700 dark:text-orange-300 mb-2 sm:mb-3">
             La cuota propuesta más los abonos a capital superan tu capacidad de pago sugerida. 
             Te recomendamos ajustar los valores o revisar tu{' '}
-            <Link
-              to="/salud-financiera"
+            <a
+              href="/salud-financiera"
               className="underline font-medium hover:text-orange-900 dark:hover:text-orange-100"
             >
-Salud Financiera
-            </Link>
+              Salud Financiera
+            </a>
             .
           </p>
           <p className="text-xs text-orange-600 dark:text-orange-400">

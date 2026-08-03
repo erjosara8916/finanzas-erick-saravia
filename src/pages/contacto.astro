@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/features/ContactForm';
+import { Mail } from 'lucide-react';
+---
+
+<BaseLayout
+  title="Contacto"
+  description="¿Encontraste un error o tienes una idea? Contáctanos — leemos cada mensaje y tus reportes tienen prioridad directa en nuestro roadmap."
+>
+  <div class="container mx-auto px-4 py-8 pb-24 max-w-7xl animate-fade-in">
+    <header class="mb-8 text-center">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Contacto</h1>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Contact Information -->
+      <div class="lg:col-span-1 space-y-6">
+        <div class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Tu opinión impulsa este proyecto</h2>
+          <div class="space-y-4">
+            <div class="flex items-start gap-3">
+              <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-white">Email</p>
+                <a
+                  href="mailto:ericksaravia16@gmail.com"
+                  class="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  ericksaravia16@gmail.com
+                </a>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-4">
+              Leemos cada mensaje. Tus reportes y sugerencias tienen prioridad directa en nuestro roadmap de desarrollo.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">¿Encontraste un error o tienes una idea?</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Esta plataforma está en constante evolución. Si detectas un bug, un cálculo extraño o se te ocurre una nueva
+            funcionalidad que te gustaría ver, cuéntanoslo. Estamos construyendo esta herramienta para ti.
+          </p>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="lg:col-span-2">
+        <ContactForm client:visible />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

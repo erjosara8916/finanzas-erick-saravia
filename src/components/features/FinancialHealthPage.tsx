@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import TransactionForm from '../components/financial-health/TransactionForm';
-import TransactionList from '../components/financial-health/TransactionList';
-import TransactionSummary from '../components/financial-health/TransactionSummary';
-import HealthGaugeChart from '../components/financial-health/HealthGaugeChart';
-import Stepper from '../components/ui/Stepper';
-import Button from '../components/ui/Button';
-import Dialog from '../components/ui/Dialog';
-import { useFinancialHealthStore } from '../store/financialHealthStore';
+import ErrorBoundary from '../analytics/ErrorBoundary';
+import TransactionForm from '../financial-health/TransactionForm';
+import TransactionList from '../financial-health/TransactionList';
+import TransactionSummary from '../financial-health/TransactionSummary';
+import HealthGaugeChart from '../financial-health/HealthGaugeChart';
+import Stepper from '../ui/Stepper';
+import Button from '../ui/Button';
+import Dialog from '../ui/Dialog';
+import { useFinancialHealthStore } from '../../store/financialHealthStore';
 import { AlertCircle } from 'lucide-react';
-import type { FinancialTransaction } from '../types/schema';
+import type { FinancialTransaction } from '../../types/schema';
 
 export default function FinancialHealthPage() {
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -58,7 +58,7 @@ export default function FinancialHealthPage() {
   }, [activeStep, hasIncome]);
 
   return (
-    <>
+    <ErrorBoundary>
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <header className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
@@ -134,11 +134,11 @@ export default function FinancialHealthPage() {
                     <Button variant="outline" onClick={() => setActiveStep(0)}>
                       Anterior
                     </Button>
-                    <Link to="/proyeccion-crediticia">
+                    <a href="/proyeccion-crediticia">
                       <Button variant="primary">
                         Simular mi Préstamo
                       </Button>
-                    </Link>
+                    </a>
                   </div>
                 </>
               )}
@@ -183,6 +183,6 @@ export default function FinancialHealthPage() {
           </div>
         </div>
       </Dialog>
-    </>
+    </ErrorBoundary>
   );
 }
