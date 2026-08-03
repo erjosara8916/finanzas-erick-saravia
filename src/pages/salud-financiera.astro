@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FinancialHealthPage from '../components/features/FinancialHealthPage';
+---
+
+<BaseLayout
+  title="Salud Financiera"
+  description="Analiza tu estado financiero y calcula tu capacidad de endeudamiento. Conoce tu DTI y cuánto puedes destinar a nuevos pagos con seguridad."
+>
+  <FinancialHealthPage client:load />
+</BaseLayout>

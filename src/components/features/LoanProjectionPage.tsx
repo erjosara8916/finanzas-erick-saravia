@@ -1,22 +1,22 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import LoanForm from '../components/loan/LoanForm';
-import ExtraPaymentsManager from '../components/loan/ExtraPaymentsManager';
-import AmortizationTable from '../components/loan/AmortizationTable';
-import LoanSummary from '../components/loan/LoanSummary';
-import Collapsible from '../components/ui/Collapsible';
-import Stepper from '../components/ui/Stepper';
-import OrientationWarning from '../components/ui/OrientationWarning';
-import Button from '../components/ui/Button';
-import Dialog from '../components/ui/Dialog';
-import CapacityWarning from '../components/loan/CapacityWarning';
-import { useLoanStore } from '../store/loanStore';
-import { useFinancialHealthStore } from '../store/financialHealthStore';
-import { useAnalytics, useEngagementTracking } from '../hooks/useAnalytics';
-import { calculateAmortizationTable } from '../lib/engine';
+import LoanForm from '../loan/LoanForm';
+import ExtraPaymentsManager from '../loan/ExtraPaymentsManager';
+import AmortizationTable from '../loan/AmortizationTable';
+import LoanSummary from '../loan/LoanSummary';
+import Collapsible from '../ui/Collapsible';
+import Stepper from '../ui/Stepper';
+import OrientationWarning from '../ui/OrientationWarning';
+import Button from '../ui/Button';
+import Dialog from '../ui/Dialog';
+import CapacityWarning from '../loan/CapacityWarning';
+import { useLoanStore } from '../../store/loanStore';
+import { useFinancialHealthStore } from '../../store/financialHealthStore';
+import { useAnalytics, useEngagementTracking } from '../../hooks/useAnalytics';
+import { calculateAmortizationTable } from '../../lib/engine';
 import { Decimal } from 'decimal.js';
-import { Link } from 'react-router-dom';
 import { Info, AlertTriangle } from 'lucide-react';
-import { amountToRange } from '../lib/analytics';
+import { amountToRange } from '../../lib/analytics';
+import ErrorBoundary from '../analytics/ErrorBoundary';
 
 export default function LoanProjectionPage() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
@@ -216,7 +216,7 @@ export default function LoanProjectionPage() {
   };
 
   return (
-    <>
+    <ErrorBoundary>
       <OrientationWarning />
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 pb-20 sm:pb-24 max-w-7xl">
         <header className="mb-4 sm:mb-8">
@@ -238,12 +238,12 @@ export default function LoanProjectionPage() {
                   <p className="text-xs sm:text-sm text-amber-800 dark:text-amber-200">
                     <strong>Recomendación:</strong> Para hacer un mejor análisis de tu proyección crediticia, 
                     te recomendamos completar la información en la herramienta{' '}
-                    <Link
-                      to="/salud-financiera"
+                    <a
+                      href="/salud-financiera"
                       className="underline font-medium hover:text-amber-900 dark:hover:text-amber-100"
                     >
                       Salud Financiera
-                    </Link>
+                    </a>
                     . Esto te permitirá obtener resultados más precisos y ajustados a tu realidad financiera.
                   </p>
                 </div>
@@ -341,13 +341,13 @@ export default function LoanProjectionPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
               <Button variant="outline" onClick={() => setShowHealthModal(false)} className="w-full sm:w-auto">
-                Continuar
+                Entendido
               </Button>
-              <Link to="/salud-financiera" onClick={() => setShowHealthModal(false)} className="w-full sm:w-auto">
+              <a href="/salud-financiera" onClick={() => setShowHealthModal(false)} className="w-full sm:w-auto">
                 <Button variant="cta" className="w-full sm:w-auto">
-                  Salud Financiera
+                  Evaluar mi Salud Financiera
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -369,12 +369,12 @@ export default function LoanProjectionPage() {
             <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
               La cuota propuesta más los abonos a capital superan tu capacidad de pago sugerida. 
               Te recomendamos ajustar los valores o revisar tu{' '}
-              <Link
-                to="/salud-financiera"
+              <a
+                href="/salud-financiera"
                 className="underline font-medium hover:text-orange-900 dark:hover:text-orange-100 text-orange-700 dark:text-orange-300"
               >
                 salud financiera
-              </Link>
+              </a>
               .
             </p>
             <p className="text-xs text-gray-600 dark:text-gray-400 mb-6">
@@ -384,16 +384,16 @@ export default function LoanProjectionPage() {
               <Button variant="outline" onClick={() => setShowCapacityModal(false)} className="w-full sm:w-auto">
                 Entendido
               </Button>
-              <Link to="/salud-financiera" onClick={() => setShowCapacityModal(false)} className="w-full sm:w-auto">
+              <a href="/salud-financiera" onClick={() => setShowCapacityModal(false)} className="w-full sm:w-auto">
                 <Button variant="cta" className="w-full sm:w-auto">
-                  Revisar Salud Financiera
+                  Evaluar mi Salud Financiera
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
       </Dialog>
-    </>
+    </ErrorBoundary>
   );
 }
 

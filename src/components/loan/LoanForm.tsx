@@ -145,7 +145,7 @@ export default function LoanForm({ onFieldBlur }: LoanFormProps = {}) {
         <div className="space-y-1.5 sm:space-y-2">
           <div className="flex items-center gap-1">
             <Label htmlFor="name" required>
-              Nombre del prestamo (alias)
+              Nombre del préstamo (alias)
             </Label>
             <Tooltip message="Nombre descriptivo para identificar este préstamo. Útil para comparar diferentes ofertas o condiciones" />
           </div>

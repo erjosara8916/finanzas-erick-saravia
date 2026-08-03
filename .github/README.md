@@ -4,7 +4,7 @@
 
 Este proyecto utiliza GitHub Actions para construir y desplegar la aplicación. Para que funcione correctamente, necesitas configurar los siguientes secretos en tu repositorio de GitHub.
 
-### Configurar el secreto VITE_GA_MEASUREMENT_ID
+### Configurar el secreto PUBLIC_GA_MEASUREMENT_ID
 
 Tienes dos opciones para configurar el secreto. **Recomendamos usar el Environment Secret** para mayor seguridad:
 
@@ -14,7 +14,7 @@ Tienes dos opciones para configurar el secreto. **Recomendamos usar el Environme
 2. Navega a **Settings** → **Environments**
 3. Haz clic en **github-pages** (o créalo si no existe)
 4. En la sección **Environment secrets**, haz clic en **Add secret**
-5. Nombre: `VITE_GA_MEASUREMENT_ID`
+5. Nombre: `PUBLIC_GA_MEASUREMENT_ID`
 6. Valor: Tu ID de Google Analytics 4 (formato: `G-XXXXXXXXXX`)
 7. Haz clic en **Add secret**
 
@@ -23,7 +23,7 @@ Tienes dos opciones para configurar el secreto. **Recomendamos usar el Environme
 1. Ve a tu repositorio en GitHub
 2. Navega a **Settings** → **Secrets and variables** → **Actions**
 3. Haz clic en **New repository secret**
-4. Nombre: `VITE_GA_MEASUREMENT_ID`
+4. Nombre: `PUBLIC_GA_MEASUREMENT_ID`
 5. Valor: Tu ID de Google Analytics 4 (formato: `G-XXXXXXXXXX`)
 6. Haz clic en **Add secret**
 
@@ -45,7 +45,7 @@ Tienes dos opciones para configurar el secreto. **Recomendamos usar el Environme
 
 ### Notas importantes
 
-- El secreto `VITE_GA_MEASUREMENT_ID` es opcional para el workflow de CI, pero **requerido** para el despliegue
+- El secreto `PUBLIC_GA_MEASUREMENT_ID` es opcional para el workflow de CI, pero **requerido** para el despliegue
 - Si no configuras el secreto, la aplicación se construirá pero Google Analytics no funcionará
 - El archivo CNAME se copia automáticamente al directorio `dist` durante el build
 

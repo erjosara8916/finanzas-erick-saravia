@@ -23,7 +23,7 @@ const expenseCategories: { value: ExpenseCategory; label: string }[] = [
   { value: 'transporte', label: 'Transporte' },
   { value: 'servicios', label: 'Servicios' },
   { value: 'deudas_existentes', label: 'Deudas Existentes' },
-  { value: 'ocio_vicios', label: 'Ocio' },
+  { value: 'ocio_vicios', label: 'Ocio/Vicios' },
   { value: 'educacion', label: 'Educación' },
   { value: 'salud', label: 'Salud' },
   { value: 'caridad_regalos', label: 'Caridad/Regalos' },
@@ -266,7 +266,7 @@ export default function TransactionForm({ transactionToEdit, onEditComplete }: T
             </Button>
           )}
           <Button type="submit" className={transactionToEdit ? "flex-1" : "w-full"}>
-            {transactionToEdit ? "Guardar cambios" : "Agregar a la lista"}
+            {transactionToEdit ? "Guardar cambios" : "Agregar"}
           </Button>
         </div>
       </form>

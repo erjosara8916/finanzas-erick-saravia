@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LoanProjectionPage from '../components/features/LoanProjectionPage';
+---
+
+<BaseLayout
+  title="Proyección Crediticia"
+  description="Calcula y visualiza tablas de amortización de préstamos con precisión. Simula pagos extra y descubre cuánto tiempo y dinero puedes ahorrar."
+>
+  <LoanProjectionPage client:load />
+</BaseLayout>
