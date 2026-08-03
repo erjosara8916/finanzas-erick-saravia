@@ -341,11 +341,11 @@ export default function LoanProjectionPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
               <Button variant="outline" onClick={() => setShowHealthModal(false)} className="w-full sm:w-auto">
-                Continuar
+                Entendido
               </Button>
               <Link to="/salud-financiera" onClick={() => setShowHealthModal(false)} className="w-full sm:w-auto">
                 <Button variant="cta" className="w-full sm:w-auto">
-                  Salud Financiera
+                  Evaluar mi Salud Financiera
                 </Button>
               </Link>
             </div>
@@ -386,7 +386,7 @@ export default function LoanProjectionPage() {
               </Button>
               <Link to="/salud-financiera" onClick={() => setShowCapacityModal(false)} className="w-full sm:w-auto">
                 <Button variant="cta" className="w-full sm:w-auto">
-                  Revisar Salud Financiera
+                  Evaluar mi Salud Financiera
                 </Button>
               </Link>
             </div>

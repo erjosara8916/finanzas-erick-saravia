@@ -16,7 +16,7 @@ export default function Header() {
   ];
 
   const herramientasItems = [
-    { path: '/salud-financiera', label: 'Salud financiera' },
+    { path: '/salud-financiera', label: 'Salud Financiera' },
     { path: '/proyeccion-crediticia', label: 'Proyección Crediticia' },
   ];
 
@@ -110,13 +110,13 @@ export default function Header() {
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors font-medium"
-                aria-label="Toggle menu"
+                aria-label="Abrir menú"
                 aria-expanded={isMobileMenuOpen}
               >
                 {isMobileMenuOpen ? (
                   <X className="h-6 w-6" />
                 ) : (
-                  <span>MENU</span>
+                  <span>Menú</span>
                 )}
               </button>
             </div>
@@ -224,7 +224,7 @@ export default function Header() {
                   }}
                   className="flex items-center justify-between w-full px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors"
                 >
-                  <span>{isDark ? 'Modo Claro' : 'Modo Oscuro'}</span>
+                  <span>{isDark ? 'Modo claro' : 'Modo oscuro'}</span>
                   {isDark ? (
                     <Sun className="h-5 w-5" />
                   ) : (

@@ -74,7 +74,7 @@ export default function LandingPage() {
       icon: Calculator,
       link: '/proyeccion-crediticia',
       color: 'blue',
-      buttonText: 'Simular escenarios',
+      buttonText: 'Simular mi Préstamo',
     },
     {
       title: 'Chequeo de Solvencia',
@@ -82,7 +82,7 @@ export default function LandingPage() {
       icon: Heart,
       link: '/salud-financiera',
       color: 'green',
-      buttonText: 'Evaluar mi perfil',
+      buttonText: 'Evaluar mi Salud Financiera',
     },
   ];
 
@@ -109,7 +109,7 @@ export default function LandingPage() {
       
       // Trackear éxito
       trackNewsletterSubscription('success', subscriptionEmail, !!subscriptionName);
-      trackCTAClick('newsletter', 'Quiero aprender más', 'newsletter_subscription');
+      trackCTAClick('newsletter', 'Suscribirme', 'newsletter_subscription');
       
       setIsSubscribed(true);
       setSubscriptionEmail('');
@@ -143,13 +143,13 @@ export default function LandingPage() {
             Un préstamo es una herramienta poderosa, pero solo si sabes gestionarla. Visualiza tu deuda, planifica tus abonos y optimiza tus finanzas con datos reales.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
-            <Link 
+            <Link
               to="/proyeccion-crediticia"
-              onClick={() => trackCTAClick('hero', 'Optimizar mi Préstamo', '/proyeccion-crediticia')}
+              onClick={() => trackCTAClick('hero', 'Simular mi Préstamo', '/proyeccion-crediticia')}
             >
               <Button size="lg" variant="cta" className="w-full sm:w-auto">
                 <Zap className="mr-2 h-5 w-5" />
-                Optimizar mi Préstamo
+                Simular mi Préstamo
               </Button>
             </Link>
             {/* <Link to="/contacto">
@@ -347,7 +347,7 @@ export default function LandingPage() {
                 className="w-full"
                 size="lg"
                 variant="cta"
-                onClick={() => trackCTAClick('newsletter', 'Quiero aprender más', 'newsletter_subscription')}
+                onClick={() => trackCTAClick('newsletter', 'Suscribirme', 'newsletter_subscription')}
               >
                 {isSubscribing ? (
                   <>
@@ -356,7 +356,7 @@ export default function LandingPage() {
                 ) : (
                   <>
                     <Send className="mr-2 h-5 w-5" />
-                    Quiero aprender más
+                    Suscribirme
                   </>
                 )}
               </Button>

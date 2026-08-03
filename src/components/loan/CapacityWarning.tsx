@@ -27,7 +27,7 @@ export default function CapacityWarning({ className }: CapacityWarningProps) {
               to="/salud-financiera"
               className="underline font-medium hover:text-orange-900 dark:hover:text-orange-100"
             >
-              salud financiera
+Salud Financiera
             </Link>
             .
           </p>

@@ -499,7 +499,7 @@ export default function ExtraPaymentsManager({ onFieldBlur }: ExtraPaymentsManag
                   onClick={() => setIsPaymentsDialogOpen(true)}
                   className="w-full"
                 >
-                  Ver pagos
+                  Ver abonos
                 </Button>
               </div>
             </div>

@@ -136,7 +136,7 @@ export default function FinancialHealthPage() {
                     </Button>
                     <Link to="/proyeccion-crediticia">
                       <Button variant="primary">
-                        Planifica tu crédito
+                        Simular mi Préstamo
                       </Button>
                     </Link>
                   </div>

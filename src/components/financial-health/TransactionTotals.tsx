@@ -12,6 +12,7 @@ const incomeCategoryLabels: Record<string, string> = {
   salario_fijo: 'Salario Fijo',
   bonos_comisiones: 'Bonos/Comisiones',
   renta_alquileres: 'Renta/Alquileres',
+  inversiones: 'Inversiones',
   otros: 'Otros',
 };
 
@@ -23,6 +24,10 @@ const expenseCategoryLabels: Record<string, string> = {
   deudas_existentes: 'Deudas Existentes',
   ocio_vicios: 'Ocio/Vicios',
   educacion: 'Educación',
+  salud: 'Salud',
+  caridad_regalos: 'Caridad/Regalos',
+  familia: 'Familia',
+  otros: 'Otros',
 };
 
 const getCategoryLabel = (category: string, type: 'income' | 'expense') => {
@@ -74,7 +79,7 @@ export default function TransactionTotals() {
               className="w-full flex items-center justify-center gap-2"
             >
               <Eye className="h-4 w-4" />
-              Ver detalle
+              Ver detalles
             </Button>
           </div>
         </div>
