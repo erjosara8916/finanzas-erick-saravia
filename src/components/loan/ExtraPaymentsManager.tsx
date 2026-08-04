@@ -313,9 +313,9 @@ export default function ExtraPaymentsManager({ onFieldBlur }: ExtraPaymentsManag
           </div>
         </div>
       )}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-stretch">
         {/* Columna 1: Formulario */}
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-3 sm:space-y-4 flex flex-col h-full">
           <div className="space-y-1.5 sm:space-y-2">
             <div className="flex items-center gap-1">
               <Label htmlFor="payment-type">Tipo de Pago</Label>
@@ -339,111 +339,111 @@ export default function ExtraPaymentsManager({ onFieldBlur }: ExtraPaymentsManag
             </Select>
           </div>
 
-          {paymentType === 'single' ? (
-            <div className="space-y-3 sm:space-y-4">
-              <div className="space-y-1.5 sm:space-y-2">
-                <div className="flex items-center gap-1">
-                  <Label htmlFor="extra-period">Período (Mes)</Label>
-                  <Tooltip message="Selecciona el mes en el que deseas realizar el pago extra a capital" />
+          <div className="flex-1 flex flex-col gap-3 sm:gap-4">
+            {paymentType === 'single' ? (
+              <>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <div className="flex items-center gap-1">
+                    <Label htmlFor="extra-period">Período (Mes)</Label>
+                    <Tooltip message="Selecciona el mes en el que deseas realizar el pago extra a capital" />
+                  </div>
+                <Select
+                  id="extra-period"
+                  value={newPeriod}
+                  onChange={(e) => setNewPeriod(e.target.value)}
+                >
+                  <option value="">Seleccionar mes</option>
+                  {periods.map((p) => (
+                    <option key={p} value={p}>
+                      {formatPeriodWithDate(p)}
+                    </option>
+                  ))}
+                </Select>
                 </div>
-              <Select
-                id="extra-period"
-                value={newPeriod}
-                onChange={(e) => setNewPeriod(e.target.value)}
-              >
-                <option value="">Seleccionar mes</option>
-                {periods.map((p) => (
-                  <option key={p} value={p}>
-                    {formatPeriodWithDate(p)}
-                  </option>
-                ))}
-              </Select>
-              </div>
-              <div className="space-y-1.5 sm:space-y-2">
-                <div className="flex items-center gap-1">
-                  <Label htmlFor="extra-amount">Monto</Label>
-                  <Tooltip message="Cantidad adicional que pagarás en este período para reducir el capital del préstamo más rápido" />
+                <div className="space-y-1.5 sm:space-y-2">
+                  <div className="flex items-center gap-1">
+                    <Label htmlFor="extra-amount">Monto</Label>
+                    <Tooltip message="Cantidad adicional que pagarás en este período para reducir el capital del préstamo más rápido" />
+                  </div>
+                  <InputCurrency
+                    id="extra-amount"
+                    value={newAmount}
+                    onChange={setNewAmount}
+                    onBlur={onFieldBlur}
+                  />
                 </div>
-                <InputCurrency
-                  id="extra-amount"
-                  value={newAmount}
-                  onChange={setNewAmount}
-                  onBlur={onFieldBlur}
-                />
-              </div>
-              <Button onClick={handleAdd} size="md" className="w-full">
-                Agregar
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-3 sm:space-y-4">
-              <div className="space-y-1.5 sm:space-y-2">
-                <div className="flex items-center gap-1">
-                  <Label htmlFor="start-period">Mes Inicio</Label>
-                  <Tooltip message="Primer mes del rango en el que comenzarás a realizar pagos extra periódicos" />
+              </>
+            ) : (
+              <>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <div className="flex items-center gap-1">
+                    <Label htmlFor="start-period">Mes Inicio</Label>
+                    <Tooltip message="Primer mes del rango en el que comenzarás a realizar pagos extra periódicos" />
+                  </div>
+                <Select
+                  id="start-period"
+                  value={startPeriod}
+                  onChange={(e) => setStartPeriod(e.target.value)}
+                >
+                  <option value="">Seleccionar mes</option>
+                  {periods.map((p) => (
+                    <option key={p} value={p}>
+                      {formatPeriodWithDate(p)}
+                    </option>
+                  ))}
+                </Select>
                 </div>
-              <Select
-                id="start-period"
-                value={startPeriod}
-                onChange={(e) => setStartPeriod(e.target.value)}
-              >
-                <option value="">Seleccionar mes</option>
-                {periods.map((p) => (
-                  <option key={p} value={p}>
-                    {formatPeriodWithDate(p)}
-                  </option>
-                ))}
-              </Select>
-              </div>
-              <div className="space-y-1.5 sm:space-y-2">
-                <div className="flex items-center gap-1">
-                  <Label htmlFor="end-period">Mes Final</Label>
-                  <Tooltip message="Último mes del rango en el que realizarás pagos extra periódicos" />
+                <div className="space-y-1.5 sm:space-y-2">
+                  <div className="flex items-center gap-1">
+                    <Label htmlFor="end-period">Mes Final</Label>
+                    <Tooltip message="Último mes del rango en el que realizarás pagos extra periódicos" />
+                  </div>
+                <Select
+                  id="end-period"
+                  value={endPeriod}
+                  onChange={(e) => setEndPeriod(e.target.value)}
+                >
+                  <option value="">Seleccionar mes</option>
+                  {periods.map((p) => (
+                    <option key={p} value={p}>
+                      {formatPeriodWithDate(p)}
+                    </option>
+                  ))}
+                </Select>
                 </div>
-              <Select
-                id="end-period"
-                value={endPeriod}
-                onChange={(e) => setEndPeriod(e.target.value)}
-              >
-                <option value="">Seleccionar mes</option>
-                {periods.map((p) => (
-                  <option key={p} value={p}>
-                    {formatPeriodWithDate(p)}
-                  </option>
-                ))}
-              </Select>
-              </div>
-              <div className="space-y-1.5 sm:space-y-2">
-                <div className="flex items-center gap-1">
-                  <Label htmlFor="extra-amount">Monto</Label>
-                  <Tooltip message="Cantidad que pagarás adicionalmente en cada mes del rango seleccionado para reducir el capital más rápido" />
+                <div className="space-y-1.5 sm:space-y-2">
+                  <div className="flex items-center gap-1">
+                    <Label htmlFor="extra-amount">Monto</Label>
+                    <Tooltip message="Cantidad que pagarás adicionalmente en cada mes del rango seleccionado para reducir el capital más rápido" />
+                  </div>
+                  <InputCurrency
+                    id="extra-amount"
+                    value={newAmount}
+                    onChange={setNewAmount}
+                    onBlur={onFieldBlur}
+                  />
                 </div>
-                <InputCurrency
-                  id="extra-amount"
-                  value={newAmount}
-                  onChange={setNewAmount}
-                  onBlur={onFieldBlur}
-                />
-              </div>
-              <Button onClick={handleAdd} size="md" className="w-full">
-                Agregar
-              </Button>
-            </div>
-          )}
+              </>
+            )}
 
-          {error && (
-            <p className="text-sm text-red-500">{error}</p>
-          )}
+            {error && (
+              <p className="text-sm text-red-500">{error}</p>
+            )}
+
+            <Button onClick={handleAdd} size="md" className="w-full mt-auto">
+              Agregar
+            </Button>
+          </div>
         </div>
 
         {/* Columna 2: Resumen y Listado de abonos a capital */}
-        <div className="space-y-3 sm:space-y-4 flex flex-col">
+        <div className="space-y-3 sm:space-y-4 flex flex-col h-full">
           {/* Resumen de abonos */}
-          <div className="p-3 sm:p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+          <div className="p-3 sm:p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800 flex-1 flex flex-col">
             <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
               Resumen de Abonos a Capital
             </h4>
-            <div className="space-y-1.5 sm:space-y-2">
+            <div className="gap-1.5 sm:gap-2 flex-1 flex flex-col">
               <div className="flex justify-between items-center">
                 <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Cantidad de abonos:</span>
                 <span className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">
@@ -492,7 +492,7 @@ export default function ExtraPaymentsManager({ onFieldBlur }: ExtraPaymentsManag
                   </span>
                 </div>
               )}
-              <div className="pt-2">
+              <div className="pt-2 mt-auto">
                 <Button
                   variant="primary"
                   size="sm"
