@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import { useMemo } from 'react';
 import type { AmortizationRow } from '../../types/schema';
-import { formatCurrency } from '../../lib/formatters';
+import { formatCurrency, formatDateMonthYear } from '../../lib/formatters';
 
 interface AmortizationChartProps {
   rows: AmortizationRow[];
@@ -30,16 +30,22 @@ function formatYAxisTick(value: number): string {
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    const totalPagado = data.principal + data.sunkCost;
     return (
       <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
-        <p className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
-          Período {payload[0].payload.period}
+        <p className="font-semibold text-gray-900 dark:text-gray-100">
+          {formatDateMonthYear(data.date)}
         </p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Mes: {data.period}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} style={{ color: entry.color }} className="text-sm tabular-nums">
             {entry.name}: {formatCurrency(entry.value)}
           </p>
         ))}
+        <p className="text-sm tabular-nums font-semibold text-gray-900 dark:text-gray-100 mt-1 pt-1 border-t border-gray-200 dark:border-gray-700">
+          Total pagado: {formatCurrency(totalPagado)}
+        </p>
       </div>
     );
   }
@@ -80,6 +86,7 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
 
       return {
         period: row.period,
+        date: row.paymentDate,
         principal: accumulatedPrincipal,
         sunkCost: row.sunkCostAccumulated,
         balance: row.balance,
