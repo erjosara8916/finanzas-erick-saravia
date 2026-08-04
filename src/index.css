@@ -27,17 +27,7 @@
   --chart-3: #dc2626; /* red-600 — Costo total, matches LoanSummary's tile color */
   --chart-grid: #e5e7eb; /* gray-200 */
   --chart-axis: #6b7280; /* gray-500 */
-}
 
-.dark {
-  --chart-1: #34d399; /* emerald-400 */
-  --chart-2: #fb923c; /* orange-400 */
-  --chart-3: #f87171; /* red-400 */
-  --chart-grid: #374151; /* gray-700 */
-  --chart-axis: #9ca3af; /* gray-400 */
-}
-
-:root {
   --radius: 0.75rem; /* matches the app's existing rounded-2xl (1rem) card convention closely enough to start from */
   --background: 0 0% 100%;
   --foreground: 222 47% 11%;
@@ -61,6 +51,12 @@
 }
 
 .dark {
+  --chart-1: #34d399; /* emerald-400 */
+  --chart-2: #fb923c; /* orange-400 */
+  --chart-3: #f87171; /* red-400 */
+  --chart-grid: #374151; /* gray-700 */
+  --chart-axis: #9ca3af; /* gray-400 */
+
   --background: 222 47% 11%;          /* ~ gray-900 */
   --foreground: 210 20% 98%;
   --card: 222 47% 11%;
@@ -75,11 +71,17 @@
   --muted-foreground: 220 9% 65%;     /* ~ gray-400, matches --chart-axis's dark value */
   --accent: 217 19% 27%;
   --accent-foreground: 210 20% 98%;
-  --destructive: 0 63% 31%;
+  --destructive: 0 72% 51%;           /* brighter red-600-territory (matches light mode) — the original 0 63% 31% dark maroon read poorly against dark backgrounds and didn't match TransactionList's red-600 delete button */
   --destructive-foreground: 210 20% 98%;
   --border: 217 19% 27%;              /* ~ gray-800, matches --chart-grid's dark value */
   --input: 217 19% 27%;
   --ring: 25 95% 53%;
+}
+
+@layer base {
+  body {
+    @apply text-foreground;
+  }
 }
 
 /* Currency, percentages, and table figures should line up in fixed-width columns */
