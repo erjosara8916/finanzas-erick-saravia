@@ -54,7 +54,7 @@ function CookieConsentInternal() {
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <span className="text-sm text-gray-300">
             Este sitio utiliza cookies para mejorar la experiencia del usuario y analizar el uso del sitio.{' '}
-            <a href="/privacy" className="text-blue-400 hover:text-blue-300 underline">Más información</a>
+            <a href="/privacy" className="text-orange-400 hover:text-orange-300 underline">Más información</a>
           </span>
           <div className="flex gap-2">
             <button
@@ -65,7 +65,7 @@ function CookieConsentInternal() {
             </button>
             <button
               onClick={handleAccept}
-              className="px-4 py-2 text-sm bg-blue-600 rounded hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 text-sm bg-orange-600 rounded hover:bg-orange-700 transition-colors"
             >
               Aceptar
             </button>
@@ -91,7 +91,7 @@ function CookieConsentInternal() {
         boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1)',
       }}
       buttonStyle={{
-        background: '#3b82f6',
+        background: '#ea580c',
         color: 'white',
         fontSize: '14px',
         fontWeight: '600',
@@ -120,7 +120,7 @@ function CookieConsentInternal() {
         Al continuar navegando, aceptas nuestro uso de cookies.{' '}
         <a
           href="/privacy"
-          className="text-blue-400 hover:text-blue-300 underline"
+          className="text-orange-400 hover:text-orange-300 underline"
           target="_blank"
           rel="noopener noreferrer"
         >

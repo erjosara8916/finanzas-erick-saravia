@@ -179,7 +179,7 @@ export default function ContactForm() {
             value={formData.message}
             onChange={(e) => handleChange('message', e.target.value)}
             placeholder="Escribe tu mensaje aquí..."
-            className={`w-full px-3 py-2 border rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            className={`w-full px-3 py-2 border rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
               errors.message ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
             }`}
           />

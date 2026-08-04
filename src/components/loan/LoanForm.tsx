@@ -270,7 +270,7 @@ export default function LoanForm({ onFieldBlur }: LoanFormProps = {}) {
               onChange={(value) => handleChange('fixedMonthlyPayment', value)}
               onBlur={onFieldBlur}
               error={!!errors.fixedMonthlyPayment}
-              className="bg-blue-50 dark:bg-blue-900/20 font-semibold"
+              className="bg-orange-50 dark:bg-orange-900/20 font-semibold"
             />
           ) : (
             <Input
@@ -280,7 +280,7 @@ export default function LoanForm({ onFieldBlur }: LoanFormProps = {}) {
               readOnly
               disabled
               placeholder={totalMonthlyPayment === null ? 'Completa los campos requeridos' : ''}
-              className="bg-blue-50 dark:bg-blue-900/20 cursor-not-allowed font-semibold"
+              className="bg-orange-50 dark:bg-orange-900/20 cursor-not-allowed font-semibold"
             />
           )}
           {errors.fixedMonthlyPayment && (

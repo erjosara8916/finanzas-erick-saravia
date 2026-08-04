@@ -22,23 +22,23 @@ export default function HealthGaugeChart({ className }: GaugeChartProps) {
   // Pero limitamos a 100% máximo para el gauge
   const percent = Math.min(Math.max(dtiRatio / 100, 0), 1);
 
-  // Colores para las zonas del gauge
-  // Verde (0-50%), Amarillo (50-75%), Rojo (75-100%)
+  // Colores para las zonas del gauge, alineados con el resto de la app (amber, no yellow)
+  // Verde (0-50%), Ámbar (50-75%), Rojo (75-100%)
   const colors = ['#10b981', '#10b981', '#10b981', '#10b981', '#10b981', '#10b981', '#10b981', '#10b981', '#10b981', '#10b981', // 0-50% verde
-                  '#eab308', '#eab308', '#eab308', '#eab308', '#eab308', // 50-75% amarillo
+                  '#d97706', '#d97706', '#d97706', '#d97706', '#d97706', // 50-75% ámbar
                   '#ef4444', '#ef4444', '#ef4444', '#ef4444', '#ef4444']; // 75-100% rojo
 
   // Color de la aguja según el estado
   const getNeedleColor = () => {
     if (healthStatus === 'excellent') return '#10b981'; // green-500
-    if (healthStatus === 'adjusted') return '#eab308'; // yellow-500
+    if (healthStatus === 'adjusted') return '#d97706'; // amber-600
     return '#ef4444'; // red-500
   };
 
   return (
     <div className={cn('w-full', className)}>
-      <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6">
-        
+      <div className="h-full bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 flex flex-col justify-center">
+
         <div className="flex flex-col items-center">
           {/* Gauge Chart */}
           <div className="mb-4 w-full max-w-md">

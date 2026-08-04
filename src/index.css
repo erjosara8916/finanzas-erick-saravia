@@ -1,9 +1,17 @@
+@import '@fontsource/geist-sans/400.css';
+@import '@fontsource/geist-sans/500.css';
+@import '@fontsource/geist-sans/600.css';
+@import '@fontsource/geist-sans/700.css';
+@import '@fontsource/geist-mono/400.css';
+@import '@fontsource/geist-mono/500.css';
+@import '@fontsource/geist-mono/600.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Geist', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -11,6 +19,34 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Amortization chart series colors — shadcn's --chart-N naming convention,
+     so a future shadcn ChartConfig can reuse these without renaming. */
+  --chart-1: #059669; /* emerald-600 — Capital Amortizado */
+  --chart-2: #ea580c; /* orange-600 (brand) — Saldo Restante */
+  --chart-3: #dc2626; /* red-600 — Costo total, matches LoanSummary's tile color */
+  --chart-grid: #e5e7eb; /* gray-200 */
+  --chart-axis: #6b7280; /* gray-500 */
+}
+
+.dark {
+  --chart-1: #34d399; /* emerald-400 */
+  --chart-2: #fb923c; /* orange-400 */
+  --chart-3: #f87171; /* red-400 */
+  --chart-grid: #374151; /* gray-700 */
+  --chart-axis: #9ca3af; /* gray-400 */
+}
+
+/* Currency, percentages, and table figures should line up in fixed-width columns */
+.font-mono,
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Recharts renders Y-axis tick labels as SVG <text>, not reachable via Tailwind
+   classes on the component's `tick` prop — apply tabular numerals globally instead. */
+.recharts-cartesian-axis-tick text {
+  font-variant-numeric: tabular-nums;
 }
 
 body {

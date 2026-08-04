@@ -25,9 +25,9 @@ export default function Stepper({ steps, onStepClick, className, ...props }: Ste
                 onClick={() => onStepClick?.(index)}
                 className={cn(
                   'flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 transition-all cursor-pointer',
-                  'hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
+                  'hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500',
                   step.active
-                    ? 'border-blue-600 bg-blue-600 text-white dark:border-blue-500 dark:bg-blue-500'
+                    ? 'border-orange-600 bg-orange-600 text-white dark:border-orange-500 dark:bg-orange-500'
                     : step.completed
                     ? 'border-green-600 bg-green-600 text-white dark:border-green-500 dark:bg-green-500'
                     : 'border-gray-300 bg-white text-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-500',
@@ -59,9 +59,9 @@ export default function Stepper({ steps, onStepClick, className, ...props }: Ste
             <button
               onClick={() => onStepClick?.(index)}
               className={cn(
-                'mt-1.5 sm:mt-2 text-xs sm:text-sm font-medium transition-colors cursor-pointer hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded px-1 sm:px-2 py-0.5 sm:py-1',
+                'mt-1.5 sm:mt-2 text-xs sm:text-sm font-medium transition-colors cursor-pointer hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 rounded px-1 sm:px-2 py-0.5 sm:py-1',
                 step.active
-                  ? 'text-blue-600 dark:text-blue-400'
+                  ? 'text-orange-600 dark:text-orange-400'
                   : step.completed
                   ? 'text-green-600 dark:text-green-400'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'

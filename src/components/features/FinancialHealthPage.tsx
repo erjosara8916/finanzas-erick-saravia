@@ -117,15 +117,15 @@ export default function FinancialHealthPage() {
                   </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 items-stretch">
                     {/* Left Column: Transaction Summary */}
-                    <div className="transition-all duration-300">
+                    <div className="transition-all duration-300 h-full">
                       <TransactionSummary />
                     </div>
 
                     {/* Right Column: Gauge Chart */}
-                    <div className="transition-all duration-300">
-                      <HealthGaugeChart />
+                    <div className="transition-all duration-300 h-full">
+                      <HealthGaugeChart className="h-full" />
                     </div>
                   </div>
                   

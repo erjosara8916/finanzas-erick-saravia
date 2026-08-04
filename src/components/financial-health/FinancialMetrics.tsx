@@ -57,7 +57,7 @@ export default function FinancialMetrics() {
               className={cn(
                 'text-xl font-bold',
                 availableCashFlow.gte(0)
-                  ? 'text-blue-600 dark:text-blue-400'
+                  ? 'text-orange-600 dark:text-orange-400'
                   : 'text-red-600 dark:text-red-400'
               )}
             >

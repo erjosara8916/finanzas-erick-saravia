@@ -121,7 +121,7 @@ export default function TransactionList({ onEditTransaction }: TransactionListPr
               className={cn(
                 'p-2 rounded-md transition-colors',
                 'hover:bg-gray-200 dark:hover:bg-gray-700',
-                'text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400'
+                'text-gray-500 hover:text-orange-600 dark:text-gray-400 dark:hover:text-orange-400'
               )}
               aria-label="Editar transacción"
             >
