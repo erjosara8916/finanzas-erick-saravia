@@ -60,18 +60,32 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
     return null;
   };
 
+  const axisTextStyle = { fill: 'var(--chart-axis)', fontFamily: 'Geist, system-ui, sans-serif', fontSize: 12 };
+
   return (
     <ResponsiveContainer width="100%" height={400}>
       <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+        <defs>
+          <linearGradient id="principalGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.35} />
+            <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.02} />
+          </linearGradient>
+          <linearGradient id="sunkCostGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={0.35} />
+            <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={0.02} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
         <XAxis
           dataKey="period"
-          label={{ value: 'Período (Meses)', position: 'insideBottom', offset: -5 }}
-          stroke="#6b7280"
+          label={{ value: 'Período (Meses)', position: 'insideBottom', offset: -5, style: axisTextStyle }}
+          stroke="var(--chart-axis)"
+          tick={axisTextStyle}
         />
         <YAxis
-          label={{ value: 'Monto ($)', angle: -90, position: 'insideLeft' }}
-          stroke="#6b7280"
+          label={{ value: 'Monto ($)', angle: -90, position: 'insideLeft', style: axisTextStyle }}
+          stroke="var(--chart-axis)"
+          tick={axisTextStyle}
           tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
         />
         <Tooltip content={<CustomTooltip />} />
@@ -80,24 +94,22 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
           type="monotone"
           dataKey="principal"
           stackId="1"
-          stroke="#10b981"
-          fill="#10b981"
-          fillOpacity={0.6}
+          stroke="var(--chart-1)"
+          fill="url(#principalGradient)"
           name="Capital Amortizado"
         />
         <Area
           type="monotone"
           dataKey="sunkCost"
           stackId="1"
-          stroke="#f59e0b"
-          fill="#f59e0b"
-          fillOpacity={0.6}
+          stroke="var(--chart-3)"
+          fill="url(#sunkCostGradient)"
           name="Costo total"
         />
         <Line
           type="monotone"
           dataKey="balance"
-          stroke="#ef4444"
+          stroke="var(--chart-2)"
           strokeWidth={2}
           dot={false}
           name="Saldo Restante"
