@@ -13,7 +13,7 @@ npm run lint      # ESLint (max-warnings 0), .ts/.tsx only (does not lint .astro
 
 There is no test suite/runner configured in this repo (no Jest/Vitest, no test script). The `spec/` directory contains product/requirements documents (`landing.spec.md`, `salud-financiera.spec.md`), not executable tests — same for `tech.spec.md` at the root. `spec/astro-setup/` holds the review/plan for the Vite→Astro migration described below. Treat these as specs to consult when working on related features, not as things to run.
 
-CI (`.github/workflows/deploy.yml`) runs `npm ci --legacy-peer-deps` then `npm run build` on push to `main`/`master`, and deploys `dist/` to GitHub Pages. It requires `PUBLIC_GA_MEASUREMENT_ID` and `PUBLIC_EMAILJS_*` secrets (see `.github/README.md` for setup) — Astro exposes client-side env vars via a `PUBLIC_` prefix, not Vite's `VITE_` prefix. Path alias `@` → `src/` is configured in `astro.config.mjs` (`vite.resolve.alias`) and `tsconfig.json`.
+CI (`.github/workflows/deploy.yml`) runs `npm ci --legacy-peer-deps` then `npm run build` on push to `main`/`master`, and deploys `dist/` to GitHub Pages. It requires `PUBLIC_GA_MEASUREMENT_ID` and `PUBLIC_EMAILJS_*` secrets (see `.github/README.md` for setup) — Astro exposes client-side env vars via a `PUBLIC_` prefix, not Vite's `VITE_` prefix. Path alias `@` → `src/` is configured in `astro.config.mjs` (`vite.resolve.alias`) only — `tsconfig.json` has no matching `paths`/`baseUrl` entry.
 
 ## Architecture
 
