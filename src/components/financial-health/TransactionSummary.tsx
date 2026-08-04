@@ -51,7 +51,7 @@ export default function TransactionSummary() {
 
   return (
     <>
-      <Card title="Resumen">
+      <Card title="Resumen" className="h-full">
         <div className="space-y-6">
           {/* First Row: Ingresos, Gastos, Ver Detalles */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">

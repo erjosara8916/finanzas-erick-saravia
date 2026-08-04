@@ -37,8 +37,8 @@ export default function HealthGaugeChart({ className }: GaugeChartProps) {
 
   return (
     <div className={cn('w-full', className)}>
-      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
-        
+      <div className="h-full bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 flex flex-col justify-center">
+
         <div className="flex flex-col items-center">
           {/* Gauge Chart */}
           <div className="mb-4 w-full max-w-md">
