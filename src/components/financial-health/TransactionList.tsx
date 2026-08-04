@@ -227,11 +227,7 @@ export default function TransactionList({ onEditTransaction }: TransactionListPr
             <Button variant="outline" onClick={handleCancelDelete}>
               Cancelar
             </Button>
-            <Button
-              variant="default"
-              onClick={handleConfirmDelete}
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
+            <Button variant="destructive" onClick={handleConfirmDelete}>
               Eliminar
             </Button>
           </div>
