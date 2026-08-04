@@ -11,6 +11,10 @@
 ## Global Constraints
 
 - This repo has **no test runner** (no Jest/Vitest, no test script — confirmed in `CLAUDE.md`). Every task's verification step uses `npm run build` (type-check + build) and `npm run lint` (`--max-warnings 0`, so zero tolerance for lint warnings), plus a manual check in the dev server (`npm run dev`) — not automated tests.
+- **Pre-existing baseline (confirmed by running it before this feature started):** `npm run lint` already fails repo-wide with 13 errors / 3 warnings, including 2 pre-existing warnings inside `LoanProjectionPage.tsx` itself (missing `trackError` deps on an unrelated `useMemo`/`useEffect`, at what is currently lines 93 and 160 — untouched by this plan). `npm run build` (the type-check) is clean. Fixing that pre-existing lint debt is explicitly **out of scope** for this plan. Each task verifies lint with `npx eslint <paths touched by this task> --max-warnings 0` (not the bare repo-wide `npm run lint`):
+  - For files a task **creates**, that command must report zero errors/warnings — there is no pre-existing baseline to excuse anything in a new file.
+  - For files a task only **modifies** (`LoanProjectionPage.tsx`, `FinancialHealthPage.tsx`, `Stepper.tsx`, `LoanSummary.tsx`, `AmortizationTable.tsx`, `TransactionForm.tsx`, `TransactionList.tsx`), compare that file's lint output before the task's change against after: the task must introduce zero *new* errors/warnings, but is not responsible for clearing pre-existing ones (e.g., `LoanProjectionPage.tsx`'s 2 pre-existing warnings are expected to still appear after Task 2's change — that is not a regression).
+  - Do not flag or attempt to fix lint issues in files outside the task's own file list.
 - Money/loan business logic (`src/lib/engine.ts`) is untouched by this feature — the tour only reads the DOM, it does not participate in loan math.
 - TypeScript `strict: true` is on — all new files must be fully typed, no `any`.
 - Money values, business rules, and existing component behavior must not change — this plan only adds new files and adds non-visual `data-*` attributes / a header button to existing components.
@@ -155,8 +159,9 @@ export function useTour(steps: DriveStep[], storageKey: string, options: UseTour
 
 - [ ] **Step 5: Verify it builds and lints clean**
 
-Run: `npm run build && npm run lint`
-Expected: both succeed — `astro check` resolves the `driver.js` types, `useTour.ts` has zero type errors, and `npm run lint` reports zero warnings (the `--max-warnings 0` gate).
+Run: `npm run build` — expect it to succeed with `astro check` resolving the `driver.js` types and zero type errors in `useTour.ts`.
+
+Run: `npx eslint src/hooks/useTour.ts --max-warnings 0` — expect zero errors/warnings (this is a newly created file, see Global Constraints on lint scoping — the repo-wide `npm run lint` has unrelated pre-existing failures and is not the right check here).
 
 - [ ] **Step 6: Commit**
 
@@ -361,8 +366,9 @@ with:
 
 - [ ] **Step 6: Verify build and lint**
 
-Run: `npm run build && npm run lint`
-Expected: both succeed with zero errors/warnings.
+Run: `npm run build` — expect it to succeed with zero type errors.
+
+Run: `npx eslint src/components/ui/Stepper.tsx src/components/loan/LoanSummary.tsx src/components/loan/AmortizationTable.tsx src/components/features/LoanProjectionPage.tsx src/lib/tours/loanTourSteps.ts --max-warnings 0`. `loanTourSteps.ts` is newly created and must be fully clean. The other four files are pre-existing and modified — per Global Constraints, `LoanProjectionPage.tsx` is expected to still show its 2 pre-existing `trackError`-deps warnings (not a regression from this task); `Stepper.tsx`, `LoanSummary.tsx`, and `AmortizationTable.tsx` had zero lint issues before this task and must still have zero after.
 
 - [ ] **Step 7: Manual verification in the dev server**
 
@@ -543,8 +549,9 @@ with:
 
 - [ ] **Step 5: Verify build and lint**
 
-Run: `npm run build && npm run lint`
-Expected: both succeed with zero errors/warnings.
+Run: `npm run build` — expect it to succeed with zero type errors.
+
+Run: `npx eslint src/components/financial-health/TransactionForm.tsx src/components/financial-health/TransactionList.tsx src/components/features/FinancialHealthPage.tsx src/lib/tours/financialHealthTourSteps.ts --max-warnings 0`. `financialHealthTourSteps.ts` is newly created and must be fully clean. The other three files are pre-existing and modified — all three had zero lint issues before this task and must still have zero after (unlike `LoanProjectionPage.tsx`, `FinancialHealthPage.tsx` has no pre-existing lint issues to account for).
 
 - [ ] **Step 6: Manual verification in the dev server**
 
