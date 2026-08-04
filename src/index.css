@@ -37,6 +37,51 @@
   --chart-axis: #9ca3af; /* gray-400 */
 }
 
+:root {
+  --radius: 0.75rem; /* matches the app's existing rounded-2xl (1rem) card convention closely enough to start from */
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --primary: 21 90% 48%;              /* #ea580c, the brand orange already used on every CTA */
+  --primary-foreground: 0 0% 98%;
+  --secondary: 220 14% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 220 9% 46%;     /* ~ gray-500, matches --chart-axis's light value */
+  --accent: 220 14% 96%;
+  --accent-foreground: 222 47% 11%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 220 13% 91%;              /* ~ gray-200, matches --chart-grid's light value */
+  --input: 220 13% 91%;
+  --ring: 21 90% 48%;                 /* same as --primary — focus rings should read as brand, not generic */
+}
+
+.dark {
+  --background: 222 47% 11%;          /* ~ gray-900 */
+  --foreground: 210 20% 98%;
+  --card: 222 47% 11%;
+  --card-foreground: 210 20% 98%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 20% 98%;
+  --primary: 25 95% 53%;              /* #f97316, orange-500 — lighter for contrast on dark bg */
+  --primary-foreground: 222 47% 11%;
+  --secondary: 217 19% 27%;
+  --secondary-foreground: 210 20% 98%;
+  --muted: 217 19% 27%;
+  --muted-foreground: 220 9% 65%;     /* ~ gray-400, matches --chart-axis's dark value */
+  --accent: 217 19% 27%;
+  --accent-foreground: 210 20% 98%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 20% 98%;
+  --border: 217 19% 27%;              /* ~ gray-800, matches --chart-grid's dark value */
+  --input: 217 19% 27%;
+  --ring: 25 95% 53%;
+}
+
 /* Currency, percentages, and table figures should line up in fixed-width columns */
 .font-mono,
 .tabular-nums {
