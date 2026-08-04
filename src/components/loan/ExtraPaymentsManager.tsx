@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useLoanStore } from '../../store/loanStore';
 import { useFinancialHealthStore } from '../../store/financialHealthStore';
-import Button from '../ui/Button';
+import { Button } from '../ui/button';
 import InputCurrency from '../ui/InputCurrency';
 import Label from '../ui/Label';
 import Card from '../ui/Card';
@@ -430,7 +430,7 @@ export default function ExtraPaymentsManager({ onFieldBlur }: ExtraPaymentsManag
               <p className="text-sm text-red-500">{error}</p>
             )}
 
-            <Button onClick={handleAdd} size="md" className="w-full mt-auto">
+            <Button onClick={handleAdd} size="default" className="w-full mt-auto">
               Agregar
             </Button>
           </div>
@@ -494,7 +494,7 @@ export default function ExtraPaymentsManager({ onFieldBlur }: ExtraPaymentsManag
               )}
               <div className="pt-2 mt-auto">
                 <Button
-                  variant="primary"
+                  variant="default"
                   size="sm"
                   onClick={() => setIsPaymentsDialogOpen(true)}
                   className="w-full"

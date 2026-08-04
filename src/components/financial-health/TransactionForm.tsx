@@ -4,7 +4,7 @@ import Input from '../ui/Input';
 import InputCurrency from '../ui/InputCurrency';
 import Label from '../ui/Label';
 import Select from '../ui/Select';
-import Button from '../ui/Button';
+import { Button } from '../ui/button';
 import Card from '../ui/Card';
 import type { TransactionType, IncomeCategory, ExpenseCategory, FinancialTransaction } from '../../types/schema';
 import { Decimal } from 'decimal.js';

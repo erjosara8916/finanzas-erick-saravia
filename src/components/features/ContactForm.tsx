@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import ErrorBoundary from '../analytics/ErrorBoundary';
-import Button from '../ui/Button';
+import { Button } from '../ui/button';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Label from '../ui/Label';
@@ -186,12 +186,12 @@ export default function ContactForm() {
           {errors.message && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.message}</p>}
         </div>
 
-        <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto" size="lg">
+        <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto h-12 px-6 text-lg" size="lg">
           {isSubmitting ? (
-            <span className="mr-2">Enviando...</span>
+            <span>Enviando...</span>
           ) : (
             <>
-              <Send className="mr-2 h-5 w-5" />
+              <Send />
               Enviar Mensaje
             </>
           )}

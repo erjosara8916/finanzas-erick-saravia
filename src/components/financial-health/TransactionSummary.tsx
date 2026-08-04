@@ -4,7 +4,7 @@ import { formatCurrency } from '../../lib/formatters';
 import { Decimal } from 'decimal.js';
 import Card from '../ui/Card';
 import Dialog from '../ui/Dialog';
-import Button from '../ui/Button';
+import { Button } from '../ui/button';
 import { Eye, Trash2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 

@@ -6,7 +6,7 @@ import LoanSummary from '../loan/LoanSummary';
 import Collapsible from '../ui/Collapsible';
 import Stepper from '../ui/Stepper';
 import OrientationWarning from '../ui/OrientationWarning';
-import Button from '../ui/Button';
+import { Button } from '../ui/button';
 import Dialog from '../ui/Dialog';
 import CapacityWarning from '../loan/CapacityWarning';
 import { useLoanStore } from '../../store/loanStore';
@@ -344,7 +344,7 @@ export default function LoanProjectionPage() {
                 Entendido
               </Button>
               <a href="/salud-financiera" onClick={() => setShowHealthModal(false)} className="w-full sm:w-auto">
-                <Button variant="cta" className="w-full sm:w-auto">
+                <Button variant="default" className="w-full sm:w-auto">
                   Evaluar mi Salud Financiera
                 </Button>
               </a>
@@ -385,7 +385,7 @@ export default function LoanProjectionPage() {
                 Entendido
               </Button>
               <a href="/salud-financiera" onClick={() => setShowCapacityModal(false)} className="w-full sm:w-auto">
-                <Button variant="cta" className="w-full sm:w-auto">
+                <Button variant="default" className="w-full sm:w-auto">
                   Evaluar mi Salud Financiera
                 </Button>
               </a>

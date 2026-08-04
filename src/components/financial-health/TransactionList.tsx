@@ -6,7 +6,7 @@ import { Decimal } from 'decimal.js';
 import { Trash2, Edit2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import Dialog from '../ui/Dialog';
-import Button from '../ui/Button';
+import { Button } from '../ui/button';
 import type { FinancialTransaction } from '../../types/schema';
 
 const incomeCategoryLabels: Record<string, string> = {
@@ -227,11 +227,7 @@ export default function TransactionList({ onEditTransaction }: TransactionListPr
             <Button variant="outline" onClick={handleCancelDelete}>
               Cancelar
             </Button>
-            <Button 
-              variant="primary" 
-              onClick={handleConfirmDelete}
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
+            <Button variant="destructive" onClick={handleConfirmDelete}>
               Eliminar
             </Button>
           </div>

@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from 'react';
 import { X } from 'lucide-react';
-import Button from './Button';
+import { Button } from './button';
 import { cn } from '../../lib/utils';
 
 export interface DialogProps {
@@ -66,7 +66,7 @@ export default function Dialog({ isOpen, onClose, title, children, className }: 
               aria-label="Cerrar"
               className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
             >
-              <X className="h-5 w-5" />
+              <X />
             </Button>
           </div>
         )}
