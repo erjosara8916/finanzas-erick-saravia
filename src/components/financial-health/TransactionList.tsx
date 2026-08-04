@@ -145,7 +145,7 @@ export default function TransactionList({ onEditTransaction }: TransactionListPr
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-tour="tx-list">
       {/* Income Column */}
       <div className="flex flex-col">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
