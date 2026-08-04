@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { CheckCircle2, AlertCircle, Send } from 'lucide-react';
 import ErrorBoundary from '../analytics/ErrorBoundary';
-import Button from '../ui/Button';
+import { Button } from '../ui/button';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Label from '../ui/Label';
@@ -110,7 +110,7 @@ export default function NewsletterForm() {
           disabled={isSubscribing}
           className="w-full"
           size="lg"
-          variant="cta"
+          variant="default"
           onClick={() => trackCTAClick('newsletter', 'Suscribirme', 'newsletter_subscription')}
         >
           {isSubscribing ? (

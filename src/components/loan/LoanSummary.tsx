@@ -6,7 +6,7 @@ import { generatePDFReport } from '../../lib/pdfGenerator';
 import Card from '../ui/Card';
 import AmortizationChart from '../charts/AmortizationChart';
 import Tooltip from '../ui/Tooltip';
-import Button from '../ui/Button';
+import { Button } from '../ui/button';
 import { Download } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 

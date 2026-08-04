@@ -5,7 +5,7 @@ import TransactionList from '../financial-health/TransactionList';
 import TransactionSummary from '../financial-health/TransactionSummary';
 import HealthGaugeChart from '../financial-health/HealthGaugeChart';
 import Stepper from '../ui/Stepper';
-import Button from '../ui/Button';
+import { Button } from '../ui/button';
 import Dialog from '../ui/Dialog';
 import { useFinancialHealthStore } from '../../store/financialHealthStore';
 import { AlertCircle } from 'lucide-react';
@@ -135,7 +135,7 @@ export default function FinancialHealthPage() {
                       Anterior
                     </Button>
                     <a href="/proyeccion-crediticia">
-                      <Button variant="primary">
+                      <Button variant="default">
                         Simular mi Préstamo
                       </Button>
                     </a>

@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import ErrorBoundary from '../analytics/ErrorBoundary';
-import Button from '../ui/Button';
+import { Button } from '../ui/button';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Label from '../ui/Label';
