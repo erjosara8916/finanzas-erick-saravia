@@ -18,11 +18,57 @@ interface AmortizationChartProps {
 }
 
 function formatYAxisTick(value: number): string {
-  if (Math.abs(value) < 1000) {
+  const abs = Math.abs(value);
+  if (abs < 1000) {
     return `$${value.toFixed(0)}`;
+  }
+  if (abs < 10000) {
+    return `$${(value / 1000).toFixed(1)}k`;
   }
   return `$${(value / 1000).toFixed(0)}k`;
 }
+
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+        <p className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
+          Período {payload[0].payload.period}
+        </p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} style={{ color: entry.color }} className="text-sm tabular-nums">
+            {entry.name}: {formatCurrency(entry.value)}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+interface LegendPayloadEntry {
+  value: string;
+  color?: string;
+}
+
+const CustomLegend = ({ payload }: { payload?: LegendPayloadEntry[] }) => {
+  if (!payload) return null;
+  return (
+    <ul className="flex flex-wrap justify-center gap-4 mt-2 text-sm text-gray-700 dark:text-gray-300">
+      {payload.map((entry, index) => (
+        <li key={index} className="flex items-center gap-1.5">
+          <span
+            className="inline-block w-2.5 h-2.5 rounded-full"
+            style={{ backgroundColor: entry.color }}
+          />
+          {entry.value}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+const axisTextStyle = { fill: 'var(--chart-axis)', fontFamily: 'Geist, system-ui, sans-serif', fontSize: 12 };
 
 export default function AmortizationChart({ rows }: AmortizationChartProps) {
   const chartData = useMemo(() => {
@@ -43,53 +89,11 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
 
   if (chartData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400">
+      <div className="flex items-center justify-center h-64 sm:h-80 lg:h-[400px] text-gray-500 dark:text-gray-400">
         No hay datos para mostrar
       </div>
     );
   }
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
-          <p className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
-            Período {payload[0].payload.period}
-          </p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }} className="text-sm tabular-nums">
-              {entry.name}: {formatCurrency(entry.value)}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
-  interface LegendPayloadEntry {
-    value: string;
-    color?: string;
-  }
-
-  const CustomLegend = ({ payload }: { payload?: LegendPayloadEntry[] }) => {
-    if (!payload) return null;
-    return (
-      <ul className="flex flex-wrap justify-center gap-4 mt-2 text-sm text-gray-700 dark:text-gray-300">
-        {payload.map((entry, index) => (
-          <li key={index} className="flex items-center gap-1.5">
-            <span
-              className="inline-block w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: entry.color }}
-            />
-            {entry.value}
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
-  const axisTextStyle = { fill: 'var(--chart-axis)', fontFamily: 'Geist, system-ui, sans-serif', fontSize: 12 };
 
   return (
     <div className="h-64 sm:h-80 lg:h-[400px]">
@@ -144,9 +148,8 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
             dot={false}
             name="Saldo Restante"
           />
-      </ComposedChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );
 }
-

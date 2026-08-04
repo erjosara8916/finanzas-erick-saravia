@@ -43,6 +43,12 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Recharts renders Y-axis tick labels as SVG <text>, not reachable via Tailwind
+   classes on the component's `tick` prop — apply tabular numerals globally instead. */
+.recharts-cartesian-axis-tick text {
+  font-variant-numeric: tabular-nums;
+}
+
 body {
   margin: 0;
   min-width: 320px;
