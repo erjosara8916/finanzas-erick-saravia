@@ -14,9 +14,11 @@ import { useFinancialHealthStore } from '../../store/financialHealthStore';
 import { useAnalytics, useEngagementTracking } from '../../hooks/useAnalytics';
 import { calculateAmortizationTable } from '../../lib/engine';
 import { Decimal } from 'decimal.js';
-import { Info, AlertTriangle } from 'lucide-react';
+import { Info, AlertTriangle, HelpCircle } from 'lucide-react';
 import { amountToRange } from '../../lib/analytics';
 import ErrorBoundary from '../analytics/ErrorBoundary';
+import { useTour } from '../../hooks/useTour';
+import { loanTourSteps } from '../../lib/tours/loanTourSteps';
 
 export default function LoanProjectionPage() {
   const loanInput = useLoanStore((state) => state.getActiveLoanInput());
@@ -33,7 +35,9 @@ export default function LoanProjectionPage() {
   
   // Verificar si hay datos completos de salud financiera (ingresos y gastos)
   const hasFinancialHealthData = transactions.length > 0 && (totalIncome.gt(0) || totalExpenses.gt(0));
-  
+
+  const { startTour } = useTour(loanTourSteps, 'loan_tour_seen_v1', { enabled: hasFinancialHealthData });
+
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isConfigOpen, setIsConfigOpen] = useState<boolean>(true);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
@@ -219,13 +223,26 @@ export default function LoanProjectionPage() {
     <ErrorBoundary>
       <OrientationWarning />
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 pb-20 sm:pb-24 max-w-7xl">
-        <header className="mb-4 sm:mb-8">
-          <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
-            Proyección de pagos para préstamos bancarios
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-            Calcula y visualiza tablas de amortización de préstamos con precisión
-          </p>
+        <header className="mb-4 sm:mb-8" data-tour="loan-page-header">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
+                Proyección de pagos para préstamos bancarios
+              </h1>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                Calcula y visualiza tablas de amortización de préstamos con precisión
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={startTour}
+              className="flex items-center gap-1.5 shrink-0"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">¿Cómo funciona?</span>
+            </Button>
+          </div>
         </header>
 
         <div className="space-y-4 sm:space-y-6 animate-fade-in">

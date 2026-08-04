@@ -32,7 +32,7 @@ export default function AmortizationTable({ onFieldBlur }: AmortizationTableProp
 
   if (rows.length === 0) {
     return (
-      <Card title="Tabla de Amortización">
+      <Card title="Tabla de Amortización" data-tour="loan-amortization-table">
         <p className="text-center text-gray-500 dark:text-gray-400 py-8">
           Por favor completa los detalles del préstamo para ver la tabla de amortización
         </p>
@@ -46,7 +46,7 @@ export default function AmortizationTable({ onFieldBlur }: AmortizationTableProp
   );
 
   return (
-    <Card title="Tabla de Amortización">
+    <Card title="Tabla de Amortización" data-tour="loan-amortization-table">
       <div className="overflow-x-auto -mx-4 sm:mx-0">
         <table className="w-full text-xs sm:text-sm">
           <thead>

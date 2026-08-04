@@ -17,7 +17,7 @@ export default function Stepper({ steps, onStepClick, className, ...props }: Ste
   return (
     <div className={cn('flex items-center justify-between', className)} {...props}>
       {steps.map((step, index) => (
-        <div key={index} className="flex items-center flex-1">
+        <div key={index} className="flex items-center flex-1" data-step-index={index}>
           <div className="flex flex-col items-center flex-1">
             <div className="flex items-center w-full">
               {/* Step circle - clickable */}

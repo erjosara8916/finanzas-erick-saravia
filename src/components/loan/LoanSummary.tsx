@@ -34,7 +34,7 @@ export default function LoanSummary() {
 
   if (!summary || rows.length === 0) {
     return (
-      <Card title="Resumen del Préstamo">
+      <Card title="Resumen del Préstamo" data-tour="loan-summary">
         <p className="text-center text-gray-500 dark:text-gray-400 py-8">
           Por favor completa los detalles del préstamo para ver el resumen
         </p>
@@ -63,7 +63,7 @@ export default function LoanSummary() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6" data-tour="loan-summary">
       <Card 
         title="Métricas Clave"
         action={
