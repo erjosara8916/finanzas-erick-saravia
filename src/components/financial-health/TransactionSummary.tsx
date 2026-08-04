@@ -99,7 +99,7 @@ export default function TransactionSummary() {
                 className={cn(
                   'text-2xl font-bold',
                   availableCashFlow.gte(0)
-                    ? 'text-blue-600 dark:text-blue-400'
+                    ? 'text-orange-600 dark:text-orange-400'
                     : 'text-red-600 dark:text-red-400'
                 )}
               >
@@ -112,7 +112,7 @@ export default function TransactionSummary() {
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                 Capacidad de Endeudamiento
               </p>
-              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
                 {formatCurrency(suggestedPaymentCapacity)}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">

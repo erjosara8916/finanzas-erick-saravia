@@ -79,12 +79,12 @@ export default function LoanSummary() {
         }
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          <div className="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <div className="p-3 sm:p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
             <div className="flex items-center gap-1 mb-1">
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Total a Pagar</p>
               <Tooltip message="Suma total de todos los pagos realizados durante la vida del préstamo, incluyendo capital, intereses, seguros y cuotas adicionales" />
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <p className="text-xl sm:text-2xl font-bold text-orange-600 dark:text-orange-400">
               {formatCurrency(summary.totalPaid)}
             </p>
           </div>

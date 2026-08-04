@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NewsletterForm from '../components/features/NewsletterForm';
-import { Calculator, TrendingUp, BarChart3, Shield, Zap, CheckCircle2, Heart, Mail } from 'lucide-react';
+import { Calculator, TrendingUp, BarChart3, Shield, ShieldCheck, Zap, CheckCircle2, Heart, Mail } from 'lucide-react';
 
 const features = [
   {
@@ -74,15 +74,15 @@ const tools = [
 ];
 
 const colorClasses: Record<string, string> = {
-  blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+  blue: 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400',
   green: 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
 };
 
 const ctaButton =
-  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none bg-[#E65100] text-white hover:bg-[#D84315] focus-visible:ring-[#E65100] dark:bg-[#E65100] dark:hover:bg-[#D84315] h-12 px-6 text-lg';
+  'inline-flex items-center justify-center rounded-lg font-medium transition-colors active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none bg-orange-600 text-white hover:bg-orange-700 focus-visible:ring-orange-500 h-12 px-6 text-lg';
 
 const secondaryButton =
-  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none bg-gray-200 text-gray-900 hover:bg-gray-300 focus-visible:ring-gray-500 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 h-12 px-6 text-lg';
+  'inline-flex items-center justify-center rounded-lg font-medium transition-colors active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none bg-gray-200 text-gray-900 hover:bg-gray-300 focus-visible:ring-gray-500 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 h-12 px-6 text-lg';
 ---
 
 <BaseLayout
@@ -91,28 +91,77 @@ const secondaryButton =
 >
   <div class="animate-fade-in pb-24">
     <!-- Hero Section -->
-    <section data-section-name="hero" class="container mx-auto px-4 py-16 md:py-24 max-w-7xl">
-      <div class="text-center max-w-3xl mx-auto">
-        <h1 class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-          ¿Sabes cuánto le estás pagando de más a tu banco?
-        </h1>
-        <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8">
-          Simula tu préstamo, prueba pagos extra y mira en segundos cuántos meses y cuánto dinero te puedes
-          ahorrar. Gratis, sin registro, y sin subir tus datos a ningún servidor.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-4">
-          <a
-            href="/proyeccion-crediticia"
-            data-cta-location="hero"
-            data-cta-text="Simular mi Préstamo"
-            data-cta-destination="/proyeccion-crediticia"
-            class={`${ctaButton} w-full sm:w-auto`}
-          >
-            <Zap className="mr-2 h-5 w-5" />
-            Simular mi Préstamo
-          </a>
+    <section data-section-name="hero" class="container mx-auto px-4 pt-16 pb-20 md:pt-20 md:pb-24 max-w-7xl">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white mb-5 text-balance">
+            ¿Sabes cuánto le estás pagando de más a tu banco?
+          </h1>
+          <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-[46ch]">
+            Simula tu préstamo, prueba pagos extra y mira en segundos cuánto dinero y cuántos meses te puedes ahorrar.
+          </p>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-2">
+            <a
+              href="/proyeccion-crediticia"
+              data-cta-location="hero"
+              data-cta-text="Simular mi Préstamo"
+              data-cta-destination="/proyeccion-crediticia"
+              class={`${ctaButton} w-full sm:w-auto`}
+            >
+              <Zap className="mr-2 h-5 w-5" />
+              Simular mi Préstamo
+            </a>
+            <p class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
+              <ShieldCheck className="h-4 w-4 flex-shrink-0" />
+              Nada se sube a la nube
+            </p>
+          </div>
         </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 italic">Nada se sube a la nube. Ni siquiera nosotros vemos tus números.</p>
+
+        <!-- Real content preview: a live-style read-out of what the simulator produces, not a fake screenshot -->
+        <div class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Ahorro proyectado con abonos extra</p>
+          <p class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white font-mono tabular-nums">$48,213.60</p>
+          <p class="flex items-center gap-1.5 text-sm font-medium text-green-700 dark:text-green-400 mt-1 mb-5">
+            <TrendingUp className="h-4 w-4" />
+            6.2 años menos de plazo
+          </p>
+          <svg viewBox="0 0 400 108" preserveAspectRatio="none" class="w-full h-28" aria-hidden="true">
+            <defs>
+              <linearGradient id="hero-area" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ea580c" stop-opacity="0.25" />
+                <stop offset="100%" stop-color="#ea580c" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M0 88 L40 82 L80 74 L120 76 L160 60 L200 62 L240 44 L280 46 L320 26 L360 22 L400 8 L400 108 L0 108 Z"
+              fill="url(#hero-area)"
+            />
+            <path
+              d="M0 88 L40 82 L80 74 L120 76 L160 60 L200 62 L240 44 L280 46 L320 26 L360 22 L400 8"
+              fill="none"
+              stroke="#ea580c"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="400" cy="8" r="4.5" fill="#ea580c" />
+          </svg>
+          <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800 grid gap-2.5">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500 dark:text-gray-400">Cuota mensual</span>
+              <span class="font-mono tabular-nums font-medium text-gray-900 dark:text-white">$2,183.47</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500 dark:text-gray-400">Plazo restante</span>
+              <span class="font-mono tabular-nums font-medium text-gray-900 dark:text-white">11.8 años</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500 dark:text-gray-400">Capital amortizado</span>
+              <span class="font-mono tabular-nums font-medium text-gray-900 dark:text-white">34.6%</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -128,9 +177,9 @@ const secondaryButton =
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {
             tools.map((tool) => (
-              <div class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 p-8 hover:shadow-lg transition-shadow">
+              <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 p-8 hover:shadow-lg transition-shadow">
                 <div class="flex flex-col items-center text-center">
-                  <div class={`mb-6 p-4 ${colorClasses[tool.color]} rounded-lg`}>
+                  <div class={`mb-6 p-4 ${colorClasses[tool.color]} rounded-xl`}>
                     <tool.icon className="h-12 w-12" />
                   </div>
                   <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-3">{tool.title}</h3>
@@ -161,16 +210,44 @@ const secondaryButton =
       <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
         Esto es lo que tu banco no te muestra
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 auto-rows-[172px] lg:auto-rows-[188px] gap-5">
+        <!-- Large cell: the deuda-at-a-glance chart, given real visual weight -->
+        <div class="col-span-2 row-span-1 lg:row-span-2 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 flex flex-col justify-between">
+          <div class="flex items-end gap-1.5 h-14 text-orange-600 dark:text-orange-400">
+            <div class="w-2.5 rounded-t bg-current opacity-90" style="height:35%" />
+            <div class="w-2.5 rounded-t bg-current opacity-90" style="height:52%" />
+            <div class="w-2.5 rounded-t bg-current opacity-90" style="height:44%" />
+            <div class="w-2.5 rounded-t bg-current opacity-90" style="height:68%" />
+            <div class="w-2.5 rounded-t bg-current opacity-90" style="height:60%" />
+            <div class="w-2.5 rounded-t bg-current opacity-90" style="height:82%" />
+            <div class="w-2.5 rounded-t bg-current opacity-90" style="height:74%" />
+            <div class="w-2.5 rounded-t bg-current opacity-90" style="height:95%" />
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{features[1].title}</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">{features[1].description}</p>
+          </div>
+        </div>
+
+        <!-- Accent-filled cell: the plazo impact, called out with the brand accent -->
+        <div class="col-span-2 rounded-2xl bg-orange-600 p-6 flex flex-col justify-between text-white">
+          <span class="text-3xl font-bold font-mono tabular-nums">6.2 años</span>
+          <div>
+            <h3 class="text-lg font-semibold mb-1">{features[3].title}</h3>
+            <p class="text-sm text-orange-100">{features[3].description}</p>
+          </div>
+        </div>
+
+        <!-- Two plain cells -->
         {
-          features.map((feature) => (
-            <div class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 p-6">
-              <div class="flex flex-col items-center text-center">
-                <div class="mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                  <feature.icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
-                <p class="text-gray-600 dark:text-gray-400">{feature.description}</p>
+          [features[0], features[2]].map((feature) => (
+            <div class="col-span-1 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 flex flex-col justify-between">
+              <div class="p-2.5 bg-orange-100 dark:bg-orange-900/30 rounded-lg w-fit">
+                <feature.icon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+              </div>
+              <div>
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{feature.title}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">{feature.description}</p>
               </div>
             </div>
           ))
@@ -206,7 +283,7 @@ const secondaryButton =
         {
           steps.map((step) => (
             <div class="text-center">
-              <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 text-white text-2xl font-bold">
+              <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-600 text-white text-2xl font-bold">
                 {step.number}
               </div>
               <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{step.title}</h3>
@@ -220,13 +297,13 @@ const secondaryButton =
     <!-- Newsletter Subscription Section -->
     <section
       data-section-name="newsletter"
-      class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 py-16"
+      class="bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-700 dark:to-orange-800 py-16"
     >
       <div class="container mx-auto px-4 max-w-4xl">
         <div class="text-center mb-8">
           <Mail className="h-12 w-12 text-white mx-auto mb-4" />
           <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Aprende a jugarle al banco con sus propias reglas</h2>
-          <p class="text-xl text-blue-100">
+          <p class="text-xl text-orange-100">
             Trucos para negociar mejores condiciones, estrategias de ahorro real y aviso cuando lancemos algo
             nuevo. Sin spam.
           </p>

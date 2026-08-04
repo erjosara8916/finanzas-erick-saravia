@@ -439,7 +439,7 @@ export default function ExtraPaymentsManager({ onFieldBlur }: ExtraPaymentsManag
         {/* Columna 2: Resumen y Listado de abonos a capital */}
         <div className="space-y-3 sm:space-y-4 flex flex-col">
           {/* Resumen de abonos */}
-          <div className="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="p-3 sm:p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
             <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
               Resumen de Abonos a Capital
             </h4>
@@ -452,7 +452,7 @@ export default function ExtraPaymentsManager({ onFieldBlur }: ExtraPaymentsManag
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Total de abonos:</span>
-                <span className="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400">
+                <span className="text-xs sm:text-sm font-semibold text-orange-600 dark:text-orange-400">
                   {formatCurrency(totalAmount)}
                 </span>
               </div>

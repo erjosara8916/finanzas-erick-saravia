@@ -45,7 +45,7 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
+        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
           <p className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
             Período {payload[0].payload.period}
           </p>

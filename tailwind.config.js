@@ -5,7 +5,12 @@ export default {
   ],
   darkMode: 'class', // Usar clase 'dark' en lugar de prefers-color-scheme
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['"Geist"', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
+        mono: ['"Geist Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
+      },
+    },
   },
   plugins: [],
 }
