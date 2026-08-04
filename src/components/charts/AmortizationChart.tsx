@@ -67,11 +67,16 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
     return null;
   };
 
-  const CustomLegend = ({ payload }: any) => {
+  interface LegendPayloadEntry {
+    value: string;
+    color?: string;
+  }
+
+  const CustomLegend = ({ payload }: { payload?: LegendPayloadEntry[] }) => {
     if (!payload) return null;
     return (
       <ul className="flex flex-wrap justify-center gap-4 mt-2 text-sm text-gray-700 dark:text-gray-300">
-        {payload.map((entry: any, index: number) => (
+        {payload.map((entry, index) => (
           <li key={index} className="flex items-center gap-1.5">
             <span
               className="inline-block w-2.5 h-2.5 rounded-full"
