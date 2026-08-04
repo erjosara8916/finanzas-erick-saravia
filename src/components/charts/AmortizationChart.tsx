@@ -57,7 +57,7 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
             Período {payload[0].payload.period}
           </p>
           {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }} className="text-sm">
+            <p key={index} style={{ color: entry.color }} className="text-sm tabular-nums">
               {entry.name}: {formatCurrency(entry.value)}
             </p>
           ))}
@@ -65,6 +65,23 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
       );
     }
     return null;
+  };
+
+  const CustomLegend = ({ payload }: any) => {
+    if (!payload) return null;
+    return (
+      <ul className="flex flex-wrap justify-center gap-4 mt-2 text-sm text-gray-700 dark:text-gray-300">
+        {payload.map((entry: any, index: number) => (
+          <li key={index} className="flex items-center gap-1.5">
+            <span
+              className="inline-block w-2.5 h-2.5 rounded-full"
+              style={{ backgroundColor: entry.color }}
+            />
+            {entry.value}
+          </li>
+        ))}
+      </ul>
+    );
   };
 
   const axisTextStyle = { fill: 'var(--chart-axis)', fontFamily: 'Geist, system-ui, sans-serif', fontSize: 12 };
@@ -97,7 +114,7 @@ export default function AmortizationChart({ rows }: AmortizationChartProps) {
             tickFormatter={formatYAxisTick}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Legend />
+          <Legend content={<CustomLegend />} />
           <Area
             type="monotone"
             dataKey="principal"
