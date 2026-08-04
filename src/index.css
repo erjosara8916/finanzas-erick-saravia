@@ -68,7 +68,7 @@
   --popover: 222 47% 11%;
   --popover-foreground: 210 20% 98%;
   --primary: 25 95% 53%;              /* #f97316, orange-500 — lighter for contrast on dark bg */
-  --primary-foreground: 222 47% 11%;
+  --primary-foreground: 0 0% 98%;     /* white, matching light mode — orange-500 is saturated enough that white text still works, and this preserves the site's existing always-white-on-orange CTA look */
   --secondary: 217 19% 27%;
   --secondary-foreground: 210 20% 98%;
   --muted: 217 19% 27%;
