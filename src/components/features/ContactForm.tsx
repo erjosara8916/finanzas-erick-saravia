@@ -186,12 +186,12 @@ export default function ContactForm() {
           {errors.message && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.message}</p>}
         </div>
 
-        <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto" size="lg">
+        <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto h-12 px-6 text-lg" size="lg">
           {isSubmitting ? (
-            <span className="mr-2">Enviando...</span>
+            <span>Enviando...</span>
           ) : (
             <>
-              <Send className="mr-2 h-5 w-5" />
+              <Send />
               Enviar Mensaje
             </>
           )}

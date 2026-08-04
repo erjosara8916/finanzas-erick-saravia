@@ -108,16 +108,16 @@ export default function NewsletterForm() {
         <Button
           type="submit"
           disabled={isSubscribing}
-          className="w-full"
+          className="w-full h-12 px-6 text-lg"
           size="lg"
           variant="default"
           onClick={() => trackCTAClick('newsletter', 'Suscribirme', 'newsletter_subscription')}
         >
           {isSubscribing ? (
-            <span className="mr-2">Suscribiendo...</span>
+            <span>Suscribiendo...</span>
           ) : (
             <>
-              <Send className="mr-2 h-5 w-5" />
+              <Send />
               Suscribirme
             </>
           )}
