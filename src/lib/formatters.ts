@@ -1,5 +1,6 @@
 import { Decimal } from 'decimal.js';
 import { format as formatDate } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 // Format currency as USD
 export function formatCurrency(amount: number | Decimal): string {
@@ -30,6 +31,17 @@ export function formatDateDisplay(dateString: string): string {
   try {
     const date = new Date(dateString);
     return formatDate(date, 'MMM dd, yyyy');
+  } catch {
+    return dateString;
+  }
+}
+
+// Format date as abbreviated month + year, in Spanish (e.g., "Ene2024")
+export function formatDateMonthYear(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    const formatted = formatDate(date, 'MMM yyyy', { locale: es });
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
   } catch {
     return dateString;
   }
