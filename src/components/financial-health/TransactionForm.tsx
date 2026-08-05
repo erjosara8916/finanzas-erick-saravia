@@ -127,9 +127,10 @@ export default function TransactionForm({ transactionToEdit, onEditComplete }: T
   };
 
   return (
-    <Card 
+    <Card
       title={transactionToEdit ? "Editar Transacción" : "Agregar Transacción"}
       description="💡 Recuerda ingresar tus gastos e ingresos en montos mensuales. Esto nos ayudará a calcular con precisión tu capacidad de pago."
+      data-tour="tx-form"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Toggle Type */}

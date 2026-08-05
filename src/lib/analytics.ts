@@ -16,6 +16,15 @@ export const hasUserConsent = (): boolean => {
 };
 
 /**
+ * Verifica si el usuario ya tomó una decisión de consentimiento (aceptar o rechazar)
+ */
+export const hasConsentDecision = (): boolean => {
+  if (typeof window === 'undefined') return false;
+
+  return localStorage.getItem('cookie-consent') !== null;
+};
+
+/**
  * Establece el consentimiento del usuario
  */
 export const setUserConsent = (consent: boolean): void => {

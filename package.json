@@ -23,6 +23,7 @@
     "clsx": "^2.1.0",
     "date-fns": "^3.0.6",
     "decimal.js": "^10.4.3",
+    "driver.js": "^1.8.0",
     "jspdf": "^3.0.4",
     "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.446.0",

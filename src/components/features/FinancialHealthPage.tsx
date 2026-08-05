@@ -8,8 +8,11 @@ import Stepper from '../ui/Stepper';
 import { Button } from '../ui/button';
 import Dialog from '../ui/Dialog';
 import { useFinancialHealthStore } from '../../store/financialHealthStore';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, HelpCircle } from 'lucide-react';
 import type { FinancialTransaction } from '../../types/schema';
+import { useTour } from '../../hooks/useTour';
+import { financialHealthTourSteps } from '../../lib/tours/financialHealthTourSteps';
+import { hasConsentDecision } from '../../lib/analytics';
 
 export default function FinancialHealthPage() {
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -18,6 +21,10 @@ export default function FinancialHealthPage() {
   
   const totalIncome = useFinancialHealthStore((state) => state.totalIncome());
   const hasIncome = totalIncome.gt(0);
+
+  const { startTour } = useTour(financialHealthTourSteps, 'financial_health_tour_seen_v1', {
+    enabled: hasConsentDecision(),
+  });
 
   const steps = [
     {
@@ -60,13 +67,27 @@ export default function FinancialHealthPage() {
   return (
     <ErrorBoundary>
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Salud Financiera
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Analiza tu estado financiero y calcula tu capacidad de endeudamiento
-          </p>
+        <header className="mb-8" data-tour="fh-page-header">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                Salud Financiera
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                Analiza tu estado financiero y calcula tu capacidad de endeudamiento
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={startTour}
+              aria-label="¿Cómo funciona?"
+              className="flex items-center gap-1.5 shrink-0"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">¿Cómo funciona?</span>
+            </Button>
+          </div>
         </header>
 
         {/* Stepper */}
