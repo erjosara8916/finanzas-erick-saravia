@@ -1,0 +1,30 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Card from '../../components/ui/Card';
+
+export async function getStaticPaths() {
+  const articles: CollectionEntry<'aprende'>[] = await getCollection('aprende');
+  return articles.map((article) => ({
+    params: { slug: article.id },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+---
+
+<BaseLayout title={article.data.title} description={article.data.description}>
+  <div class="container mx-auto px-4 py-8 pb-24 max-w-3xl animate-fade-in">
+    <a href="/aprende" class="text-sm font-medium text-orange-600 dark:text-orange-400 hover:underline">
+      ← Volver a Aprende
+    </a>
+    <h1 class="mt-4 mb-6 text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+      {article.data.title}
+    </h1>
+    <Card className="aprende-article prose dark:prose-invert max-w-none">
+      <Content />
+    </Card>
+  </div>
+</BaseLayout>
