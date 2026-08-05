@@ -1,4 +1,6 @@
 /// <reference types="astro/client" />
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference -- required by Astro to expose astro:content collection types
+/// <reference path="../.astro/types.d.ts" />
 
 interface ImportMetaEnv {
   readonly PUBLIC_GA_MEASUREMENT_ID: string;

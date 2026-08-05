@@ -15,7 +15,7 @@ cuota mensual = componente de interés + componente de capital
 
 La **tabla de amortización** es el desglose, mes a mes, de cuánto de cada cuota va a cada componente, y cuál es el saldo restante después de cada pago.
 
-**Lo importante — y lo que sorprende a la mayoría de personas:** al principio del préstamo, la mayor parte de tu cuota va a **interés**, no a capital. Esto es porque el interés se calcula sobre el saldo pendiente, y al inicio ese saldo es el más alto posible. A medida que el saldo baja, el interés mensual baja, y por lo tanto una porción cada vez mayor de tu cuota va a capital.
+**Un patrón importante:** al inicio del préstamo, el interés representa la porción más alta que tendrá en toda la vida del crédito — y esa porción baja mes a mes a medida que el saldo se reduce, mientras la parte de capital crece. En préstamos largos (como una hipoteca a 20 o 30 años), esto es tan marcado que durante los primeros años la mayoría de la cuota puede ir a interés. En el ejemplo de abajo, un préstamo más corto, el capital ya es la mayor parte de la cuota desde el primer mes — pero igual notarás cómo el interés baja y el capital sube con cada pago.
 
 **Ejemplo simplificado** (préstamo de $10,000 a 12% anual, cuota fija de $500):
 

@@ -22,6 +22,6 @@ saldo después del mes 1 sin abono extra:  $9,600
 saldo después del mes 1 con abono extra:  $9,600 - $1,000 = $8,600
 ```
 
-Ese $8,600 en vez de $9,600 significa que **todos los meses siguientes** calculan su interés sobre un saldo $1,000 menor — lo cual, acumulado a lo largo del préstamo, casi siempre representa un ahorro mayor a los $1,000 originales, además de terminar de pagar el préstamo antes del plazo original.
+Ese $8,600 en vez de $9,600 significa que **todos los meses siguientes** calculan su interés sobre un saldo menor. En este ejemplo, ese abono de $1,000 reduce el interés total del préstamo de aproximadamente $1,213 a $984 — un ahorro de unos $229 — y adelanta el fin del préstamo en 3 meses. Mientras más largo sea el plazo restante en el momento del abono, mayor será el ahorro en intereses.
 
 > **En la app:** la sección **"Abonos a Capital"** del simulador te permite registrar estos pagos extra en cualquier mes del préstamo. La tabla de amortización y el resumen se recalculan automáticamente, y el resumen te muestra el **"Plazo Real"** — cuántos meses (menos que el plazo original) tomará terminar de pagar gracias a tus abonos.
