@@ -1,0 +1,36 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Card from '../../components/ui/Card';
+
+const aprendeEntries: CollectionEntry<'aprende'>[] = await getCollection('aprende');
+const articles = aprendeEntries.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Aprende"
+  description="Aprende los conceptos clave de créditos y salud financiera, con ejemplos y fórmulas reales."
+>
+  <div class="container mx-auto px-4 py-8 pb-24 max-w-7xl animate-fade-in">
+    <header class="mb-8">
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">Aprende</h1>
+      <p class="text-gray-600 dark:text-gray-400">
+        Conceptos clave de créditos y salud financiera, con ejemplos y fórmulas reales.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+      {
+        articles.map((article) => (
+          <a href={`/aprende/${article.id}`} class="block">
+            <Card
+              title={article.data.title}
+              description={article.data.description}
+              className="h-full hover:border-orange-300 dark:hover:border-orange-700 transition-colors"
+            />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>
