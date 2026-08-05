@@ -231,3 +231,41 @@ select option {
   border-bottom-color: #1f2937;
 }
 
+/* Aprende articles — Tailwind Typography ("prose") brand overrides.
+   Uses the plugin's own :where()/:not(:where([class~="not-prose"] *))
+   selector shape so these overrides win without needing !important. */
+.aprende-article :where(a):not(:where([class~="not-prose"] *)) {
+  color: #ea580c; /* orange-600 */
+}
+
+.aprende-article :where(h2, h3, h4):not(:where([class~="not-prose"] *)) {
+  color: #111827; /* gray-900 */
+}
+
+.dark .aprende-article :where(h2, h3, h4):not(:where([class~="not-prose"] *)) {
+  color: #ffffff;
+}
+
+/* "En la app:" tie-in callout, rendered as a blockquote in the source Markdown —
+   styled like the site's existing amber recommendation banners, in brand orange. */
+.aprende-article :where(blockquote):not(:where([class~="not-prose"] *)) {
+  border-left-color: #ea580c; /* orange-600 */
+  background-color: #fff7ed; /* orange-50 */
+  color: #9a3412; /* orange-800 */
+  font-style: normal;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  quotes: none;
+}
+
+.aprende-article :where(blockquote p):not(:where([class~="not-prose"] *))::before,
+.aprende-article :where(blockquote p):not(:where([class~="not-prose"] *))::after {
+  content: none;
+}
+
+.dark .aprende-article :where(blockquote):not(:where([class~="not-prose"] *)) {
+  background-color: rgba(154, 52, 18, 0.15);
+  color: #fdba74; /* orange-300 */
+  border-left-color: #fb923c; /* orange-400 */
+}
+
