@@ -12,6 +12,7 @@ import { AlertCircle, HelpCircle } from 'lucide-react';
 import type { FinancialTransaction } from '../../types/schema';
 import { useTour } from '../../hooks/useTour';
 import { financialHealthTourSteps } from '../../lib/tours/financialHealthTourSteps';
+import { hasConsentDecision } from '../../lib/analytics';
 
 export default function FinancialHealthPage() {
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -21,7 +22,9 @@ export default function FinancialHealthPage() {
   const totalIncome = useFinancialHealthStore((state) => state.totalIncome());
   const hasIncome = totalIncome.gt(0);
 
-  const { startTour } = useTour(financialHealthTourSteps, 'financial_health_tour_seen_v1');
+  const { startTour } = useTour(financialHealthTourSteps, 'financial_health_tour_seen_v1', {
+    enabled: hasConsentDecision(),
+  });
 
   const steps = [
     {
@@ -78,6 +81,7 @@ export default function FinancialHealthPage() {
               variant="outline"
               size="sm"
               onClick={startTour}
+              aria-label="¿Cómo funciona?"
               className="flex items-center gap-1.5 shrink-0"
             >
               <HelpCircle className="w-4 h-4" />

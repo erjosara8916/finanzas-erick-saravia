@@ -12,18 +12,23 @@ interface UseTourOptions {
 export function useTour(steps: DriveStep[], storageKey: string, options: UseTourOptions = {}) {
   const { enabled = true } = options;
   const hasAutoStartedRef = useRef(false);
+  const driverRef = useRef<ReturnType<typeof driver> | null>(null);
 
   const startTour = useCallback(() => {
+    if (driverRef.current?.isActive()) return;
+
     const tourDriver = driver({
       showProgress: true,
       nextBtnText: 'Siguiente',
       prevBtnText: 'Anterior',
       doneBtnText: 'Entendido',
       steps,
+      skipMissingElement: true,
       onDestroyed: () => {
         localStorage.setItem(storageKey, 'true');
       },
     });
+    driverRef.current = tourDriver;
     tourDriver.drive();
   }, [steps, storageKey]);
 

@@ -237,6 +237,7 @@ export default function LoanProjectionPage() {
               variant="outline"
               size="sm"
               onClick={startTour}
+              aria-label="¿Cómo funciona?"
               className="flex items-center gap-1.5 shrink-0"
             >
               <HelpCircle className="w-4 h-4" />
